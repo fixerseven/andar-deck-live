@@ -1,0 +1,2717 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shipment Command Center — DCA Customs Brokerage</title>
+<meta name="description" content="Concept prototype: connected shipment, document, dispatch and client-update operations for a Cebu customs brokerage. Fictional data." />
+<style>
+:root{
+  color-scheme: light;
+
+  --page:#F6F7F9;
+  --surface:#FFFFFF;
+  --surface-2:#FAFBFC;
+  --surface-3:#F1F3F6;
+
+  --ink:#151B23;
+  --ink-2:#404B58;
+  --ink-3:#6E7A88;
+  --ink-4:#98A2AE;
+
+  --line:#E5E9EE;
+  --line-2:#D3D9E1;
+
+  --cobalt:#1748C4;
+  --cobalt-700:#0F3494;
+  --cobalt-100:#DCE6FC;
+  --cobalt-50:#EDF2FE;
+
+  --amber:#B26A00;
+  --amber-mark:#E9970C;
+  --amber-50:#FDF3E3;
+
+  --red:#B5301F;
+  --red-mark:#D0402C;
+  --red-50:#FBECE9;
+
+  --green:#0F6B45;
+  --green-mark:#1A8A5A;
+  --green-50:#E9F4EE;
+
+  --r:6px;
+  --rail:214px;
+  --sans:"Geist","Geist Sans",ui-sans-serif,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono","SFMono-Regular","JetBrains Mono",Menlo,Consolas,monospace;
+
+  --shadow-panel:0 1px 2px rgba(21,27,35,.04), 0 12px 32px rgba(21,27,35,.10);
+  --shadow-pop:0 1px 2px rgba(21,27,35,.05), 0 8px 24px rgba(21,27,35,.12);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--page);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:13px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:none;border:0;padding:0;cursor:pointer}
+a{color:var(--cobalt);text-decoration:none}
+:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px;border-radius:3px}
+::selection{background:var(--cobalt-100)}
+
+svg{width:1em;height:1em;flex:0 0 auto}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.num{font-variant-numeric:tabular-nums}
+.lbl{
+  font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-4);
+}
+.muted{color:var(--ink-3)}
+.tight{letter-spacing:-.012em}
+
+/* ---------- shell ---------- */
+.app{display:flex;height:100vh;overflow:hidden}
+
+.rail{
+  width:var(--rail);flex:0 0 var(--rail);
+  background:var(--surface);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;
+}
+.brand{
+  display:flex;align-items:center;gap:9px;
+  padding:14px 14px 13px;border-bottom:1px solid var(--line);
+}
+.brand img{width:30px;height:30px;object-fit:contain;border-radius:3px;flex:0 0 30px}
+.brand .bt{font-size:12.5px;font-weight:650;letter-spacing:-.015em;line-height:1.15}
+.brand .bs{font-size:10.5px;color:var(--ink-4);letter-spacing:.02em;margin-top:1px}
+
+.nav{padding:10px 8px;display:flex;flex-direction:column;gap:1px}
+.nav button{
+  display:flex;align-items:center;gap:9px;width:100%;
+  padding:7px 9px;border-radius:var(--r);
+  font-size:13px;font-weight:500;color:var(--ink-2);letter-spacing:-.008em;
+  transition:background .12s ease,color .12s ease;
+}
+.nav button:hover{background:var(--surface-3)}
+.nav button[aria-current="true"]{background:var(--cobalt-50);color:var(--cobalt-700);font-weight:600}
+.nav button[aria-current="true"] .ico{color:var(--cobalt)}
+.nav .ico{width:15px;height:15px;flex:0 0 15px;color:var(--ink-4);display:block}
+.nav .cnt{
+  margin-left:auto;font-family:var(--mono);font-size:10.5px;font-variant-numeric:tabular-nums;
+  color:var(--ink-4);
+}
+.nav button[aria-current="true"] .cnt{color:var(--cobalt-700)}
+.nav .cnt.alert{color:var(--red);font-weight:600}
+
+.rail-sec{margin-top:6px;padding:12px 14px 4px;border-top:1px solid var(--line)}
+.duty{display:flex;flex-direction:column;gap:0;margin-top:8px}
+.duty-row{display:flex;align-items:center;gap:8px;padding:5px 0;width:100%;text-align:left;border-radius:4px}
+.duty-row:hover .dn{color:var(--cobalt-700)}
+.dot{width:6px;height:6px;border-radius:50%;flex:0 0 6px}
+.dot.free{background:var(--green-mark)}
+.dot.busy{background:var(--cobalt)}
+.dot.hold{background:var(--amber-mark)}
+.dn{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dw{margin-left:auto;font-size:10.5px;color:var(--ink-4);white-space:nowrap;max-width:82px;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+
+.rail-foot{margin-top:auto;padding:12px 14px 13px;border-top:1px solid var(--line)}
+.disclaimer{font-size:10.5px;line-height:1.42;color:var(--ink-4)}
+/* Andar watermark — the firm that drew this, said quietly. The real logo,
+   held small: restrained by size rather than by fading it out. Neutral ink,
+   not the cobalt — a signature on the drawing, not part of the interface. */
+.andar{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink-4);white-space:nowrap}
+.andar .alogo{width:50px;height:12px;color:var(--ink-2);opacity:.85;flex:0 0 50px}
+
+.byline{margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+.tb-andar{padding-right:11px;border-right:1px solid var(--line-2)}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+
+.topbar{
+  height:50px;flex:0 0 50px;background:var(--surface);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;padding:0 16px;
+}
+.tb-title{font-size:14px;font-weight:620;letter-spacing:-.018em}
+.tb-sub{font-size:11.5px;color:var(--ink-3);border-left:1px solid var(--line-2);padding-left:12px;margin-left:2px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  height:29px;padding:0 11px;border-radius:var(--r);
+  border:1px solid var(--line-2);background:var(--surface);
+  font-size:12.5px;font-weight:500;color:var(--ink-2);letter-spacing:-.006em;
+  transition:background .12s ease,border-color .12s ease,color .12s ease;
+}
+.btn:hover{background:var(--surface-3);border-color:#C2CAD4}
+.btn.primary{background:var(--cobalt);border-color:var(--cobalt);color:#fff;font-weight:550}
+.btn.primary:hover{background:var(--cobalt-700);border-color:var(--cobalt-700)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-3)}
+.btn.ghost:hover{background:var(--surface-3);color:var(--ink-2)}
+.btn.sm{height:25px;padding:0 9px;font-size:11.5px}
+.btn .ico{width:13px;height:13px;flex:0 0 13px}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+
+.kbd{
+  font-family:var(--mono);font-size:10px;padding:1px 4px;border:1px solid var(--line-2);
+  border-radius:3px;color:var(--ink-4);background:var(--surface-2);line-height:1.5;
+}
+
+.view{flex:1;min-height:0;overflow:auto;position:relative}
+
+/* ---------- generic blocks ---------- */
+.wrap{padding:18px 20px 40px;max-width:1560px}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.sec-head h2{font-size:13px;font-weight:640;letter-spacing:-.012em;margin:0}
+.sec-head .note{font-size:11.5px;color:var(--ink-4);margin-left:auto}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.panel-head{
+  display:flex;align-items:center;gap:9px;padding:10px 13px;border-bottom:1px solid var(--line);
+}
+.panel-head h3{font-size:12.5px;font-weight:620;letter-spacing:-.01em;margin:0}
+.panel-head .rt{margin-left:auto;font-size:11px;color:var(--ink-4)}
+
+/* status chips */
+.chip{
+  display:inline-flex;align-items:center;gap:5px;height:19px;padding:0 7px;
+  border-radius:3px;font-size:10.5px;font-weight:600;letter-spacing:.015em;
+  border:1px solid transparent;white-space:nowrap;
+}
+.chip .sq{width:5px;height:5px;border-radius:1px}
+.chip.ok{background:var(--green-50);color:var(--green);border-color:#CFE6DA}
+.chip.ok .sq{background:var(--green-mark)}
+.chip.warn{background:var(--amber-50);color:var(--amber);border-color:#F2DEBB}
+.chip.warn .sq{background:var(--amber-mark)}
+.chip.crit{background:var(--red-50);color:var(--red);border-color:#F1D2CC}
+.chip.crit .sq{background:var(--red-mark)}
+.chip.info{background:var(--cobalt-50);color:var(--cobalt-700);border-color:#CFDDFA}
+.chip.info .sq{background:var(--cobalt)}
+.chip.flat{background:var(--surface-3);color:var(--ink-3);border-color:var(--line)}
+.chip.flat .sq{background:var(--ink-4)}
+
+.urg{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600}
+.urg .bar{width:3px;height:11px;border-radius:1px}
+.urg.high{color:var(--red)} .urg.high .bar{background:var(--red-mark)}
+.urg.med{color:var(--amber)} .urg.med .bar{background:var(--amber-mark)}
+.urg.low{color:var(--ink-3)} .urg.low .bar{background:var(--ink-4)}
+
+.ai-tag{
+  display:inline-flex;align-items:center;gap:4px;height:17px;padding:0 6px 0 5px;border-radius:3px;
+  background:var(--cobalt-50);color:var(--cobalt-700);
+  font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  border:1px solid #CFDDFA;
+}
+.ai-tag svg{width:10px;height:10px}
+
+/* ---------- overview ---------- */
+.metrics{
+  display:grid;grid-template-columns:repeat(8,1fr);
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+}
+.metric{padding:11px 13px 12px;border-right:1px solid var(--line);text-align:left;width:100%;transition:background .12s ease}
+.metric:last-child{border-right:0}
+.metric:hover{background:var(--surface-2)}
+.metric .mv{font-family:var(--mono);font-size:24px;font-weight:520;letter-spacing:-.03em;line-height:1.1;font-variant-numeric:tabular-nums}
+.metric .ml{font-size:11px;color:var(--ink-3);margin-top:3px;line-height:1.3;letter-spacing:-.004em}
+.metric .md{font-size:10.5px;margin-top:5px;display:flex;align-items:center;gap:4px}
+.metric.crit .mv{color:var(--red)}
+.metric.warn .mv{color:var(--amber)}
+
+.ov-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:16px;margin-top:16px;align-items:start}
+.ov-col{display:flex;flex-direction:column;gap:16px}
+
+.att-row{
+  display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;
+  padding:10px 13px;border-bottom:1px solid var(--line);transition:background .12s ease;
+}
+.att-row:last-child{border-bottom:0}
+.att-row:hover{background:var(--surface-2)}
+.att-rank{
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-4);width:14px;flex:0 0 14px;
+  padding-top:2px;font-variant-numeric:tabular-nums;
+}
+.att-stripe{width:2px;flex:0 0 2px;align-self:stretch;border-radius:1px;margin:1px 0}
+.att-stripe.crit{background:var(--red-mark)}
+.att-stripe.warn{background:var(--amber-mark)}
+.att-stripe.info{background:var(--cobalt)}
+.att-body{min-width:0;flex:1}
+.att-t{display:block;font-size:12.5px;font-weight:550;letter-spacing:-.008em;line-height:1.35}
+.att-m{font-size:11.5px;color:var(--ink-3);margin-top:3px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.att-m .sep{color:var(--line-2)}
+.att-go{margin-left:auto;flex:0 0 auto;padding-top:2px;color:var(--ink-4);opacity:0;transition:opacity .12s ease}
+.att-row:hover .att-go{opacity:1;color:var(--cobalt)}
+
+.brief{border-left:2px solid var(--cobalt);background:linear-gradient(90deg,var(--cobalt-50),rgba(237,242,254,0) 62%)}
+.brief-list{padding:4px 13px 12px;margin:0;list-style:none;display:flex;flex-direction:column;gap:0}
+.brief-list li{
+  display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(229,233,238,.75);
+  font-size:12.5px;line-height:1.45;letter-spacing:-.006em;
+}
+.brief-list li:last-child{border-bottom:0}
+.brief-list .bn{font-family:var(--mono);font-size:10.5px;color:var(--cobalt);padding-top:2px;flex:0 0 12px}
+.brief-list a{font-weight:550;border-bottom:1px solid var(--cobalt-100)}
+.brief-list a:hover{border-bottom-color:var(--cobalt)}
+
+.tl{padding:4px 13px 12px;display:flex;flex-direction:column}
+.tl-item{display:flex;gap:10px;padding:7px 0;position:relative}
+.tl-item::before{
+  content:"";position:absolute;left:3.5px;top:0;bottom:0;width:1px;background:var(--line);
+}
+.tl-item:first-child::before{top:11px}
+.tl-item:last-child::before{bottom:auto;height:11px}
+.tl-mark{
+  width:8px;height:8px;border-radius:50%;flex:0 0 8px;margin-top:5px;position:relative;z-index:1;
+  background:var(--surface);border:1.5px solid var(--ink-4);
+}
+.tl-mark.ok{border-color:var(--green-mark)}
+.tl-mark.crit{border-color:var(--red-mark)}
+.tl-mark.ai{border-color:var(--cobalt);background:var(--cobalt)}
+.tl-mark.comm{border-color:var(--amber-mark)}
+.tl-body{min-width:0;flex:1}
+.tl-t{display:block;font-size:12px;line-height:1.4;letter-spacing:-.005em}
+.tl-t b{font-weight:600}
+.tl-m{font-size:10.5px;color:var(--ink-4);margin-top:2px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+
+/* ---------- kanban ---------- */
+.filters{
+  display:flex;align-items:center;gap:7px;padding:9px 16px;
+  background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;flex-wrap:wrap;
+}
+.search{
+  display:flex;align-items:center;gap:7px;height:29px;padding:0 9px;
+  border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);min-width:250px;
+  transition:border-color .12s ease,box-shadow .12s ease;
+}
+.search:focus-within{border-color:var(--cobalt);box-shadow:0 0 0 3px var(--cobalt-50)}
+.search input{border:0;outline:0;background:none;width:100%;font-size:12.5px}
+.search input::placeholder{color:var(--ink-4)}
+.search svg{width:13px;height:13px;color:var(--ink-4);flex:0 0 13px}
+select.sel{
+  height:29px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);
+  padding:0 24px 0 9px;font-size:12.5px;color:var(--ink-2);cursor:pointer;
+  appearance:none;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2398A2AE' stroke-width='1.4'%3E%3Cpath d='M3 4.75 6 7.75l3-3'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 7px center;background-size:11px;
+}
+select.sel:hover{border-color:#C2CAD4}
+select.sel.on{border-color:var(--cobalt);color:var(--cobalt-700);background-color:var(--cobalt-50)}
+.fcount{font-size:11.5px;color:var(--ink-4);margin-left:auto;white-space:nowrap}
+
+.board{display:flex;gap:0;overflow-x:auto;height:100%;align-items:stretch;padding:0 0 0 0}
+.col{
+  flex:0 0 262px;width:262px;display:flex;flex-direction:column;min-height:0;
+  border-right:1px solid var(--line);background:var(--page);
+}
+.col:last-child{border-right:0}
+.col.dragover{background:var(--cobalt-50)}
+.col-head{
+  display:flex;align-items:center;gap:7px;padding:10px 12px 9px;
+  border-bottom:1px solid var(--line);background:var(--page);position:sticky;top:0;z-index:2;
+}
+.col-head .ct{font-size:11.5px;font-weight:620;letter-spacing:-.005em;color:var(--ink-2)}
+.col-head .cc{
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-4);
+  background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:0 5px;line-height:16px;
+}
+.col-head .cb{width:3px;height:11px;border-radius:1px;background:var(--line-2)}
+.col-body{flex:1;overflow-y:auto;padding:9px 9px 40px;display:flex;flex-direction:column;gap:7px}
+.col-empty{
+  border:1px dashed var(--line-2);border-radius:var(--r);padding:14px 10px;text-align:center;
+  font-size:11px;color:var(--ink-4);
+}
+
+.card{
+  touch-action:none;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:9px 10px 10px;text-align:left;width:100%;cursor:grab;position:relative;
+  transition:border-color .12s ease,box-shadow .12s ease,transform .12s ease;
+}
+.card:hover{border-color:#C7D0DB;box-shadow:0 1px 3px rgba(21,27,35,.07)}
+.card:active{cursor:grabbing}
+.card.ghost{cursor:grabbing;margin:0}
+.card.dragging{opacity:.4}
+.card.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,100%{box-shadow:0 0 0 0 rgba(23,72,196,0)}18%{box-shadow:0 0 0 3px var(--cobalt-100)}}
+.card::before{
+  content:"";position:absolute;left:-1px;top:8px;bottom:8px;width:2px;border-radius:0 2px 2px 0;background:transparent;
+}
+.card.u-high::before{background:var(--red-mark)}
+.card.u-med::before{background:var(--amber-mark)}
+.card-top{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.card-ref{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:-.01em}
+.card-mode{
+  margin-left:auto;display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:600;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);
+}
+.card-mode svg{width:11px;height:11px}
+.card-client{font-size:12.5px;font-weight:600;letter-spacing:-.012em;line-height:1.3}
+.card-cargo{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.35}
+.card-meta{
+  display:flex;align-items:center;gap:5px;margin-top:7px;padding-top:7px;border-top:1px solid var(--line);
+  font-size:11px;color:var(--ink-3);flex-wrap:wrap;
+}
+.card-meta .sep{color:var(--line-2)}
+.card-block{
+  margin-top:7px;display:flex;align-items:flex-start;gap:6px;
+  padding:6px 7px;border-radius:4px;background:var(--red-50);border:1px solid #F1D2CC;
+  font-size:11px;color:var(--red);line-height:1.35;font-weight:500;
+}
+.card-block.warn{background:var(--amber-50);border-color:#F2DEBB;color:var(--amber)}
+.card-block svg{width:11px;height:11px;flex:0 0 11px;margin-top:2px}
+.card-next{
+  margin-top:6px;font-size:11px;color:var(--ink-2);display:flex;gap:5px;align-items:flex-start;line-height:1.35;
+}
+.card-next .arw{color:var(--cobalt);flex:0 0 auto;font-family:var(--mono)}
+.card-foot{display:flex;align-items:center;gap:6px;margin-top:8px}
+.av{
+  width:19px;height:19px;border-radius:50%;flex:0 0 19px;display:grid;place-items:center;
+  font-size:9px;font-weight:700;letter-spacing:.02em;color:#fff;background:var(--ink-3);
+}
+.av.c0{background:#1748C4}.av.c1{background:#0F6B45}.av.c2{background:#B26A00}
+.av.c3{background:#5B4BB8}.av.c4{background:#0E6C7D}.av.c5{background:#8A3E7A}.av.c6{background:#3D4651}
+.card-foot .who{font-size:11px;color:var(--ink-2)}
+.card-foot .wait{margin-left:auto;font-size:10.5px;color:var(--ink-4);font-family:var(--mono);font-variant-numeric:tabular-nums}
+.card-foot .wait.aging{color:var(--red);font-weight:600}
+
+/* ---------- slide-over ---------- */
+.scrim{
+  position:fixed;inset:0;background:rgba(21,27,35,.22);opacity:0;pointer-events:none;
+  transition:opacity .2s ease;z-index:40;
+}
+.scrim.on{opacity:1;pointer-events:auto}
+.slideover{
+  position:fixed;top:0;right:0;bottom:0;width:600px;max-width:94vw;background:var(--surface);
+  border-left:1px solid var(--line);box-shadow:var(--shadow-panel);z-index:41;
+  transform:translateX(100%);transition:transform .22s cubic-bezier(.32,.72,0,1);
+  display:flex;flex-direction:column;
+}
+.slideover.on{transform:translateX(0)}
+.so-head{padding:14px 18px 12px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.so-body{flex:1;overflow-y:auto;padding-bottom:36px}
+.so-x{position:absolute;top:12px;right:14px;width:26px;height:26px;border-radius:var(--r);display:grid;place-items:center;color:var(--ink-4)}
+.so-x:hover{background:var(--surface-3);color:var(--ink-2)}
+.so-x svg{width:14px;height:14px}
+
+.so-sec{padding:14px 18px;border-bottom:1px solid var(--line)}
+.so-sec:last-child{border-bottom:0}
+.so-sec-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.so-sec-h h4{font-size:11.5px;font-weight:640;letter-spacing:-.005em;margin:0}
+.so-sec-h .rt{margin-left:auto;font-size:11px;color:var(--ink-4)}
+
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px 14px}
+.kv-i .k{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
+.kv-i .v{font-size:12.5px;margin-top:3px;letter-spacing:-.006em;line-height:1.35}
+
+.docs{display:flex;flex-direction:column}
+.doc{
+  display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);
+}
+.doc:last-child{border-bottom:0}
+.doc.na{opacity:.5}
+.doc-n{font-size:12.5px;letter-spacing:-.006em;min-width:0}
+.doc-s{display:block;font-size:10.5px;color:var(--ink-4);margin-top:2px;font-family:var(--mono);line-height:1.35}
+.doc-r{margin-left:auto;display:flex;align-items:center;gap:8px;flex:0 0 auto}
+
+.ai-box{
+  border:1px solid var(--cobalt-100);border-radius:var(--r);background:var(--cobalt-50);
+  padding:11px 12px;
+}
+.ai-box.crit{border-color:#F1D2CC;background:var(--red-50)}
+.ai-box-h{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.ai-box p{margin:0 0 7px;font-size:12.5px;line-height:1.5;letter-spacing:-.005em;color:var(--ink-2)}
+.ai-box p:last-of-type{margin-bottom:0}
+.ai-box .rec{
+  margin-top:9px;padding-top:9px;border-top:1px solid rgba(23,72,196,.14);
+  font-size:12.5px;line-height:1.45;color:var(--ink);
+}
+.ai-box.crit .rec{border-top-color:rgba(181,48,31,.16)}
+.ai-box .rec b{font-weight:620}
+.ai-note{
+  margin-top:8px;font-size:10.5px;line-height:1.45;color:var(--ink-3);
+  display:flex;gap:5px;align-items:flex-start;
+}
+.ai-note svg{width:11px;height:11px;flex:0 0 11px;margin-top:2px;color:var(--ink-4)}
+.ai-acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+
+.msg{border:1px solid var(--line);border-radius:var(--r);padding:10px 11px;background:var(--surface-2)}
+.msg + .msg{margin-top:7px}
+.msg.draft{border-color:var(--cobalt-100);background:var(--cobalt-50);border-style:dashed}
+.msg-h{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
+.msg-ch{
+  display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:650;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink-4);
+}
+.msg-ch svg{width:11px;height:11px}
+.msg-who{font-size:11.5px;font-weight:600;letter-spacing:-.005em}
+.msg-t{margin-left:auto;font-size:10.5px;color:var(--ink-4);font-family:var(--mono)}
+.msg-b{font-size:12.5px;line-height:1.5;color:var(--ink-2);letter-spacing:-.005em;white-space:pre-wrap}
+.msg-f{display:flex;align-items:center;gap:6px;margin-top:9px}
+.msg-f .warnnote{font-size:10.5px;color:var(--ink-4);margin-left:auto}
+
+/* ---------- dispatch ---------- */
+.disp{display:grid;grid-template-columns:minmax(0,1fr) 296px;gap:0;height:100%}
+.disp-board{overflow:auto;min-width:0}
+.disp-side{border-left:1px solid var(--line);background:var(--surface);overflow-y:auto}
+.staff{padding:11px 14px;border-bottom:1px solid var(--line);width:100%;text-align:left;transition:background .12s ease}
+.staff:hover{background:var(--surface-2)}
+.staff-h{display:flex;align-items:center;gap:8px}
+.staff-n{display:block;font-size:12.5px;font-weight:600;letter-spacing:-.01em}
+.staff-role{display:block;font-size:10.5px;color:var(--ink-4);margin-top:1px}
+.staff-b{margin-left:auto}
+.staff-g{display:grid;grid-template-columns:auto 1fr;gap:3px 9px;margin-top:8px;font-size:11.5px}
+.staff-g dt{color:var(--ink-4);font-size:10.5px;letter-spacing:.02em}
+.staff-g dd{margin:0;color:var(--ink-2);letter-spacing:-.005em}
+
+.asn{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:9px 10px;
+  text-align:left;width:100%;transition:border-color .12s ease,box-shadow .12s ease;
+}
+.asn:hover{border-color:#C7D0DB;box-shadow:0 1px 3px rgba(21,27,35,.07)}
+.asn.unassigned{border-style:dashed;border-color:var(--amber-mark);background:var(--amber-50)}
+.asn.flash{animation:flash 1.6s ease}
+.asn-t{font-size:12.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.asn-l{font-size:11.5px;color:var(--ink-3);margin-top:3px}
+.asn-g{display:flex;flex-direction:column;gap:3px;margin-top:8px;padding-top:7px;border-top:1px solid var(--line);font-size:11px}
+.asn-g .r{display:flex;gap:8px;align-items:baseline}
+.asn-g .r .k{color:var(--ink-4);width:74px;flex:0 0 74px;font-size:10.5px}
+.asn-g .r .v{color:var(--ink-2);min-width:0}
+
+/* ---------- documents ---------- */
+.tblwrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table.t{width:100%;border-collapse:collapse;min-width:900px}
+table.t th{
+  text-align:left;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);
+  padding:9px 13px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface-2);
+  position:sticky;top:0;z-index:1;
+}
+table.t td{padding:9px 13px;border-bottom:1px solid var(--line);font-size:12.5px;vertical-align:middle;letter-spacing:-.005em}
+table.t tr:last-child td{border-bottom:0}
+table.t tbody tr{cursor:pointer;transition:background .12s ease}
+table.t tbody tr:hover{background:var(--surface-2)}
+table.t td.r{text-align:right}
+
+.readiness{display:flex;align-items:center;gap:7px}
+.bar-track{display:block;width:64px;height:4px;border-radius:2px;background:var(--surface-3);overflow:hidden;flex:0 0 64px}
+.bar-fill{display:block;height:100%;min-width:2px;background:var(--cobalt);border-radius:2px}
+.bar-fill.warn{background:var(--amber-mark)}
+.bar-fill.crit{background:var(--red-mark)}
+.bar-fill.ok{background:var(--green-mark)}
+
+/* ---------- briefing ---------- */
+.brief-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.85fr);gap:16px;align-items:start}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;padding:11px 13px;border-bottom:1px solid var(--line)}
+.qchip{
+  border:1px solid var(--line-2);border-radius:14px;padding:4px 10px;font-size:11.5px;color:var(--ink-2);
+  background:var(--surface);transition:background .12s ease,border-color .12s ease,color .12s ease;letter-spacing:-.005em;
+}
+.qchip:hover{background:var(--cobalt-50);border-color:var(--cobalt-100);color:var(--cobalt-700)}
+
+.thread{padding:13px;display:flex;flex-direction:column;gap:13px;min-height:200px;max-height:520px;overflow-y:auto}
+.thread .empty{color:var(--ink-4);font-size:12px;text-align:center;padding:26px 10px;line-height:1.6}
+.q{display:flex;gap:8px;align-items:flex-start}
+.q .qi{
+  width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;
+  font-size:9px;font-weight:700;flex:0 0 18px;margin-top:1px;
+}
+.q .qt{font-size:12.5px;font-weight:550;letter-spacing:-.008em;padding-top:1px}
+.a{padding-left:26px}
+.a-t{font-size:12.5px;line-height:1.55;color:var(--ink-2);letter-spacing:-.005em}
+.a-list{margin:8px 0 0;padding:0;list-style:none;display:flex;flex-direction:column}
+.a-list li{
+  display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line);font-size:12px;line-height:1.45;
+}
+.a-list li .li-l{min-width:0;flex:1}
+.a-list li .li-r{margin-left:auto;flex:0 0 auto;display:flex;align-items:center;gap:7px}
+.reflink{
+  font-family:var(--mono);font-size:11px;color:var(--cobalt);border-bottom:1px solid var(--cobalt-100);
+  letter-spacing:-.01em;
+}
+.reflink:hover{border-bottom-color:var(--cobalt);background:var(--cobalt-50)}
+.a-foot{margin-top:9px;font-size:10.5px;color:var(--ink-4);display:flex;align-items:center;gap:5px}
+
+/* ---------- command pill ---------- */
+.cmd{position:fixed;right:20px;bottom:20px;z-index:38;display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.cmd-pill{
+  display:flex;align-items:center;gap:8px;height:36px;padding:0 12px 0 11px;border-radius:18px;
+  background:var(--surface);border:1px solid var(--line-2);box-shadow:var(--shadow-pop);
+  font-size:12.5px;color:var(--ink-3);transition:border-color .14s ease,color .14s ease;
+}
+.cmd-pill:hover{border-color:var(--cobalt);color:var(--ink-2)}
+.cmd-pill svg{width:14px;height:14px;color:var(--cobalt)}
+.cmd-panel{
+  width:430px;max-width:calc(100vw - 40px);background:var(--surface);border:1px solid var(--line-2);
+  border-radius:9px;box-shadow:var(--shadow-panel);overflow:hidden;display:none;
+}
+.cmd-panel.on{display:block;animation:rise .18s cubic-bezier(.32,.72,0,1)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.cmd-in{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.cmd-in input{flex:1;border:0;outline:0;background:none;font-size:12.5px}
+.cmd-in input::placeholder{color:var(--ink-4)}
+.cmd-in svg{width:14px;height:14px;color:var(--cobalt);flex:0 0 14px}
+.cmd-out{max-height:340px;overflow-y:auto;padding:11px 12px}
+.cmd-sugg{display:flex;flex-direction:column;gap:1px}
+.cmd-sugg button{
+  text-align:left;padding:6px 8px;border-radius:4px;font-size:12px;color:var(--ink-2);width:100%;
+  letter-spacing:-.005em;transition:background .1s ease;
+}
+.cmd-sugg button:hover{background:var(--cobalt-50);color:var(--cobalt-700)}
+.cmd-foot{
+  padding:8px 12px;border-top:1px solid var(--line);background:var(--surface-2);
+  font-size:10.5px;color:var(--ink-4);display:flex;align-items:center;gap:6px;
+}
+
+/* ---------- demo bar ---------- */
+.demobar{
+  position:fixed;left:calc(var(--rail) + 20px);right:20px;bottom:20px;z-index:37;
+  background:var(--ink);color:#fff;border-radius:8px;box-shadow:var(--shadow-panel);
+  display:none;align-items:center;gap:13px;padding:11px 13px;max-width:none;
+}
+.demobar.on{display:flex;animation:rise .2s cubic-bezier(.32,.72,0,1)}
+.demobar .step{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.02em;color:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.2);border-radius:3px;padding:2px 6px;flex:0 0 auto;
+}
+.demobar .txt{font-size:12.5px;line-height:1.45;letter-spacing:-.005em;min-width:0;flex:1}
+.demobar .txt b{font-weight:620;color:#fff}
+.demobar .txt span{color:rgba(255,255,255,.66)}
+.demobar .acts{margin-left:auto;display:flex;gap:6px;flex:0 0 auto}
+.demobar .btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.9)}
+.demobar .btn:hover{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.3)}
+.demobar .btn.primary{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+.demobar .btn.primary:hover{background:#2E5CD6;border-color:#2E5CD6}
+/* the guided demo owns the bottom strip: park the Ask pill and keep
+   scrollable content clear of the bar */
+body.demo-on .cmd{display:none}
+body.demo-on .col-body{padding-bottom:84px}
+body.demo-on .wrap{padding-bottom:96px}
+body.demo-on .so-body{padding-bottom:86px}
+body.demo-on .disp-side{padding-bottom:84px}
+.demo-prog{position:absolute;left:0;bottom:0;height:2px;background:var(--cobalt);border-radius:0 2px 2px 0;transition:width .3s ease}
+
+/* ---------- toasts ---------- */
+.toasts{position:fixed;right:20px;bottom:70px;z-index:45;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.toast{
+  width:334px;background:var(--surface);border:1px solid var(--line-2);border-left:2px solid var(--cobalt);
+  border-radius:var(--r);box-shadow:var(--shadow-pop);padding:10px 12px;animation:rise .2s cubic-bezier(.32,.72,0,1);
+}
+.toast-h{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.toast-b{font-size:12px;line-height:1.45;color:var(--ink-2);letter-spacing:-.005em}
+.toast-b b{font-weight:600;color:var(--ink)}
+.toast-a{display:flex;gap:6px;margin-top:9px}
+.toast-x{margin-left:auto;color:var(--ink-4);width:16px;height:16px;display:grid;place-items:center}
+.toast-x:hover{color:var(--ink-2)}
+.toast-x svg{width:11px;height:11px}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+@media (max-width:1180px){
+  .metrics{grid-template-columns:repeat(4,1fr)}
+  .metric:nth-child(4){border-right:0}
+  .metric:nth-child(-n+4){border-bottom:1px solid var(--line)}
+  .ov-grid{grid-template-columns:minmax(0,1fr)}
+  .brief-grid{grid-template-columns:minmax(0,1fr)}
+  .disp{grid-template-columns:minmax(0,1fr)}
+  .disp-side{display:none}
+  /* the topbar gets tight before the rail does — the rail signature carries it */
+  .tb-andar{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- The Andar logo, defined once and referenced wherever the signature appears.
+     Paths are the shipped assets/andar-logo.svg verbatim: mark plus wordmark. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="andar-logo" viewBox="153.454 96.201 450.484 107.942" fill="currentColor">
+    <path transform="matrix(1,0,0,-1,317.8299,138.6728)" d="M0 0-6.456-19.167H6.053ZM14.022-44.589 10.692-33.895H-11.4L-14.93-44.589H-33.391L-7.264 27.237H6.355L32.483-44.589Z"/>
+    <path transform="matrix(1,0,0,-1,396.1892,183.2615)" d="M0 0-23.001 36.115V0H-40.654V71.826H-25.22L-2.22 35.711V71.826H15.434V0Z"/>
+    <path transform="matrix(1,0,0,-1,456.0168,131.2076)" d="M0 0C-1.613 2.421-4.035 4.035-8.473 4.035H-16.241V-36.317H-8.473C-4.035-36.317-1.613-34.703 0-32.281 1.311-30.365 1.917-28.247 1.917-16.141 1.917-3.934 1.311-2.119 0 0M16.04-39.949C11.097-48.018 3.632-52.054-7.263-52.054H-33.895V19.772H-7.263C3.632 19.772 11.097 15.737 16.04 7.667 19.571 2.017 19.571-3.834 19.571-16.141 19.571-28.448 19.571-34.299 16.04-39.949"/>
+    <path transform="matrix(1,0,0,-1,509.4377,138.6728)" d="M0 0-6.456-19.167H6.053ZM14.022-44.589 10.692-33.895H-11.4L-14.93-44.589H-33.391L-7.264 27.237H6.355L32.483-44.589Z"/>
+    <path transform="matrix(1,0,0,-1,574.7842,127.273609)" d="M0 0H-9.987V-14.527H0C4.842-14.527 7.667-10.996 7.667-7.263 7.667-3.531 4.842 0 0 0M8.675-55.988-4.036-29.255H-9.987V-55.988H-27.641V15.838H.807C16.645 15.838 25.32 4.439 25.32-7.263 25.32-16.948 19.167-23.404 13.619-26.027L29.154-55.988Z"/>
+    <path transform="matrix(1,0,0,-1,218.2569,157.6302)" d="M0 0C-1.216 .064-2.449 .096-3.687 .096-4.577 .096-5.476 .079-6.375 .046L-3.094 8.392ZM5.416 54.316 32.29-8.985C28.727-6.94 24.926-5.197 20.943-3.783 16.698-2.28 12.265-1.169 7.756-.475L-2.88 28.375-14.154-.305C-19.037-.98-23.84-2.149-28.443-3.783-32.431-5.196-36.235-6.939-39.798-8.984L-12.924 54.316ZM-31.145-35.143C-31.325-35.361-31.507-35.584-31.723-35.855L-31.847-36.013C-31.969-36.169-32.09-36.324-32.189-36.457-32.355-36.671-32.511-36.885-32.634-37.066-32.751-37.226-32.864-37.39-32.974-37.552L-33.117-37.759C-33.271-37.992-33.417-38.224-33.545-38.428-33.748-38.748-33.945-39.073-34.136-39.401H-54.179L-54.128-39.278H-55.306C-53.985-35.65-52.123-32.168-49.756-28.904-41.549-17.553-28.014-9.8-12.615-7.63-11.925-7.53-11.217-7.441-10.513-7.366-8.276-7.13-5.992-7.011-3.726-7.011-1.462-7.011 .776-7.13 2.931-7.366 4.056-7.484 5.066-7.615 6.026-7.769 21.01-10.1 34.213-17.804 42.248-28.905 44.612-32.173 46.471-35.655 47.787-39.278H46.611L46.662-39.401H26.624C26.444-39.09 26.272-38.806 26.115-38.558 25.89-38.189 25.64-37.807 25.371-37.425 25.211-37.182 25.026-36.922 24.807-36.636 24.638-36.403 24.462-36.171 24.309-35.982 23.206-34.575 21.959-33.247 20.589-32.024L19.777-31.316C15.529-27.765 10.287-25.23 4.624-23.986 1.936-23.386-.883-23.082-3.756-23.082-6.626-23.082-9.442-23.386-12.12-23.983-17.655-25.199-22.791-27.644-26.97-31.053-28.082-31.957-29.119-32.923-30.046-33.915-30.378-34.266-30.723-34.651-31.145-35.143M56.806-45.348 56.016-42.015C54.563-35.884 51.87-30.071 48.01-24.736 47.149-23.546 46.203-22.352 45.197-21.185L10.122 61.429H-17.631L-52.707-21.181C-53.708-22.344-54.653-23.538-55.516-24.733-59.376-30.055-62.076-35.868-63.54-42.009L-64.354-45.425-64.803-46.513H-29.557L-28.733-44.384C-28.723-44.364-28.716-44.349-28.714-44.343-28.371-43.633-27.973-42.921-27.523-42.213-27.417-42.041-27.309-41.869-27.229-41.748L-27.093-41.549C-27.022-41.447-26.951-41.343-26.863-41.223L-26.801-41.134C-26.725-41.023-26.643-40.911-26.554-40.796L-26.498-40.722C-26.42-40.616-26.338-40.513-26.253-40.404L-26.146-40.267C-25.99-40.074-25.835-39.881-25.711-39.732-25.477-39.459-25.195-39.135-24.866-38.789-24.151-38.021-23.348-37.275-22.479-36.568-19.156-33.857-15.044-31.906-10.583-30.927-8.399-30.44-6.102-30.193-3.756-30.193-1.408-30.193 .893-30.44 3.087-30.93 7.445-31.888 11.491-33.786 14.765-36.404L15.221-36.783C16.521-37.867 17.703-39.083 18.743-40.41 18.852-40.545 18.955-40.68 19.061-40.828L19.113-40.897C19.226-41.045 19.341-41.198 19.484-41.412 19.72-41.752 19.898-42.022 20.072-42.308 20.286-42.646 20.501-43.011 20.729-43.421 20.878-43.693 21.024-43.98 21.174-44.296L22.045-46.513H57.286Z"/>
+  </symbol>
+</svg>
+
+<div class="app">
+  <aside class="rail">
+    <div class="brand">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXhpZgAATU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAABQKADAAQAAAABAAAAvAAAAAD/4QnSaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA2LjAuMCI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgcGhvdG9zaG9wOkluc3RydWN0aW9ucz0iRkJNRDBhMDAwYTQ1MDIwMDAwZGMxNDAwMDA1ZTI2MDAwMGJlMmMwMDAwYTUzOTAwMDA4NDU0MDAwMGVlNzYwMDAwMGQ3ZTAwMDAzMDg0MDAwMGY1OGEwMDAwZDJhZTAwMDAiLz4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8P3hwYWNrZXQgZW5kPSJ3Ij8+AP/tAK5QaG90b3Nob3AgMy4wADhCSU0EBAAAAAAAdhwBWgADGyVHHAIAAAIAAhwCKABiRkJNRDBhMDAwYTQ1MDIwMDAwZGMxNDAwMDA1ZTI2MDAwMGJlMmMwMDAwYTUzOTAwMDA4NDU0MDAwMGVlNzYwMDAwMGQ3ZTAwMDAzMDg0MDAwMGY1OGEwMDAwZDJhZTAwMDA4QklNBCUAAAAAABBVaMxlLS9+ZQOXPDWCQOSQ/8IAEQgAvAFAAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAMCBAEFAAYHCAkKC//EAMMQAAEDAwIEAwQGBAcGBAgGcwECAAMRBBIhBTETIhAGQVEyFGFxIweBIJFCFaFSM7EkYjAWwXLRQ5I0ggjhU0AlYxc18JNzolBEsoPxJlQ2ZJR0wmDShKMYcOInRTdls1V1pJXDhfLTRnaA40dWZrQJChkaKCkqODk6SElKV1hZWmdoaWp3eHl6hoeIiYqQlpeYmZqgpaanqKmqsLW2t7i5usDExcbHyMnK0NTV1tfY2drg5OXm5+jp6vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAQIAAwQFBgcICQoL/8QAwxEAAgIBAwMDAgMFAgUCBASHAQACEQMQEiEEIDFBEwUwIjJRFEAGMyNhQhVxUjSBUCSRoUOxFgdiNVPw0SVgwUThcvEXgmM2cCZFVJInotIICQoYGRooKSo3ODk6RkdISUpVVldYWVpkZWZnaGlqc3R1dnd4eXqAg4SFhoeIiYqQk5SVlpeYmZqgo6SlpqeoqaqwsrO0tba3uLm6wMLDxMXGx8jJytDT1NXW19jZ2uDi4+Tl5ufo6ery8/T19vf4+fr/2wBDAAICAgICAgMCAgMFAwMDBQYFBQUFBggGBgYGBggKCAgICAgICgoKCgoKCgoMDAwMDAwODg4ODg8PDw8PDw8PDw//2wBDAQICAgQEBAcEBAcQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/2gAMAwEAAhEDEQAAAfv7bVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bRx7jsY+Mfn36nD9SWX5A9D62f61m/Gb01D+pu+Nfp35Lo63RPmvttW21bbVttW21bbVttW21bbVttW21bbVttWRvgv08+++JRUX7V5nsfg36BfS3zu35Oen/AKjbxdfxu6j9aeT1H5O765+RPt+X7j+rPzS9G/N+37pyVfFdW21bbVttW21bbVttW21bbVttW21bbVongtB8+fCloD978n3n6B91+BPw/wDQPu7tPh19876H23PwV7RpxfRsfOnz+H+7vl75hb8H3FfwnsHG/rnx/wBo/WP5a/ox5nwHZbb5Xo22rbattq22rbattq22rbattq21PS/ir89Bein1F9PfmH+u/s3oXxv8rebfEfV/SP2X+Uvsnmfc+y8b0X1B8H9R8hNvqO+9zi+Nvrby3xX0u/8AV7yXqPQfsv57/Gn7H+Tej/cvD/WCYn8J9Xbattq22rbattq22rbattq22reNey/I9fl16P516j9/yeY+j+bWvw/Ur9ivzP8A2EwPwj7nxHufPrwnGXIv52/Rn30d8xP/AKfy/o5p53Xfp3y/edL5dddKfGHzF9oeZff4/oPdfPHa/n+3qW4Hvuzn226M9tq22rbattq22rbattq357foT831+Stp97/MnrZ+bfY199lcx/D/ANn9aLknyP8Apdrb472qpPtnY/N+p878N3Tbh25An0T559J5vEl9S9Uw1+Imln88/WYfRHWfTHnnx3Wz9r57oftfC227ufbattq22rbattq22rbattq351for89e/j+av69flr9Xfecfzx6J5iD3fgvrTtfilXzfrfffZfmi483s+/a7459A4Oj6S+QqPn/d837T9g/M/rvN9b5y+pvlb9N/rO73WdvxX09tq22rbattq22rbattq22rbattqyF6vzf8B/W78x/13yq2PabD1PnPBt+nL75t/wAuN+oTGH5l79Q2UfzJn9MPmTuX5Y9F8A9l+s9P0X9G+X6n8Q+g228fTbattq22rbattq22rbattq22rbattq3Bd7tB+Vvjv7S/I/6fw+aWfjPnvt4/on1Pw35V4un6Ecv8G+19K+b9KD629VfA/wBBupeflXobbeFrttW21bbVttW21bbVttW21bbVttW21bbVttWidTXyH2jdC/K7f6w3pJ8s+g+y7Et3G3l6bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbVttW21bbV//9oACAEBAAEFAv8AkYlSxofv1k0yRr/3x7vv+07HDuX1m3sov/GO6XZ99gu5t12+fZRFudtEbDxnulods+s26jG1b5tW9w/6tJCR4l+sQhV3u2U+6eGE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" alt="DCA Customs Brokerage" />
+      <div>
+        <div class="bt">DCA Customs<br />Brokerage</div>
+        <div class="bs">Shipment Command Center</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="rail-sec">
+      <div class="lbl">On duty today</div>
+      <div class="duty" id="duty"></div>
+    </div>
+    <div class="rail-foot">
+      <div class="disclaimer">Concept prototype with fictional data. Not connected to Bureau of Customs, carrier, client or payroll systems. No messages are sent.</div>
+      <div class="andar byline">Powered by <svg class="alogo" role="img" aria-label="Andar"><use href="#andar-logo"/></svg></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-title" id="tbTitle">Overview</div>
+      <div class="tb-sub" id="tbSub"></div>
+      <div class="tb-right">
+        <span class="andar tb-andar">Powered by <svg class="alogo" role="img" aria-label="Andar"><use href="#andar-logo"/></svg></span>
+        <button class="btn" id="demoBtn">
+          <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3.2 12.5 8l-8 4.8V3.2Z"/></svg>
+          Guided demo
+        </button>
+        <button class="btn ghost" id="resetBtn" title="Restore all demo data">
+          <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8a5 5 0 1 1-1.6-3.7"/><path d="M13.2 2.2v3h-3"/></svg>
+          Reset
+        </button>
+      </div>
+    </header>
+    <div class="view" id="view"></div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="slideover" id="panel" aria-hidden="true"></aside>
+
+<div class="cmd">
+  <div class="cmd-panel" id="cmdPanel">
+    <div class="cmd-in">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.8 9.3 5 12.5 6.3 9.3 7.6 8 10.8 6.7 7.6 3.5 6.3 6.7 5 8 1.8Z"/><path d="M12.6 10.6l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6.6-1.5Z"/></svg>
+      <input id="cmdInput" type="text" placeholder="Ask about shipments, blockers, staff…" autocomplete="off" />
+    </div>
+    <div class="cmd-out" id="cmdOut"></div>
+    <div class="cmd-foot">
+      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M8 7.4v3.4M8 5.2v.9"/></svg>
+      Answers are drawn from records in this prototype only.
+    </div>
+  </div>
+  <button class="cmd-pill" id="cmdPill">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.8 9.3 5 12.5 6.3 9.3 7.6 8 10.8 6.7 7.6 3.5 6.3 6.7 5 8 1.8Z"/><path d="M12.6 10.6l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6.6-1.5Z"/></svg>
+    Ask
+    <span class="kbd">⌘K</span>
+  </button>
+</div>
+
+<div class="demobar" id="demobar"></div>
+<div class="toasts" id="toasts"></div>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   Shipment Command Center — pitch prototype
+   Fictional data. No network calls, no persistence, no integrations.
+   ========================================================================= */
+
+/* ---- demo clock -------------------------------------------------------
+   Anchored to the next weekday at 11:05 so the board always reads as a
+   live mid-morning on a working day, whenever the file is opened.        */
+const CLOCK = (() => {
+  const d = new Date();
+  const dow = d.getDay();
+  if (dow === 0) d.setDate(d.getDate() + 1);
+  else if (dow === 6) d.setDate(d.getDate() + 2);
+  d.setHours(11, 5, 0, 0);
+  return d;
+})();
+const NOW = CLOCK.getTime();
+const HOUR = 3600000, DAY = 86400000;
+
+function at(dayOffset, h, m) {
+  const d = new Date(CLOCK);
+  d.setDate(d.getDate() + dayOffset);
+  d.setHours(h, m, 0, 0);
+  return d.getTime();
+}
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const DOWFULL = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+function fmtTime(ts){
+  const d = new Date(ts); let h = d.getHours(); const m = d.getMinutes();
+  const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12;
+  return h + ":" + String(m).padStart(2,"0") + " " + ap;
+}
+function fmtDate(ts){ const d = new Date(ts); return DOW[d.getDay()] + " " + String(d.getDate()).padStart(2,"0") + " " + MON[d.getMonth()]; }
+function fmtDT(ts){ return fmtDate(ts) + " · " + fmtTime(ts); }
+function sameDay(a,b){ const x=new Date(a), y=new Date(b); return x.toDateString()===y.toDateString(); }
+function dayDelta(ts){
+  const a = new Date(ts); a.setHours(0,0,0,0);
+  const b = new Date(NOW); b.setHours(0,0,0,0);
+  return Math.round((a - b) / DAY);
+}
+function etaLabel(ts){
+  const d = dayDelta(ts);
+  if (d === 0) return "Today, " + fmtTime(ts);
+  if (d === 1) return "Tomorrow, " + fmtTime(ts);
+  if (d === -1) return "Yesterday, " + fmtTime(ts);
+  if (d > 1 && d < 7) return DOW[new Date(ts).getDay()] + ", " + fmtTime(ts);
+  return fmtDate(ts);
+}
+function etaShort(ts){
+  const d = dayDelta(ts);
+  if (d === 0) return "Today " + fmtTime(ts);
+  if (d === 1) return "Tomorrow " + fmtTime(ts);
+  if (d === -1) return "Yesterday";
+  if (d > 1 && d < 7) return DOW[new Date(ts).getDay()] + " " + fmtTime(ts);
+  return fmtDate(ts);
+}
+function ago(ts){
+  const s = NOW - ts;
+  if (s < 0) return "in " + ago(NOW - (ts - NOW)).replace(" ago","");
+  const h = s / HOUR;
+  if (h < 1) return Math.max(1, Math.round(s / 60000)) + "m";
+  if (h < 24) return Math.round(h) + "h";
+  const d = Math.floor(h / 24);
+  return d + "d";
+}
+function agoWords(ts){
+  const h = (NOW - ts) / HOUR;
+  if (h < 1) return Math.max(1, Math.round((NOW - ts) / 60000)) + " minutes";
+  if (h < 24) return Math.round(h) + " hours";
+  const d = Math.floor(h / 24);
+  return d === 1 ? "a day" : d + " days";
+}
+function dur(ms){
+  const h = ms / HOUR;
+  if (h < 1) return Math.max(1, Math.round(ms/60000)) + " min";
+  if (h < 24) return Math.floor(h) + " hrs";
+  const d = h / 24;
+  return (d < 2 ? "1 day" : Math.round(d) + " days");
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function initials(n){ return n.split(/\s+/).map(w => w[0]).slice(0,2).join("").toUpperCase(); }
+
+/* ---- icons ---- */
+const I = {
+  grid:'<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>',
+  box:'<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.9 14 5v6l-6 3.1L2 11V5l6-3.1Z"/><path d="M2 5l6 3 6-3M8 8v6.1"/></svg>',
+  pin:'<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 14.3s4.6-4.1 4.6-7.5A4.6 4.6 0 0 0 3.4 6.8c0 3.4 4.6 7.5 4.6 7.5Z"/><circle cx="8" cy="6.7" r="1.7"/></svg>',
+  doc:'<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M9 1.8H4.4a1.2 1.2 0 0 0-1.2 1.2v10a1.2 1.2 0 0 0 1.2 1.2h7.2a1.2 1.2 0 0 0 1.2-1.2V5.6L9 1.8Z"/><path d="M9 1.8v3.8h3.8M5.6 8.8h4.8M5.6 11.2h3.2"/></svg>',
+  spark:'<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.8 9.3 5 12.5 6.3 9.3 7.6 8 10.8 6.7 7.6 3.5 6.3 6.7 5 8 1.8Z"/><path d="M12.6 10.6l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6.6-1.5Z"/></svg>',
+  ship:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M2.4 9.6 8 7.7l5.6 1.9-1 3.6a1.2 1.2 0 0 1-1.2.9H4.6a1.2 1.2 0 0 1-1.2-.9l-1-3.6Z"/><path d="M4.2 9V4.6h7.6V9M8 4.6V2.6"/></svg>',
+  plane:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.9c.6 0 1 .9 1 2v2.4l4.8 2.8v1.5L9 9.3v2.6l1.6 1.1v1.1L8 13.4l-2.6.7v-1.1L7 11.9V9.3L2.2 10.6V9.1L7 6.3V3.9c0-1.1.4-2 1-2Z"/></svg>',
+  alert:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.6 14.4 13H1.6L8 2.6Z"/><path d="M8 6.6v3M8 11.2v.05"/></svg>',
+  clock:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6.1"/><path d="M8 4.6V8l2.3 1.5"/></svg>',
+  chev:'<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5 10.5 8 6 12.5"/></svg>',
+  x:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  search:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7.2" cy="7.2" r="4.4"/><path d="M10.5 10.5 13.6 13.6"/></svg>',
+  info:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6.2"/><path d="M8 7.4v3.6M8 5.1v.6"/></svg>',
+  mail:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.8" y="3.4" width="12.4" height="9.2" rx="1.3"/><path d="m2.4 4.4 5.6 4 5.6-4"/></svg>',
+  chat:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M14 8.3c0 2.9-2.7 5.2-6 5.2a7 7 0 0 1-1.9-.25L2.5 14.2l1-2.6A4.9 4.9 0 0 1 2 8.3C2 5.4 4.7 3.1 8 3.1s6 2.3 6 5.2Z"/></svg>',
+  phone:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M5.6 2.6 7 5.3 5.7 6.7a7.4 7.4 0 0 0 3.6 3.6l1.4-1.3 2.7 1.4v2.2c0 .6-.5 1.1-1.1 1a11.6 11.6 0 0 1-10-10c-.1-.6.4-1.1 1-1.1h2.3Z"/></svg>'
+};
+
+/* ---- reference data ---- */
+const STAGES = [
+  { id:"new",      name:"New Shipment",         short:"New" },
+  { id:"awaiting", name:"Awaiting Documents",   short:"Awaiting Docs" },
+  { id:"prep",     name:"Entry Preparation",    short:"Entry Prep" },
+  { id:"filed",    name:"Filed and Assessed",   short:"Filed / Assessed" },
+  { id:"payex",    name:"Payment or Examination", short:"Payment / Exam" },
+  { id:"release",  name:"For Release",          short:"For Release" },
+  { id:"delivery", name:"Delivery",             short:"Delivery" },
+  { id:"closed",   name:"Closed",               short:"Closed" }
+];
+const stageName = id => (STAGES.find(s => s.id === id) || {}).name || id;
+const stageIndex = id => STAGES.findIndex(s => s.id === id);
+
+const DISPATCH_STAGES = [
+  { id:"unassigned", name:"Unassigned" },
+  { id:"scheduled",  name:"Scheduled Today" },
+  { id:"enroute",    name:"En Route" },
+  { id:"onsite",     name:"At Location" },
+  { id:"blocked",    name:"Waiting / Blocked" },
+  { id:"done",       name:"Completed" }
+];
+
+const DOC_TYPES = [
+  "Commercial Invoice","Packing List","Bill of Lading","Air Waybill","Certificate of Origin",
+  "Import Permit","Supporting Declarations","Assessment / Payment Record","Release Documents",
+  "Delivery Confirmation"
+];
+
+const PORTS = [
+  "Cebu International Port",
+  "Cebu South Harbor",
+  "Mactan-Cebu International Airport",
+  "Cebu Container Terminal, Mandaue"
+];
+
+const STAFF = [
+  { id:"marco",  name:"Marco Villareal",  role:"Field Representative", c:0 },
+  { id:"lena",   name:"Lena Docena",      role:"Senior Processor",     c:1 },
+  { id:"rey",    name:"Rey Amancio",      role:"Field Representative", c:2 },
+  { id:"joy",    name:"Joy Tabotabo",     role:"Documentation",        c:3 },
+  { id:"dennis", name:"Dennis Cabahug",   role:"Field Representative", c:4 },
+  { id:"arlene", name:"Arlene Sepulveda", role:"Documentation",        c:5 },
+  { id:"kiko",   name:"Kiko Largo",       role:"Field Representative", c:6 }
+];
+const staffById = id => STAFF.find(s => s.id === id) || null;
+const staffName = id => (staffById(id) || {}).name || "Unassigned";
+
+const CLIENTS = [
+  { id:"hbs", name:"Harborline Building Supply", contact:"Ms. Rowena Chiu",   channel:"email" },
+  { id:"vpf", name:"Visayas Poultry Feeds Inc.", contact:"Mr. Elmer Booc",    channel:"viber" },
+  { id:"nat", name:"Northshore Appliance Trading", contact:"Ms. Cha Redoblado", channel:"viber" },
+  { id:"mpc", name:"Mactan Precision Components", contact:"Mr. Hiro Tanabe",  channel:"email" },
+  { id:"cmf", name:"Cordova Marine Foods",       contact:"Ms. Girlie Enad",   channel:"viber" },
+  { id:"rhd", name:"Ridgeway Hardware Depot",    contact:"Mr. Ben Sarmiento", channel:"email" },
+  { id:"bcs", name:"Bluewater Cold Storage",     contact:"Ms. Trina Ompad",   channel:"email" },
+  { id:"epc", name:"Everline Packaging Corp.",   contact:"Mr. Aldrin Paras",  channel:"viber" },
+  { id:"sav", name:"Sunbelt Agri-Ventures",      contact:"Ms. Dessa Kimpo",   channel:"email" },
+  { id:"prt", name:"Pacific Rim Textiles",       contact:"Mr. Nonoy Alcuizar", channel:"email" }
+];
+const clientById = id => CLIENTS.find(c => c.id === id) || { name:"—", contact:"—", channel:"email" };
+const clientName = id => clientById(id).name;
+
+/* ---- small builders ---- */
+function D(type, status, ref, ts, note){ return { type, status, ref: ref || "", ts: ts || null, note: note || "" }; }
+function T(ts, kind, text, who){ return { ts, kind, text, who: who || "" }; }
+function M(ts, dir, channel, who, body, draft){ return { ts, dir, channel, who, body, draft: !!draft }; }
+
+function seed(s){ let h = 2166136261; for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function jit(key, span){ return seed(key) % span; }
+function digits(key, n){ return String(seed(key) % Math.pow(10, n)).padStart(n, "0"); }
+
+const DOC_NEED = {
+  "Commercial Invoice":1, "Packing List":1, "Bill of Lading":1, "Air Waybill":1,
+  "Certificate of Origin":2, "Import Permit":2, "Supporting Declarations":2,
+  "Assessment / Payment Record":3, "Release Documents":5, "Delivery Confirmation":6
+};
+function docStatusFor(idx, need){
+  if (idx > need + 1) return "approved";
+  if (idx >= need) return "received";
+  return "missing";
+}
+function docRef(sh, type){
+  const k = sh.ref + type;
+  switch(type){
+    case "Commercial Invoice": return "INV-" + digits(k, 4);
+    case "Packing List": return "PL-" + digits(k, 4);
+    case "Bill of Lading": return sh.bl;
+    case "Air Waybill": return sh.bl;
+    case "Certificate of Origin": return (sh.origin === "CN" ? "FORM E " : "CO-") + digits(k, 6);
+    case "Import Permit": return "IP-" + digits(k, 5);
+    case "Supporting Declarations": return "SD-" + digits(k, 4);
+    case "Assessment / Payment Record": return "SAD-" + digits(k, 6);
+    case "Release Documents": return "RO-" + digits(k, 5);
+    case "Delivery Confirmation": return "DR-" + digits(k, 4);
+  }
+  return "";
+}
+function buildDocs(sh){
+  const idx = stageIndex(sh.stage);
+  const transport = sh.mode === "air" ? "Air Waybill" : "Bill of Lading";
+  const list = ["Commercial Invoice","Packing List",transport,"Certificate of Origin","Import Permit",
+                "Supporting Declarations","Assessment / Payment Record","Release Documents","Delivery Confirmation"];
+  return list.map(type => {
+    if (type === "Import Permit" && !sh.permit) return D(type, "na", "", null, "Not applicable to this commodity");
+    const st = docStatusFor(idx, DOC_NEED[type]);
+    const span = Math.max(1, sh.stageSince - sh.created);
+    const ts = st === "missing" ? null : sh.created + (jit(sh.ref + type, 89) / 100) * span;
+    return D(type, st, st === "missing" ? "" : docRef(sh, type), ts ? Math.round(ts) : null, "");
+  });
+}
+
+const STAGE_EVENTS = [
+  { id:"new",      text:"Case created from client documents" },
+  { id:"awaiting", text:"Document checklist generated, gaps identified" },
+  { id:"prep",     text:"Entry preparation started" },
+  { id:"filed",    text:"Entry lodged and assessment received" },
+  { id:"payex",    text:"Moved to payment and examination handling" },
+  { id:"release",  text:"Cleared for release, field task created" },
+  { id:"delivery", text:"Released from port, delivery in progress" },
+  { id:"closed",   text:"Case closed, documents archived" }
+];
+function buildTimeline(sh){
+  const idx = stageIndex(sh.stage);
+  const span = Math.max(HOUR, sh.stageSince - sh.created);
+  const ev = [];
+  for (let i = 0; i <= idx; i++){
+    const ts = i === 0 ? sh.created
+             : i === idx ? sh.stageSince
+             : sh.created + (span * (i / Math.max(1, idx))) - jit(sh.ref + i, 5) * HOUR;
+    ev.push(T(Math.round(ts), i === idx ? "stage" : (i === 0 ? "create" : "stage"), STAGE_EVENTS[i].text, sh.processor));
+  }
+  if (sh.lastUpdate) ev.push(T(sh.lastUpdate, "msg", "Status update sent to " + clientName(sh.clientId), sh.processor));
+  return ev.sort((a,b) => a.ts - b.ts);
+}
+function buildComms(sh){
+  const c = clientById(sh.clientId);
+  const out = [];
+  out.push(M(sh.created + jit(sh.ref+"c", 40) * 6 * 60000, "in", c.channel, c.contact,
+    "Sending you the documents for this shipment. Please advise once the entry is ready to file."));
+  if (sh.lastUpdate){
+    out.push(M(sh.lastUpdate, "out", c.channel, staffName(sh.processor),
+      "Update on " + sh.ref + ": the shipment is at " + stageName(sh.stage).toLowerCase() + ". " +
+      (sh.blocker ? sh.blocker + " We will advise as soon as this clears." : "No action needed from your side at this time.")));
+  }
+  return out;
+}
+
+/* ---- shipments ------------------------------------------------------- */
+const SHIPMENTS = [
+  {
+    ref:"EPC-2026-039", clientId:"epc", mode:"sea", bl:"SITC-XMN-CEB-44712",
+    carrier:"MV SITC Hansa V.2611", origin:"CN",
+    cargo:"Kraft linerboard rolls", qty:"2 × 40HQ · 96 rolls",
+    port:"Cebu International Port", eta:at(5,8,0), stage:"new", processor:"joy",
+    urgency:"low", blocker:"", blockerType:"",
+    created:at(0,8,5), stageSince:at(0,8,5),
+    nextAction:"Request commercial invoice and packing list from client",
+    lastUpdate:at(0,8,40), permit:false
+  },
+  {
+    ref:"SAV-2026-040", clientId:"sav", mode:"air", bl:"618-4471 9930",
+    carrier:"PR 2843 · MNL–CEB", origin:"TH",
+    cargo:"Vegetable seed samples, temperature controlled", qty:"6 pcs · 84 kg",
+    port:"Mactan-Cebu International Airport", eta:at(3,5,15), stage:"new", processor:"arlene",
+    urgency:"low", blocker:"", blockerType:"",
+    created:at(0,9,50), stageSince:at(0,9,50),
+    nextAction:"Confirm plant quarantine permit reference with client",
+    lastUpdate:at(0,10,10), permit:true
+  },
+
+  /* ---- hero case ---- */
+  {
+    ref:"HBS-2026-018", clientId:"hbs", mode:"sea", bl:"COSU6398412770",
+    carrier:"MV Kota Lambang V.271", origin:"CN",
+    cargo:"Glazed porcelain floor tiles", qty:"1 × 40HQ · 468 ctns",
+    port:"Cebu International Port", eta:at(1,6,30), stage:"awaiting", processor:"lena",
+    urgency:"high", blocker:"Packing list quantity differs from bill of lading", blockerType:"client-doc",
+    created:at(-2,14,25), stageSince:at(-1,15,20),
+    nextAction:"Obtain corrected packing list, then start entry preparation",
+    lastUpdate:at(-1,16,5), permit:false,
+    hero:true,
+    docs:[
+      D("Commercial Invoice","approved","INV-4471",at(-2,14,25),"USD 38,940.00 · CFR Cebu"),
+      D("Packing List","discrepancy","PL-4471",at(-2,14,25),"States 486 cartons"),
+      D("Bill of Lading","approved","COSU6398412770",at(-2,14,25),"States 468 cartons"),
+      D("Certificate of Origin","approved","FORM E 24C3306",at(-1,9,12),"Preferential origin claim, China"),
+      D("Import Permit","na","",null,"Not applicable to this commodity"),
+      D("Supporting Declarations","received","SD-2210",at(-1,10,40),"Value declaration on file"),
+      D("Assessment / Payment Record","missing","",null,""),
+      D("Release Documents","missing","",null,""),
+      D("Delivery Confirmation","missing","",null,"")
+    ],
+    timeline:[
+      T(at(-2,14,25),"create","Case created from client email with 4 attachments","lena"),
+      T(at(-2,14,26),"ai","Extracted consignee, B/L, vessel, ETA and cargo description from the attachments"),
+      T(at(-2,14,27),"ai","Document checklist generated for a sea import, preferential origin claim"),
+      T(at(-1,9,12),"doc","Certificate of Origin received from supplier","lena"),
+      T(at(-1,10,40),"doc","Supporting declarations uploaded","lena"),
+      T(at(-1,15,18),"ai","Consistency check run across invoice, packing list and bill of lading"),
+      T(at(-1,15,20),"alert","Carton quantity mismatch flagged. Case marked blocked before filing."),
+      T(at(-1,16,5),"msg","Corrected packing list requested from Harborline Building Supply","lena")
+    ],
+    comms:[
+      M(at(-2,14,20),"in","email","Ms. Rowena Chiu",
+        "Good afternoon Lena. Attached are the invoice, packing list, B/L and the Form E for our tile shipment arriving this week. Kindly proceed with the entry."),
+      M(at(-1,16,5),"out","email","Lena Docena",
+        "Good afternoon Ms. Chiu. We are preparing the entry for your tile shipment, but we still require a corrected packing list. The packing list shows 486 cartons while the bill of lading shows 468. Please send the revised document so filing can proceed before the vessel arrives."),
+      M(at(-1,16,42),"in","email","Ms. Rowena Chiu",
+        "Noted Lena, I am checking with our supplier in Foshan. Will revert first thing tomorrow.")
+    ]
+  },
+  {
+    ref:"HBS-2026-021", clientId:"hbs", mode:"sea", bl:"OOLU2698415300",
+    carrier:"MV Wan Hai 285 V.118", origin:"CN",
+    cargo:"Sanitary ware and brass fittings", qty:"1 × 20GP · 312 ctns",
+    port:"Cebu South Harbor", eta:at(4,13,0), stage:"awaiting", processor:"lena",
+    urgency:"med", blocker:"Certificate of Origin missing", blockerType:"client-doc",
+    created:at(-3,11,5), stageSince:at(-2,9,10),
+    nextAction:"Follow up Certificate of Origin with the supplier",
+    lastUpdate:at(-1,9,25), permit:false,
+    docOverride:{ "Certificate of Origin":{ status:"missing", note:"Form E not yet issued by supplier" } },
+    comms:[
+      M(at(-3,11,0),"in","email","Ms. Rowena Chiu","Second container for this month, documents attached except the Form E which our supplier is still processing."),
+      M(at(-1,9,25),"out","email","Lena Docena","Good morning Ms. Chiu. We still do not have the Form E for HBS-2026-021. Without it we cannot claim preferential duty and the entry will be assessed at the regular rate. The vessel is already on the water.")
+    ]
+  },
+
+  {
+    ref:"VPF-2026-023", clientId:"vpf", mode:"sea", bl:"MAEU5411927",
+    carrier:"MV Sinotrans Ningbo V.443", origin:"AR",
+    cargo:"Soybean meal, bagged", qty:"1 × 40GP · 1,120 bags",
+    port:"Cebu International Port", eta:at(0,14,20), stage:"prep", processor:"arlene",
+    urgency:"high", blocker:"", blockerType:"",
+    created:at(-4,8,15), stageSince:at(0,7,45),
+    nextAction:"Lodge entry before discharge completes this afternoon",
+    lastUpdate:at(0,7,55), permit:true
+  },
+  {
+    ref:"PRT-2026-027", clientId:"prt", mode:"sea", bl:"COSU6402118344",
+    carrier:"MV Kota Nasrat V.089", origin:"VN",
+    cargo:"Woven polyester fabric rolls", qty:"1 × 40HQ · 218 rolls",
+    port:"Cebu Container Terminal, Mandaue", eta:at(-1,19,30), stage:"prep", processor:"joy",
+    urgency:"med", blocker:"Supporting declarations queued at the district office", blockerType:"office",
+    created:at(-5,13,40), stageSince:at(-1,14,10),
+    nextAction:"Complete entry draft once declarations are stamped",
+    lastUpdate:at(-1,17,20), permit:false
+  },
+
+  {
+    ref:"MPC-2026-031", clientId:"mpc", mode:"air", bl:"297-88451236",
+    carrier:"CX 5906 · HKG–CEB", origin:"JP",
+    cargo:"CNC tooling inserts, carbide", qty:"12 ctns · 214 kg",
+    port:"Mactan-Cebu International Airport", eta:at(1,21,40), stage:"filed", processor:"arlene",
+    urgency:"med", blocker:"", blockerType:"",
+    created:at(-2,10,20), stageSince:at(0,6,30),
+    nextAction:"Await assessment notice, then advise client of duties",
+    lastUpdate:at(0,9,15), permit:false
+  },
+  {
+    ref:"CMF-2026-019", clientId:"cmf", mode:"sea", bl:"MAEU5398440",
+    carrier:"MV Kota Lambang V.271", origin:"ID",
+    cargo:"Frozen yellowfin tuna loins", qty:"1 × 40RH · 21.4 MT · reefer",
+    port:"Cebu International Port", eta:at(-2,5,40), stage:"filed", processor:"lena",
+    urgency:"high", blocker:"Reefer plug-in charges accruing at terminal", blockerType:"cost",
+    created:at(-6,9,30), stageSince:at(-1,11,20),
+    nextAction:"Settle duties today to avoid a second day of reefer charges",
+    lastUpdate:at(0,8,20), permit:true
+  },
+  {
+    ref:"RHD-2026-014", clientId:"rhd", mode:"sea", bl:"OOLU2691073820",
+    carrier:"MV Wan Hai 271 V.104", origin:"CN",
+    cargo:"Power tools and hand tools, assorted", qty:"1 × 40GP · 604 ctns",
+    port:"Cebu International Port", eta:at(-3,7,0), stage:"filed", processor:"joy",
+    urgency:"high", blocker:"Assessed value disputed, awaiting client instruction", blockerType:"client-decision",
+    created:at(-9,15,10), stageSince:at(-4,10,30),
+    nextAction:"Get a written instruction from the client: pay under protest or contest",
+    lastUpdate:at(-2,9,15), permit:false,
+    comms:[
+      M(at(-9,15,5),"in","email","Mr. Ben Sarmiento","Please handle this shipment as usual, same commodity mix as last quarter."),
+      M(at(-4,11,2),"out","email","Joy Tabotabo","Good morning Mr. Sarmiento. The entry has been assessed above our declared value. We need your written instruction on whether to pay under protest or file a dispute. Storage begins to accrue on the 5th day."),
+      M(at(-2,9,15),"out","email","Joy Tabotabo","Following up on the assessment for RHD-2026-014. We still need your instruction before we can proceed.")
+    ]
+  },
+
+  {
+    ref:"NAT-2026-009", clientId:"nat", mode:"sea", bl:"COSU6391884210",
+    carrier:"MV Kota Nabil V.302", origin:"TH",
+    cargo:"Split-type air conditioners", qty:"2 × 40HQ · 384 units",
+    port:"Cebu International Port", eta:at(-4,6,10), stage:"payex", processor:"lena",
+    urgency:"high", blocker:"Selected for physical examination", blockerType:"office",
+    created:at(-7,10,45), stageSince:at(-1,9,0),
+    nextAction:"Complete examination today, then lodge the examination report",
+    lastUpdate:at(0,7,40), permit:false
+  },
+  {
+    ref:"BCS-2026-016", clientId:"bcs", mode:"sea", bl:"MAEU5402771",
+    carrier:"MV SITC Hansa V.2609", origin:"KR",
+    cargo:"Refrigeration compressors", qty:"1 × 20GP · 88 ctns",
+    port:"Cebu South Harbor", eta:at(-5,22,0), stage:"payex", processor:"joy",
+    urgency:"high", blocker:"Assessment complete, client payment still pending", blockerType:"client-payment",
+    created:at(-8,14,0), stageSince:at(-2,14,45),
+    nextAction:"Confirm duty remittance with Bluewater accounting",
+    lastUpdate:at(-1,15,10), permit:false,
+    comms:[
+      M(at(-2,15,0),"out","email","Joy Tabotabo","Good afternoon Ms. Ompad. Duties and taxes for BCS-2026-016 total PHP 412,880.00. Kindly remit so we can proceed to release. Free storage runs out in two days."),
+      M(at(-1,15,10),"out","email","Joy Tabotabo","Following up on the duty remittance for BCS-2026-016. Storage charges start tomorrow.")
+    ]
+  },
+
+  {
+    ref:"VPF-2026-020", clientId:"vpf", mode:"sea", bl:"MAEU5388214",
+    carrier:"MV Sinotrans Ningbo V.441", origin:"VN",
+    cargo:"Feed-grade limestone granules", qty:"1 × 40GP · 28 MT",
+    port:"Cebu International Port", eta:at(-6,4,50), stage:"release", processor:"arlene",
+    urgency:"med", blocker:"Release pickup not yet assigned to anyone", blockerType:"internal",
+    created:at(-10,9,15), stageSince:at(0,9,40),
+    nextAction:"Assign a field representative to collect the release order",
+    lastUpdate:at(0,10,5), permit:true
+  },
+  {
+    ref:"EPC-2026-033", clientId:"epc", mode:"sea", bl:"SITC-XMN-CEB-44096",
+    carrier:"MV SITC Hansa V.2609", origin:"CN",
+    cargo:"Polypropylene resin, 25 kg bags", qty:"1 × 20GP · 800 bags",
+    port:"Cebu Container Terminal, Mandaue", eta:at(-5,11,20), stage:"release", processor:"joy",
+    urgency:"low", blocker:"", blockerType:"",
+    created:at(-9,11,50), stageSince:at(-1,8,30),
+    nextAction:"Release order collection in progress with Rey",
+    lastUpdate:at(-1,16,0), permit:false
+  },
+
+  {
+    ref:"MPC-2026-028", clientId:"mpc", mode:"air", bl:"297-88409117",
+    carrier:"CX 5902 · HKG–CEB", origin:"JP",
+    cargo:"Precision measuring instruments", qty:"4 ctns · 66 kg",
+    port:"Mactan-Cebu International Airport", eta:at(-3,2,35), stage:"delivery", processor:"arlene",
+    urgency:"low", blocker:"", blockerType:"",
+    created:at(-5,8,40), stageSince:at(0,10,15),
+    nextAction:"Confirm delivery receipt at MEPZ II, Lapu-Lapu",
+    lastUpdate:at(0,10,25), permit:false
+  },
+
+  {
+    ref:"CMF-2026-011", clientId:"cmf", mode:"sea", bl:"MAEU5371002",
+    carrier:"MV Kota Nabil V.300", origin:"ID",
+    cargo:"Frozen milkfish, packed", qty:"1 × 40RH · 19.8 MT · reefer",
+    port:"Cebu International Port", eta:at(-9,6,15), stage:"closed", processor:"lena",
+    urgency:"low", blocker:"", blockerType:"",
+    created:at(-13,10,5), stageSince:at(-1,16,50),
+    nextAction:"None. Case closed.",
+    lastUpdate:at(-1,17,0), permit:true
+  },
+  {
+    ref:"NAT-2026-004", clientId:"nat", mode:"sea", bl:"COSU6377109440",
+    carrier:"MV Wan Hai 271 V.102", origin:"TH",
+    cargo:"Chest freezers", qty:"1 × 40HQ · 152 units",
+    port:"Cebu South Harbor", eta:at(-12,18,30), stage:"closed", processor:"joy",
+    urgency:"low", blocker:"", blockerType:"",
+    created:at(-16,9,25), stageSince:at(-2,17,20),
+    nextAction:"None. Case closed.",
+    lastUpdate:at(-2,17,30), permit:false
+  }
+];
+
+/* fill generated docs / timeline / comms where not hand-written */
+SHIPMENTS.forEach(sh => {
+  if (!sh.docs){
+    sh.docs = buildDocs(sh);
+    if (sh.docOverride){
+      sh.docs.forEach(d => {
+        const o = sh.docOverride[d.type];
+        if (o){ Object.assign(d, o); if (o.status === "missing"){ d.ref = ""; d.ts = null; } }
+      });
+    }
+  }
+  if (!sh.timeline) sh.timeline = buildTimeline(sh);
+  if (!sh.comms) sh.comms = buildComms(sh);
+  sh.timeline.sort((a,b) => a.ts - b.ts);
+  sh.comms.sort((a,b) => a.ts - b.ts);
+});
+
+/* ---- field assignments ----------------------------------------------- */
+const ASSIGNMENTS = [
+  {
+    id:"A-3312", portKey:"CIP", staff:"marco", task:"Attend physical examination",
+    shipment:"NAT-2026-009", place:"Cebu International Port · Pier 5 examination area",
+    scheduled:at(0,9,30), status:"onsite", checkIn:at(0,10,42),
+    checkNote:"At examination area, waiting for examiner to open the second container.",
+    expected:at(0,12,15), proof:"Examination report and photos of marked cartons",
+    next:"Return to office"
+  },
+  {
+    id:"A-3314", portKey:"CIP", staff:"lena", task:"Submit payment instruction, collect assessment copy",
+    shipment:"CMF-2026-019", place:"Bureau of Customs, Port of Cebu · CIP compound",
+    scheduled:at(0,13,30), status:"scheduled", checkIn:null, checkNote:"",
+    expected:at(0,15,0), proof:"Stamped assessment notice",
+    next:"Return to office"
+  },
+  {
+    id:"A-3309", portKey:"CCT", staff:"rey", task:"Collect release order and gate pass",
+    shipment:"EPC-2026-033", place:"Cebu Container Terminal, Mandaue",
+    scheduled:at(0,10,0), status:"enroute", checkIn:at(0,10,18),
+    checkNote:"Left office, heavy traffic on Mandaue Avenue.",
+    expected:at(0,12,0), proof:"Release order and gate pass",
+    next:"Cebu South Harbor, 2:00 PM"
+  },
+  {
+    id:"A-3310", portKey:"MEPZ", staff:"dennis", task:"Escort delivery to consignee warehouse",
+    shipment:"MPC-2026-028", place:"MEPZ II, Lapu-Lapu City",
+    scheduled:at(0,9,0), status:"enroute", checkIn:at(0,10,55),
+    checkNote:"Truck cleared the airport gate, crossing the bridge now.",
+    expected:at(0,12,30), proof:"Signed delivery receipt",
+    next:"Available after delivery"
+  },
+  {
+    id:"A-3316", portKey:"CIP", staff:null, task:"Collect release order and gate pass",
+    shipment:"VPF-2026-020", place:"Cebu International Port · Pier 4",
+    scheduled:at(0,14,0), status:"unassigned", checkIn:null, checkNote:"",
+    expected:at(0,16,0), proof:"Release order and gate pass",
+    next:"—"
+  },
+  {
+    id:"A-3311", portKey:"BOC", staff:"kiko", task:"Lodge supporting declarations",
+    shipment:"PRT-2026-027", place:"Bureau of Customs, Port of Cebu · District office",
+    scheduled:at(0,8,45), status:"blocked", checkIn:at(0,9,58),
+    checkNote:"Counter closed for system maintenance, staff says until 11:30.",
+    expected:at(0,11,0), proof:"Stamped supporting declarations",
+    next:"Cebu South Harbor, 1:00 PM"
+  },
+  {
+    id:"A-3298", portKey:"CORDOVA", staff:"marco", task:"Deliver stamped documents to client office",
+    shipment:"CMF-2026-011", place:"Cordova, Mactan",
+    scheduled:at(-1,14,0), status:"done", checkIn:at(-1,14,22),
+    checkNote:"Documents received by client admin.",
+    expected:at(-1,15,30), completed:at(-1,15,42), proof:"Acknowledgement receipt",
+    next:"—"
+  },
+  {
+    id:"A-3307", portKey:"CSH", staff:"rey", task:"Retrieve original bill of lading from shipping line",
+    shipment:"BCS-2026-016", place:"Shipping line office, Cebu South Harbor",
+    scheduled:at(0,8,0), status:"done", checkIn:at(0,8,21),
+    checkNote:"Original B/L released after surrender of the bank copy.",
+    expected:at(0,9,30), completed:at(0,9,12), proof:"Original bill of lading",
+    next:"Cebu Container Terminal, 10:00 AM"
+  }
+];
+
+/* ---- mutable state ---- */
+const INITIAL = JSON.stringify({ shipments: SHIPMENTS, assignments: ASSIGNMENTS });
+let state = JSON.parse(INITIAL);
+
+const shipByRef = ref => state.shipments.find(s => s.ref === ref);
+const asnById = id => state.assignments.find(a => a.id === id);
+
+/* =========================================================================
+   Derived views over the data
+   ========================================================================= */
+const openShipments = () => state.shipments.filter(s => s.stage !== "closed");
+const activeAsn = () => state.assignments.filter(a => a.status !== "done");
+
+function arriving48(){
+  return openShipments().filter(s => s.eta >= NOW && s.eta <= NOW + 48 * HOUR)
+    .sort((a,b) => a.eta - b.eta);
+}
+function outstandingDocs(sh){
+  const idx = stageIndex(sh.stage);
+  return sh.docs.filter(d => {
+    if (d.status === "discrepancy") return true;
+    if (d.status !== "missing") return false;
+    const need = DOC_NEED[d.type];
+    if (d.type === "Supporting Declarations") return need <= idx;
+    return need <= idx + 1;
+  });
+}
+function docCount(){
+  let docs = 0, cases = 0;
+  openShipments().forEach(s => { const n = outstandingDocs(s).length; if (n){ docs += n; cases++; } });
+  return { docs, cases };
+}
+const docBlocked = () => openShipments().filter(s => s.blockerType === "client-doc");
+const awaitingClient = () => openShipments().filter(s => (s.blockerType || "").startsWith("client"));
+const agingCases = () => openShipments().filter(s => NOW - s.stageSince > 36 * HOUR)
+  .sort((a,b) => a.stageSince - b.stageSince);
+const overdueAsn = () => activeAsn().filter(a => a.status !== "unassigned" && a.expected < NOW);
+const unassignedAsn = () => state.assignments.filter(a => a.status === "unassigned");
+
+function busyStaffIds(){
+  const s = new Set();
+  activeAsn().forEach(a => { if (a.staff) s.add(a.staff); });
+  return s;
+}
+const availableStaff = () => { const b = busyStaffIds(); return STAFF.filter(s => !b.has(s.id)); };
+
+function clientLastUpdate(clientId){
+  const rows = state.shipments.filter(s => s.clientId === clientId && s.lastUpdate);
+  if (!rows.length) return null;
+  return Math.max.apply(null, rows.map(s => s.lastUpdate));
+}
+function staleClients(){
+  return CLIENTS.filter(c => state.shipments.some(s => s.clientId === c.id && s.stage !== "closed"))
+    .map(c => ({ client:c, last: clientLastUpdate(c.id) }))
+    .filter(x => x.last && NOW - x.last > 48 * HOUR)
+    .sort((a,b) => a.last - b.last);
+}
+function coLocated(){
+  const byPort = {};
+  activeAsn().forEach(a => {
+    if (!a.staff) return;
+    (byPort[a.portKey] = byPort[a.portKey] || []).push(a);
+  });
+  return Object.keys(byPort).filter(k => new Set(byPort[k].map(a => a.staff)).size > 1)
+    .map(k => ({ portKey:k, place: byPort[k][0].place.split(" · ")[0], asns: byPort[k] }));
+}
+
+/* ---- ranked attention list ---- */
+function buildAttention(){
+  const items = [];
+  openShipments().forEach(sh => {
+    const disc = sh.docs.find(d => d.status === "discrepancy");
+    if (disc) items.push({ sev:"crit", w:100,
+      title: disc.type + " quantity differs from the " + (sh.mode === "air" ? "air waybill" : "bill of lading"),
+      meta:[clientName(sh.clientId), "Arriving " + etaShort(sh.eta), staffName(sh.processor)], ref: sh.ref });
+  });
+  agingCases().forEach(sh => {
+    if (!(sh.blockerType || "").startsWith("client")) return;
+    items.push({ sev:"crit", w: 90 + Math.min(9, Math.round((NOW - sh.stageSince) / DAY)),
+      title: sh.blocker, meta:[clientName(sh.clientId), "Waiting " + dur(NOW - sh.stageSince), stageName(sh.stage)], ref: sh.ref });
+  });
+  openShipments().forEach(sh => {
+    if (sh.blockerType === "client-payment" && NOW - sh.stageSince <= 36 * HOUR)
+      items.push({ sev:"crit", w:88, title: sh.blocker,
+        meta:[clientName(sh.clientId), "Waiting " + dur(NOW - sh.stageSince)], ref: sh.ref });
+  });
+  overdueAsn().forEach(a => items.push({ sev:"warn", w:70,
+    title:"Field assignment has passed its expected completion time",
+    meta:[staffName(a.staff), a.place.split(" · ")[0], "Expected " + fmtTime(a.expected)], asn:a.id }));
+  unassignedAsn().forEach(a => items.push({ sev:"warn", w:68,
+    title:"Release pickup is not assigned to anyone",
+    meta:[a.shipment, a.place.split(" · ")[0], "Scheduled " + fmtTime(a.scheduled)], asn:a.id }));
+  openShipments().forEach(sh => {
+    if (sh.blockerType === "client-doc" && !sh.docs.some(d => d.status === "discrepancy"))
+      items.push({ sev:"warn", w:60, title: sh.blocker,
+        meta:[clientName(sh.clientId), "Vessel due " + etaShort(sh.eta), "Waiting " + dur(NOW - sh.stageSince)], ref: sh.ref });
+  });
+  staleClients().forEach(x => items.push({ sev:"warn", w:55,
+    title: x.client.name + " has had no update in " + agoWords(x.last),
+    meta:["Last message " + fmtDT(x.last), x.client.contact], client: x.client.id }));
+  openShipments().forEach(sh => {
+    if (sh.blockerType === "cost") items.push({ sev:"info", w:40, title: sh.blocker,
+      meta:[clientName(sh.clientId), sh.nextAction], ref: sh.ref });
+  });
+  const seen = new Set();
+  return items.sort((a,b) => b.w - a.w).filter(it => {
+    const k = (it.ref || it.asn || it.client || "") + "|" + it.title;
+    if (seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+}
+
+/* ---- today's activity ---- */
+function todayStart(){ const d = new Date(NOW); d.setHours(0,0,0,0); return d.getTime(); }
+function buildActivity(){
+  const t0 = todayStart(), out = [];
+  state.shipments.forEach(sh => sh.timeline.forEach(ev => {
+    if (ev.ts >= t0 && ev.ts <= NOW) out.push({ ts:ev.ts, kind:ev.kind, text:ev.text, who:ev.who, ref:sh.ref });
+  }));
+  state.assignments.forEach(a => {
+    if (a.checkIn && a.checkIn >= t0) out.push({ ts:a.checkIn, kind:"dispatch",
+      text: staffName(a.staff) + " checked in at " + a.place.split(" · ")[0], who:a.staff, asn:a.id });
+    if (a.completed && a.completed >= t0) out.push({ ts:a.completed, kind:"ok",
+      text: staffName(a.staff) + " completed " + a.task.toLowerCase(), who:a.staff, asn:a.id });
+  });
+  return out.sort((a,b) => b.ts - a.ts);
+}
+
+/* ---- morning briefing ---- */
+function buildBriefing(){
+  const lines = [];
+  const arr = arriving48();
+  if (arr.length) lines.push({
+    text: word(arr.length) + " shipment" + (arr.length > 1 ? "s are" : " is") + " arriving within 48 hours",
+    refs: arr.map(s => s.ref) });
+  const db = docBlocked();
+  if (db.length) lines.push({
+    text: word(db.length) + " case" + (db.length > 1 ? "s remain" : " remains") + " blocked by missing client documents",
+    refs: db.map(s => s.ref) });
+  const un = unassignedAsn();
+  if (un.length) lines.push({
+    text: word(un.length) + " release assignment" + (un.length > 1 ? "s are" : " is") + " unassigned",
+    asns: un.map(a => a.id) });
+  coLocated().forEach(g => {
+    const names = Array.from(new Set(g.asns.map(a => staffName(a.staff).split(" ")[0])));
+    lines.push({ text: names.slice(0,-1).join(", ") + " and " + names[names.length-1] +
+      " are both scheduled at " + g.place, asns: g.asns.map(a => a.id) });
+  });
+  staleClients().forEach(x => lines.push({
+    text: "One client has not received an update in " + agoWords(x.last),
+    client: x.client.id, clientName: x.client.name }));
+  return lines;
+}
+function word(n){ return ["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten"][n] || String(n); }
+
+/* =========================================================================
+   Shared fragments
+   ========================================================================= */
+const DOC_CHIP = {
+  approved:{ c:"ok",   t:"Approved" },
+  received:{ c:"info", t:"Received" },
+  review:  { c:"warn", t:"Requires review" },
+  discrepancy:{ c:"crit", t:"Discrepancy" },
+  missing: { c:"crit", t:"Missing" },
+  na:      { c:"flat", t:"Not applicable" }
+};
+const chip = (cls, text) => '<span class="chip ' + cls + '"><span class="sq"></span>' + esc(text) + '</span>';
+const docChip = st => chip(DOC_CHIP[st].c, DOC_CHIP[st].t);
+const urgEl = u => '<span class="urg ' + u + '"><span class="bar"></span>' +
+  (u === "high" ? "High" : u === "med" ? "Medium" : "Normal") + '</span>';
+function avatar(id){
+  const s = staffById(id);
+  if (!s) return '<span class="av" style="background:var(--amber-mark)">?</span>';
+  return '<span class="av c' + s.c + '">' + initials(s.name) + '</span>';
+}
+const SHORT_PLACE = [["Bureau of Customs, Port of Cebu","BOC Cebu"],["Cebu International Port","CIP"],
+  ["Cebu Container Terminal, Mandaue","CCT Mandaue"],["Mactan-Cebu International Airport","MCIA"],
+  ["Cebu South Harbor","South Harbor"],["MEPZ II, Lapu-Lapu City","MEPZ II"],["Cordova, Mactan","Cordova"]];
+function shortPlace(p){ const base = String(p).split(" \u00b7 ")[0];
+  for (const [a,b] of SHORT_PLACE) if (base === a) return b;
+  return base; }
+const modeEl = m => '<span class="card-mode">' + (m === "air" ? I.plane + "Air" : I.ship + "Sea") + '</span>';
+const refLink = ref => '<button class="reflink" data-ship="' + ref + '">' + ref + '</button>';
+
+/* =========================================================================
+   Shell rendering
+   ========================================================================= */
+const VIEWS = [
+  { id:"overview", name:"Overview",      icon:"grid",  sub:"What needs attention today" },
+  { id:"shipments", name:"Shipments",    icon:"box",   sub:"Case board across all stages" },
+  { id:"dispatch", name:"Field Dispatch", icon:"pin",  sub:"Who is handling each field action" },
+  { id:"documents", name:"Documents",    icon:"doc",   sub:"Readiness across every open case" },
+  { id:"briefing", name:"AI Briefing",   icon:"spark", sub:"Morning briefing and questions" }
+];
+let view = "overview";
+let openRef = null;
+let openAsn = null;
+let filters = { q:"", staff:"", client:"", urg:"", port:"", mode:"" };
+
+function navCount(id){
+  switch(id){
+    case "overview": return { n: buildAttention().filter(a => a.sev === "crit").length, alert:true };
+    case "shipments": return { n: openShipments().length };
+    case "dispatch": return { n: activeAsn().length };
+    case "documents": return { n: docCount().docs };
+    default: return { n:null };
+  }
+}
+function renderNav(){
+  document.getElementById("nav").innerHTML = VIEWS.map(v => {
+    const c = navCount(v.id);
+    return '<button data-view="' + v.id + '" aria-current="' + (view === v.id) + '">' +
+      I[v.icon] + '<span>' + v.name + '</span>' +
+      (c.n !== null ? '<span class="cnt' + (c.alert && c.n > 0 ? " alert" : "") + '">' + c.n + '</span>' : '') +
+      '</button>';
+  }).join("");
+}
+function renderDuty(){
+  const busy = busyStaffIds();
+  document.getElementById("duty").innerHTML = STAFF.map(s => {
+    const a = activeAsn().find(x => x.staff === s.id);
+    const cls = !a ? "free" : (a.status === "blocked" ? "hold" : "busy");
+    const where = !a ? "Office" : shortPlace(a.place);
+    return '<button class="duty-row" data-staff="' + s.id + '">' +
+      '<span class="dot ' + cls + '"></span><span class="dn">' + esc(s.name.split(" ")[0]) + ' ' + esc(s.name.split(" ")[1][0]) + '.</span>' +
+      '<span class="dw">' + esc(where) + '</span></button>';
+  }).join("");
+}
+function renderTop(){
+  const v = VIEWS.find(x => x.id === view);
+  document.getElementById("tbTitle").textContent = v.name;
+  const d = new Date(NOW);
+  document.getElementById("tbSub").textContent =
+    v.sub + "  ·  " + DOWFULL[d.getDay()] + ", " + d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() + ", " + fmtTime(NOW);
+}
+function go(v){ view = v; render(); document.getElementById("view").scrollTop = 0; }
+
+function render(){
+  renderNav(); renderDuty(); renderTop();
+  const el = document.getElementById("view");
+  if (view === "overview") el.innerHTML = viewOverview();
+  else if (view === "shipments") el.innerHTML = viewShipments();
+  else if (view === "dispatch") el.innerHTML = viewDispatch();
+  else if (view === "documents") el.innerHTML = viewDocuments();
+  else if (view === "briefing") el.innerHTML = viewBriefing();
+  if (view === "briefing") renderThread();
+  if (openRef) renderPanel();
+}
+
+/* =========================================================================
+   Overview
+   ========================================================================= */
+function metric(v, label, detail, cls, action){
+  return '<button class="metric ' + (cls || "") + '" ' + (action ? 'data-jump="' + action + '"' : "") + '>' +
+    '<div class="mv">' + v + '</div><div class="ml">' + label + '</div>' +
+    (detail ? '<div class="md muted">' + detail + '</div>' : '') + '</button>';
+}
+function viewOverview(){
+  const att = buildAttention();
+  const dc = docCount();
+  const arr = arriving48();
+  const stale = staleClients();
+  const av = availableStaff();
+
+  const metrics = '<div class="metrics">' +
+    metric(openShipments().length, "Active shipments", "Across 8 stages", "", "shipments") +
+    metric(arr.length, "Arriving within 48 hrs", arr.length ? "Next: " + etaShort(arr[0].eta) : "None", "warn", "shipments") +
+    metric(dc.docs, "Documents outstanding", "In " + dc.cases + " open cases", "warn", "documents") +
+    metric(awaitingClient().length, "Awaiting client action", "Documents, payment, instruction", "warn", "shipments") +
+    metric(agingCases().length, "Aging over 36 hrs", agingCases().length ? "Oldest " + dur(NOW - agingCases()[0].stageSince) : "None", "crit", "shipments") +
+    metric(activeAsn().length, "Field assignments open", unassignedAsn().length + " unassigned", "", "dispatch") +
+    metric(av.length, "Staff available", av.length ? av.map(s => s.name.split(" ")[0]).join(", ") : "None", "", "dispatch") +
+    metric(stale.length, "Client updates overdue", stale.length ? stale[0].client.name : "All current", "crit", "briefing") +
+    '</div>';
+
+  const attention = '<section class="panel">' +
+    '<div class="panel-head"><h3>Needs attention today</h3>' +
+    '<span class="rt">Ranked by consequence · ' + att.length + ' items</span></div>' +
+    att.map((a, i) => attentionRow(a, i + 1)).join("") + '</section>';
+
+  const acts = buildActivity();
+  const activity = '<section class="panel"><div class="panel-head"><h3>Today\'s activity</h3>' +
+    '<span class="rt">' + Math.min(11, acts.length) + ' of ' + acts.length + ' events today</span></div>' +
+    '<div class="tl">' + (acts.length ? acts.slice(0, 11).map(activityRow).join("") :
+      '<div class="col-empty" style="border:0">Nothing logged yet today.</div>') + '</div></section>';
+
+  const brief = briefingPanel(true);
+
+  return '<div class="wrap">' + metrics +
+    '<div class="ov-grid"><div class="ov-col">' + attention + '</div>' +
+    '<div class="ov-col">' + brief + activity + '</div></div></div>';
+}
+function attentionRow(a, i){
+  const target = a.ref ? 'data-ship="' + a.ref + '"' : a.asn ? 'data-asn="' + a.asn + '"' : a.client ? 'data-client="' + a.client + '"' : "";
+  return '<button class="att-row" ' + target + '>' +
+    '<span class="att-rank">' + i + '</span><span class="att-stripe ' + a.sev + '"></span>' +
+    '<span class="att-body"><span class="att-t">' + esc(a.title) + '</span>' +
+    '<span class="att-m">' + (a.ref ? '<span class="mono" style="color:var(--cobalt)">' + a.ref + '</span><span class="sep">/</span>' : "") +
+    a.meta.map(esc).join('<span class="sep">/</span>') + '</span></span>' +
+    '<span class="att-go">' + I.chev + '</span></button>';
+}
+const ACT_MARK = { create:"", doc:"", ai:"ai", alert:"crit", msg:"comm", ok:"ok", stage:"", dispatch:"", file:"ok" };
+function activityRow(e){
+  const target = e.ref ? 'data-ship="' + e.ref + '"' : e.asn ? 'data-asn="' + e.asn + '"' : "";
+  return '<div class="tl-item"><span class="tl-mark ' + (ACT_MARK[e.kind] || "") + '"></span>' +
+    '<span class="tl-body"><span class="tl-t">' + esc(e.text) + '</span>' +
+    '<span class="tl-m"><span class="mono">' + fmtTime(e.ts) + '</span>' +
+    (e.ref ? '<button class="reflink" ' + target + '>' + e.ref + '</button>' : "") +
+    (e.kind === "ai" ? '<span class="ai-tag">' + I.spark + 'Automated</span>' : "") +
+    '</span></span></div>';
+}
+function briefingPanel(compact){
+  const lines = buildBriefing();
+  const d = new Date(NOW);
+  return '<section class="panel brief"><div class="panel-head">' +
+    '<span class="ai-tag">' + I.spark + 'Briefing</span>' +
+    '<h3>Today\'s priorities</h3>' +
+    '<span class="rt">Generated 6:40 AM</span></div>' +
+    '<ul class="brief-list">' + lines.map((l, i) => {
+      let refs = "";
+      if (l.refs) refs = ' <span class="muted">(' + l.refs.map(refLink).join(", ") + ')</span>';
+      else if (l.asns) refs = ' <span class="muted">(' + l.asns.map(id =>
+        '<button class="reflink" data-asn="' + id + '">' + id + '</button>').join(", ") + ')</span>';
+      else if (l.client) refs = ' <span class="muted">(<button class="reflink" data-client="' + l.client + '">' +
+        esc(l.clientName) + '</button>)</span>';
+      return '<li><span class="bn">' + (i + 1) + '</span><span>' + esc(l.text) + refs + '</span></li>';
+    }).join("") + '</ul>' +
+    (compact ? '<div style="padding:0 13px 12px"><button class="btn sm" data-view="briefing">Open AI Briefing ' + I.chev + '</button></div>' : "") +
+    '</section>';
+}
+
+/* =========================================================================
+   Shipments — kanban
+   ========================================================================= */
+function matchesFilters(s){
+  const f = filters;
+  if (f.staff && s.processor !== f.staff) return false;
+  if (f.client && s.clientId !== f.client) return false;
+  if (f.urg && s.urgency !== f.urg) return false;
+  if (f.port && s.port !== f.port) return false;
+  if (f.mode && s.mode !== f.mode) return false;
+  if (f.q){
+    const q = f.q.toLowerCase();
+    const hay = [s.ref, clientName(s.clientId), s.bl, s.cargo, s.carrier, s.port, staffName(s.processor)].join(" ").toLowerCase();
+    if (hay.indexOf(q) === -1) return false;
+  }
+  return true;
+}
+function viewShipments(){
+  const shown = state.shipments.filter(matchesFilters);
+  const anyFilter = filters.q || filters.staff || filters.client || filters.urg || filters.port || filters.mode;
+  const opt = (val, cur, label) => '<option value="' + esc(val) + '"' + (cur === val ? " selected" : "") + '>' + esc(label) + '</option>';
+
+  const bar = '<div class="filters">' +
+    '<label class="search">' + I.search +
+    '<input id="q" type="text" placeholder="Client, case reference, B/L, cargo…" value="' + esc(filters.q) + '" /></label>' +
+    '<select class="sel' + (filters.staff ? " on" : "") + '" data-f="staff">' + opt("", filters.staff, "All staff") +
+      STAFF.map(s => opt(s.id, filters.staff, s.name)).join("") + '</select>' +
+    '<select class="sel' + (filters.client ? " on" : "") + '" data-f="client">' + opt("", filters.client, "All clients") +
+      CLIENTS.map(c => opt(c.id, filters.client, c.name)).join("") + '</select>' +
+    '<select class="sel' + (filters.urg ? " on" : "") + '" data-f="urg">' + opt("", filters.urg, "Any urgency") +
+      opt("high", filters.urg, "High") + opt("med", filters.urg, "Medium") + opt("low", filters.urg, "Normal") + '</select>' +
+    '<select class="sel' + (filters.port ? " on" : "") + '" data-f="port">' + opt("", filters.port, "All ports") +
+      PORTS.map(p => opt(p, filters.port, p)).join("") + '</select>' +
+    '<select class="sel' + (filters.mode ? " on" : "") + '" data-f="mode">' + opt("", filters.mode, "Sea and air") +
+      opt("sea", filters.mode, "Sea") + opt("air", filters.mode, "Air") + '</select>' +
+    (anyFilter ? '<button class="btn sm ghost" id="clearF">Clear</button>' : "") +
+    '<span class="fcount">' + shown.length + ' of ' + state.shipments.length + ' cases</span></div>';
+
+  const board = '<div class="board">' + STAGES.map(st => {
+    const rows = shown.filter(s => s.stage === st.id);
+    const i = stageIndex(st.id);
+    const cbColor = st.id === "closed" ? "var(--green-mark)" : "rgba(23,72,196," + (0.16 + i * 0.12).toFixed(2) + ")";
+    return '<div class="col" data-stage="' + st.id + '">' +
+      '<div class="col-head"><span class="cb" style="background:' + cbColor + '"></span><span class="ct">' + esc(st.short) + '</span>' +
+      '<span class="cc">' + rows.length + '</span></div>' +
+      '<div class="col-body">' + (rows.length ? rows.map(cardEl).join("") :
+        '<div class="col-empty">' + (anyFilter ? "No match" : "Nothing here") + '</div>') + '</div></div>';
+  }).join("") + '</div>';
+
+  return '<div style="display:flex;flex-direction:column;height:100%">' + bar +
+    '<div style="flex:1;min-height:0">' + board + '</div></div>';
+}
+function cardEl(s){
+  const waited = NOW - s.stageSince;
+  const aging = waited > 36 * HOUR;
+  const asn = state.assignments.find(a => a.shipment === s.ref && a.status !== "done");
+  return '<div class="card u-' + s.urgency + '" data-ship="' + s.ref + '" data-card="' + s.ref + '">' +
+    '<div class="card-top"><span class="card-ref mono">' + s.ref + '</span>' + modeEl(s.mode) + '</div>' +
+    '<div class="card-client">' + esc(clientName(s.clientId)) + '</div>' +
+    '<div class="card-cargo">' + esc(s.cargo) + ' · ' + esc(s.qty) + '</div>' +
+    '<div class="card-meta"><span>' + esc(s.port.replace("Cebu Container Terminal, Mandaue","Cebu Container Terminal")) +
+      '</span><span class="mono" style="margin-left:auto">' + etaShort(s.eta) + '</span></div>' +
+    (s.blocker ? '<div class="card-block' + (s.urgency === "high" ? "" : " warn") + '">' + I.alert +
+      '<span>' + esc(s.blocker) + '</span></div>' : "") +
+    (s.stage !== "closed" ? '<div class="card-next"><span class="arw">&rarr;</span><span>' + esc(s.nextAction) + '</span></div>' : "") +
+    (asn ? '<div class="card-meta" style="border-top:0;padding-top:2px;margin-top:4px">' +
+      '<span class="chip info"><span class="sq"></span>Field: ' + esc(asn.staff ? staffName(asn.staff).split(" ")[0] : "unassigned") + '</span></div>' : "") +
+    '<div class="card-foot">' + avatar(s.processor) +
+      '<span class="who">' + esc(staffName(s.processor)) + '</span>' +
+      '<span class="wait' + (aging ? " aging" : "") + '">' + dur(waited) + '</span></div>' +
+    '</div>';
+}
+
+/* ---- moving a card ---- */
+function moveShipment(ref, stage, silent){
+  const s = shipByRef(ref);
+  if (!s || s.stage === stage) return;
+  const from = s.stage;
+  s.stage = stage;
+  s.stageSince = NOW;
+  s.timeline.push(T(NOW, "stage", "Moved from " + stageName(from) + " to " + stageName(stage), s.processor));
+  if (stage === "closed"){ s.blocker = ""; s.blockerType = ""; s.nextAction = "None. Case closed."; }
+  render();
+  if (!silent) suggestOnMove(s, from, stage);
+}
+function suggestOnMove(s, from, stage){
+  if (stage === "release" && !state.assignments.some(a => a.shipment === s.ref && a.status !== "done")){
+    const a = createReleaseTask(s);
+    toast("Field task created", "<b>" + s.ref + "</b> reached For Release, so a release pickup was created at " +
+      a.place.split(" · ")[0] + " and left unassigned for your approval.",
+      [{ label:"Open dispatch", act:"view:dispatch" }, { label:"Recommend staff", act:"rec:" + a.id }]);
+    return;
+  }
+  if (stage === "prep" && outstandingDocs(s).length){
+    toast("Documents still outstanding", "<b>" + s.ref + "</b> moved to entry preparation with " +
+      outstandingDocs(s).length + (outstandingDocs(s).length === 1 ? " document" : " documents") +
+      " not yet on file. Filing now risks a mismatch.",
+      [{ label:"Open case", act:"ship:" + s.ref }]);
+    return;
+  }
+  if (stage === "delivery"){
+    toast("Client update ready", "<b>" + s.ref + "</b> is out for delivery. A status update to " +
+      clientName(s.clientId) + " has been drafted from the case record.",
+      [{ label:"Review draft", act:"ship:" + s.ref }]);
+    return;
+  }
+  toast("Stage updated", "<b>" + s.ref + "</b> moved to " + stageName(stage) + ". Next action and checklist were updated.",
+    [{ label:"Open case", act:"ship:" + s.ref }]);
+}
+function createReleaseTask(s){
+  const a = {
+    id:"A-" + (3320 + state.assignments.length), staff:null,
+    task:"Collect release order and gate pass", shipment:s.ref,
+    place:s.port + (s.port.indexOf("Cebu International") === 0 ? " · Pier 4" : ""),
+    portKey: portKeyFor(s.port), scheduled: NOW + 2 * HOUR, status:"unassigned",
+    checkIn:null, checkNote:"", expected: NOW + 4 * HOUR,
+    proof:"Release order and gate pass", next:"—", created:NOW
+  };
+  state.assignments.push(a);
+  s.timeline.push(T(NOW, "dispatch", "Field task " + a.id + " created automatically for release pickup", ""));
+  render();
+  return a;
+}
+function portKeyFor(p){
+  if (p.indexOf("Cebu International") === 0) return "CIP";
+  if (p.indexOf("Cebu Container") === 0) return "CCT";
+  if (p.indexOf("Cebu South") === 0) return "CSH";
+  if (p.indexOf("Mactan-Cebu") === 0) return "MCIA";
+  return "OTHER";
+}
+
+/* =========================================================================
+   Shipment detail slide-over
+   ========================================================================= */
+function openShip(ref){
+  openRef = ref;
+  renderPanel();
+  document.getElementById("panel").classList.add("on");
+  document.getElementById("panel").setAttribute("aria-hidden", "false");
+  document.getElementById("scrim").classList.add("on");
+}
+function closePanel(){
+  openRef = null;
+  document.getElementById("panel").classList.remove("on");
+  document.getElementById("panel").setAttribute("aria-hidden", "true");
+  document.getElementById("scrim").classList.remove("on");
+}
+function parseQty(note){ const m = String(note).match(/(\d[\d,]*)/); return m ? parseInt(m[1].replace(/,/g, ""), 10) : null; }
+
+function aiBox(s){
+  const disc = s.docs.find(d => d.status === "discrepancy");
+  const review = s.docs.find(d => d.status === "review");
+  const transport = s.docs.find(d => d.type === "Bill of Lading" || d.type === "Air Waybill");
+
+  if (review){
+    return '<div class="ai-box"><div class="ai-box-h"><span class="ai-tag">' + I.spark + 'Automated check</span>' +
+      '<span class="rt muted" style="margin-left:auto;font-size:11px">Queued</span></div>' +
+      '<p>Documents were received ' + fmtDT(review.ts) + '. A consistency check across the invoice, packing list and ' +
+      (s.mode === "air" ? "air waybill" : "bill of lading") + ' has not been run yet.</p>' +
+      '<div class="ai-acts"><button class="btn sm primary" data-act="check:' + s.ref + '">Run consistency check</button></div></div>';
+  }
+  if (!disc) return "";
+  const a = parseQty(disc.note), b = transport ? parseQty(transport.note) : null;
+  const diff = (a !== null && b !== null) ? Math.abs(a - b) : null;
+  return '<div class="ai-box crit"><div class="ai-box-h"><span class="ai-tag">' + I.spark + 'Automated check</span>' +
+    '<span class="chip crit" style="margin-left:auto"><span class="sq"></span>Discrepancy</span></div>' +
+    '<p>The ' + disc.type.toLowerCase() + ' ' + esc(disc.note.toLowerCase()) + '. The ' +
+    (transport ? transport.type.toLowerCase() + ' ' + esc(transport.note.toLowerCase()) : "transport document differs") + '.' +
+    (diff !== null ? ' That is a difference of ' + diff + ' cartons.' : "") + '</p>' +
+    '<p>Filing on the current packing list would declare a quantity the transport document does not support, which is the kind of mismatch that gets picked up at examination.</p>' +
+    '<div class="rec"><b>Recommended next step.</b> Request a corrected packing list from ' + esc(clientName(s.clientId)) +
+    ' and hold entry preparation until the carton count agrees with the ' + (s.mode === "air" ? "air waybill" : "bill of lading") + '.</div>' +
+    '<div class="ai-note">' + I.info + '<span>This is a document consistency check between the client\'s own files. It is not a customs classification, valuation, or regulatory determination.</span></div>' +
+    '<div class="ai-acts"><button class="btn sm primary" data-act="draft:' + s.ref + '">Draft request to client</button>' +
+    '<button class="btn sm" data-act="resolve:' + s.ref + '">Mark corrected copy received</button></div></div>';
+}
+function renderPanel(){
+  const s = shipByRef(openRef);
+  if (!s) return;
+  const asn = state.assignments.filter(a => a.shipment === s.ref);
+  const nextStage = STAGES[Math.min(STAGES.length - 1, stageIndex(s.stage) + 1)];
+  const applicable = s.docs.filter(d => d.status !== "na");
+  const ready = applicable.filter(d => d.status === "approved" || d.status === "received").length;
+  const pct = Math.round((ready / applicable.length) * 100);
+
+  const head = '<div class="so-head"><button class="so-x" data-act="close">' + I.x + '</button>' +
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+      '<span class="mono" style="font-size:11.5px;color:var(--ink-3)">' + s.ref + '</span>' +
+      chip("info", stageName(s.stage)) + urgEl(s.urgency) + '</div>' +
+    '<div style="font-size:17px;font-weight:640;letter-spacing:-.022em;line-height:1.25">' + esc(clientName(s.clientId)) + '</div>' +
+    '<div style="font-size:12.5px;color:var(--ink-3);margin-top:3px">' + esc(s.cargo) + ' · ' + esc(s.qty) + '</div>' +
+    '<div style="display:flex;gap:6px;margin-top:11px;flex-wrap:wrap">' +
+      '<button class="btn sm primary" data-act="draft:' + s.ref + '">Draft client update</button>' +
+      (s.stage !== "closed" ? '<button class="btn sm" data-act="advance:' + s.ref + '">Advance to ' + esc(nextStage.short) + '</button>' : "") +
+    '</div></div>';
+
+  const facts = '<div class="so-sec"><div class="kv">' +
+    kvi("ETA", etaLabel(s.eta)) +
+    kvi("Port", s.port) +
+    kvi(s.mode === "air" ? "Flight" : "Vessel", s.carrier) +
+    kvi(s.mode === "air" ? "Air waybill" : "Bill of lading", '<span class="mono">' + esc(s.bl) + '</span>') +
+    kvi("Processor", staffName(s.processor)) +
+    kvi("Time in stage", dur(NOW - s.stageSince)) +
+    '</div>' +
+    (s.blocker ? '<div style="margin-top:13px;display:flex;gap:8px;align-items:flex-start;padding:9px 10px;border-radius:var(--r);' +
+      'background:var(--red-50);border:1px solid #F1D2CC;color:var(--red);font-size:12.5px;line-height:1.45">' +
+      '<span style="width:14px;height:14px;flex:0 0 14px;margin-top:1px">' + I.alert +
+      '</span><span><b style="font-weight:640">Blocked.</b> ' + esc(s.blocker) + '</span></div>' : "") +
+    '<div style="margin-top:11px;display:flex;gap:7px;align-items:flex-start;font-size:12.5px;line-height:1.45">' +
+      '<span style="color:var(--cobalt);font-family:var(--mono)">&rarr;</span>' +
+      '<span><span class="lbl" style="display:block;margin-bottom:2px">Next action</span>' + esc(s.nextAction) + '</span></div>' +
+    '</div>';
+
+  const ai = aiBox(s);
+  const aiSec = ai ? '<div class="so-sec">' + ai + '</div>' : "";
+
+  const docs = '<div class="so-sec"><div class="so-sec-h"><h4>Document readiness</h4>' +
+    '<span class="rt"><span class="readiness"><span class="bar-track"><span class="bar-fill ' +
+      (pct === 100 ? "ok" : pct >= 60 ? "" : pct >= 35 ? "warn" : "crit") + '" style="width:' + pct + '%"></span></span>' +
+      ready + ' of ' + applicable.length + '</span></span></div>' +
+    '<div class="docs">' + s.docs.map(d =>
+      '<div class="doc' + (d.status === "na" ? " na" : "") + '"><span class="doc-n">' + esc(d.type) +
+      (d.note ? '<span class="doc-s" style="font-family:var(--sans);color:var(--ink-3)">' + esc(d.note) + '</span>' : "") +
+      (d.ref ? '<span class="doc-s">' + esc(d.ref) + '</span>' : "") + '</span>' +
+      '<span class="doc-r">' + (d.ts ? '<span class="muted mono" style="font-size:10.5px">' + fmtDT(d.ts) + '</span>' : "") +
+      docChip(d.status) + '</span></div>').join("") + '</div></div>';
+
+  const disp = asn.length ? '<div class="so-sec"><div class="so-sec-h"><h4>Field assignment</h4></div>' +
+    asn.map(a => '<button class="asn' + (a.status === "unassigned" ? " unassigned" : "") + '" data-asn="' + a.id + '" style="margin-bottom:7px">' +
+      '<div class="asn-t">' + esc(a.task) + '</div>' +
+      '<div class="asn-l">' + esc(a.place) + '</div>' +
+      '<div class="asn-g">' +
+        row("Staff", a.staff ? staffName(a.staff) : "Not assigned") +
+        row("Status", dispStatusLabel(a)) +
+        (a.checkIn ? row("Last check-in", fmtTime(a.checkIn) + " · " + esc(a.checkNote)) : "") +
+        row(a.completed ? "Completed" : "Expected", fmtTime(a.completed || a.expected)) +
+        row("Proof required", esc(a.proof)) +
+      '</div></button>').join("") + '</div>' : "";
+
+  const tl = '<div class="so-sec"><div class="so-sec-h"><h4>Case timeline</h4>' +
+    '<span class="rt">' + s.timeline.length + ' entries</span></div><div class="tl" style="padding:0">' +
+    s.timeline.slice().reverse().map(e =>
+      '<div class="tl-item"><span class="tl-mark ' + (ACT_MARK[e.kind] || "") + '"></span><span class="tl-body">' +
+      '<span class="tl-t">' + esc(e.text) + '</span><span class="tl-m"><span class="mono">' + fmtDT(e.ts) + '</span>' +
+      (e.who ? '<span>' + esc(staffName(e.who)) + '</span>' : "") +
+      (e.kind === "ai" ? '<span class="ai-tag">' + I.spark + 'Automated</span>' : "") +
+      '</span></span></div>').join("") + '</div></div>';
+
+  const c = clientById(s.clientId);
+  const comms = '<div class="so-sec"><div class="so-sec-h"><h4>Communication history</h4>' +
+    '<span class="rt">' + esc(c.contact) + ' · ' + (c.channel === "viber" ? "Viber" : "Email") + '</span></div>' +
+    (s.comms.length ? s.comms.slice().reverse().map(m =>
+      '<div class="msg' + (m.draft ? " draft" : "") + '"><div class="msg-h">' +
+      '<span class="msg-ch">' + (m.channel === "viber" ? I.chat : I.mail) + (m.channel === "viber" ? "Viber" : "Email") + '</span>' +
+      '<span class="msg-who">' + esc(m.dir === "in" ? m.who : "DCA · " + m.who) + '</span>' +
+      (m.draft ? chip("info", "Draft, not sent") : "") +
+      '<span class="msg-t">' + fmtDT(m.ts) + '</span></div>' +
+      '<div class="msg-b">' + esc(m.body) + '</div>' +
+      (m.draft ? '<div class="msg-f"><button class="btn sm" data-act="copy:' + s.ref + '">Copy draft</button>' +
+        '<span class="warnnote">This prototype does not send messages.</span></div>' : "") +
+      '</div>').join("") : '<div class="muted" style="font-size:12px">No messages recorded.</div>') + '</div>';
+
+  document.getElementById("panel").innerHTML = head + '<div class="so-body">' +
+    facts + aiSec + docs + disp + tl + comms + '</div>';
+}
+function kvi(k, v){ return '<div class="kv-i"><div class="k">' + esc(k) + '</div><div class="v">' + v + '</div></div>'; }
+function row(k, v){ return '<div class="r"><span class="k">' + esc(k) + '</span><span class="v">' + v + '</span></div>'; }
+
+/* ---- case actions ---- */
+function runCheck(ref){
+  const s = shipByRef(ref);
+  const pl = s.docs.find(d => d.status === "review");
+  if (!pl) return;
+  pl.status = "discrepancy";
+  pl.note = "States 486 cartons";
+  const tr = s.docs.find(d => d.type === "Bill of Lading" || d.type === "Air Waybill");
+  tr.status = "approved";
+  tr.note = tr.note || "States 468 cartons";
+  s.timeline.push(T(NOW, "ai", "Consistency check run across invoice, packing list and " +
+    (s.mode === "air" ? "air waybill" : "bill of lading")));
+  s.timeline.push(T(NOW, "alert", "Carton quantity mismatch flagged. Case held before filing."));
+  s.blocker = "Packing list quantity differs from bill of lading";
+  s.blockerType = "client-doc";
+  s.urgency = "high";
+  s.nextAction = "Obtain corrected packing list, then start entry preparation";
+  render();
+}
+function draftFor(ref, silent){
+  const s = shipByRef(ref);
+  const c = clientById(s.clientId);
+  let body;
+  if (s.docs.some(d => d.status === "discrepancy")){
+    body = "Good morning " + c.contact.split(" ").slice(1).join(" ") + ". We are preparing the entry for your shipment " +
+      s.ref + ", but we still require the corrected packing list. The carton quantity currently differs from the " +
+      (s.mode === "air" ? "air waybill" : "bill of lading") + ". Please send the revised document so filing can proceed.";
+  } else if (s.stage === "delivery"){
+    const rel = s.docs.find(d => d.type === "Release Documents");
+    body = "Good day " + c.contact.split(" ").slice(1).join(" ") + ". Your shipment " + s.ref + " (" + s.cargo.toLowerCase() +
+      ") has been released from " + s.port + " and is now in transit for delivery. Release order " +
+      (rel && rel.ref ? rel.ref : "on file") + " was collected on " + fmtDate(NOW) + ". We will send the signed delivery receipt once the consignee has received the cargo.";
+  } else if (s.blocker){
+    body = "Good day " + c.contact.split(" ").slice(1).join(" ") + ". Update on " + s.ref + ": " +
+      s.blocker.charAt(0).toLowerCase() + s.blocker.slice(1) + ". " + s.nextAction + ".";
+  } else {
+    body = "Good day " + c.contact.split(" ").slice(1).join(" ") + ". Update on " + s.ref + ": the shipment is now at " +
+      stageName(s.stage).toLowerCase() + ". " + s.nextAction + ". No action is needed from your side at this time.";
+  }
+  s.comms.push(M(NOW, "out", c.channel, staffName(s.processor), body, true));
+  s.timeline.push(T(NOW, "ai", "Client update drafted from the case record, held for review", s.processor));
+  render();
+  if (!silent) toast("Draft prepared", "A message to <b>" + esc(clientName(s.clientId)) +
+    "</b> was drafted from this case and recorded in the timeline. Nothing has been sent.",
+    [{ label:"Review draft", act:"ship:" + s.ref }]);
+}
+function resolveDiscrepancy(ref, silent){
+  const s = shipByRef(ref);
+  const d = s.docs.find(x => x.status === "discrepancy");
+  if (!d) return;
+  d.status = "approved";
+  d.ref = d.ref + "-R1";
+  d.note = "Corrected copy, 468 cartons, agrees with the bill of lading";
+  d.ts = NOW;
+  s.blocker = "";
+  s.blockerType = "";
+  s.urgency = "med";
+  s.nextAction = "Prepare and lodge the entry";
+  s.timeline.push(T(NOW, "doc", "Corrected packing list received from " + clientName(s.clientId), s.processor));
+  s.timeline.push(T(NOW, "ai", "Re-check passed. Carton count now agrees across all documents."));
+  const c = clientById(s.clientId);
+  s.comms.push(M(NOW - 12 * 60000, "in", c.channel, c.contact,
+    "Hi Lena, here is the corrected packing list from our supplier. It should now read 468 cartons, same as the B/L."));
+  moveShipment(ref, "prep", true);
+  render();
+  if (!silent) toast("Blocker cleared", "The corrected packing list agrees with the bill of lading. <b>" + s.ref +
+    "</b> advanced to entry preparation.", [{ label:"Open case", act:"ship:" + s.ref }]);
+}
+function advance(ref){
+  const s = shipByRef(ref);
+  const i = stageIndex(s.stage);
+  if (i >= STAGES.length - 1) return;
+  moveShipment(ref, STAGES[i + 1].id);
+}
+
+/* =========================================================================
+   Field Dispatch
+   ========================================================================= */
+function dispStatusLabel(a){
+  const m = { unassigned:"Unassigned", scheduled:"Scheduled", enroute:"En route", onsite:"At location", blocked:"Waiting", done:"Completed" };
+  return m[a.status] || a.status;
+}
+function dispChip(a){
+  if (a.status === "done") return chip("ok", "Completed");
+  if (a.status === "blocked") return chip("crit", "Waiting");
+  if (a.status === "unassigned") return chip("warn", "Unassigned");
+  if (a.status === "onsite") return chip("info", "At location");
+  return chip("flat", dispStatusLabel(a));
+}
+function viewDispatch(){
+  const board = '<div class="board">' + DISPATCH_STAGES.map(st => {
+    const rows = state.assignments.filter(a => a.status === st.id);
+    return '<div class="col" style="flex:0 0 250px;width:250px"><div class="col-head">' +
+      '<span class="cb"></span><span class="ct">' + esc(st.name) + '</span><span class="cc">' + rows.length + '</span></div>' +
+      '<div class="col-body">' + (rows.length ? rows.map(asnCard).join("") :
+        '<div class="col-empty">Nothing here</div>') + '</div></div>';
+  }).join("") + '</div>';
+
+  const side = '<div class="disp-side">' +
+    '<div style="padding:11px 14px;border-bottom:1px solid var(--line)"><div class="lbl">Staff status</div>' +
+    '<div class="muted" style="font-size:11px;margin-top:4px;line-height:1.4">Location comes from the assignment and the check-in, not from continuous tracking.</div></div>' +
+    STAFF.map(s => {
+      const active = state.assignments.filter(a => a.staff === s.id && a.status !== "done");
+      const doneToday = state.assignments.filter(a => a.staff === s.id && a.completed && a.completed >= todayStart());
+      const a = active[0];
+      return '<button class="staff" data-staff="' + s.id + '"><div class="staff-h">' + avatar(s.id) +
+        '<span><span class="staff-n">' + esc(s.name) + '</span><span class="staff-role">' + esc(s.role) + '</span></span>' +
+        '<span class="staff-b">' + (a ? dispChip(a) : chip("ok", "Available")) + '</span></div>' +
+        '<dl class="staff-g">' +
+          '<dt>Assignment</dt><dd>' + (a ? esc(a.task) : "None") + '</dd>' +
+          '<dt>Location</dt><dd>' + (a ? esc(a.place.split(" · ")[0]) : "Office") + '</dd>' +
+          '<dt>Next</dt><dd>' + (a ? esc(a.next) : "Open for assignment") + '</dd>' +
+          '<dt>Expected</dt><dd>' + (a ? fmtTime(a.expected) : "—") + '</dd>' +
+          '<dt>Today</dt><dd>' + (active.length + doneToday.length) + ' assignment' + ((active.length + doneToday.length) === 1 ? "" : "s") +
+            ', ' + doneToday.length + ' completed</dd>' +
+        '</dl></button>';
+    }).join("") + '</div>';
+
+  return '<div class="disp"><div class="disp-board">' + board + '</div>' + side + '</div>';
+}
+function asnCard(a){
+  const late = a.status !== "done" && a.status !== "unassigned" && a.expected < NOW;
+  const s = shipByRef(a.shipment);
+  return '<div class="asn' + (a.status === "unassigned" ? " unassigned" : "") + '" data-asn="' + a.id + '" data-acard="' + a.id + '">' +
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">' +
+      '<span class="mono" style="font-size:10.5px;color:var(--ink-3)">' + a.id + '</span>' +
+      '<span style="margin-left:auto">' + dispChip(a) + '</span></div>' +
+    '<div class="asn-t">' + esc(a.task) + '</div>' +
+    '<div class="asn-l">' + esc(a.place) + '</div>' +
+    '<div class="asn-g">' +
+      row("Shipment", '<button class="reflink" data-ship="' + a.shipment + '">' + a.shipment + '</button>' +
+        (s ? ' <span class="muted">' + esc(clientName(s.clientId)) + '</span>' : "")) +
+      row("Staff", a.staff ? '<span style="display:inline-flex;align-items:center;gap:5px">' + avatar(a.staff) +
+        esc(staffName(a.staff)) + '</span>' : '<span style="color:var(--amber);font-weight:600">Not assigned</span>') +
+      row("Scheduled", fmtTime(a.scheduled)) +
+      (a.checkIn ? row("Last check-in", '<span class="mono">' + fmtTime(a.checkIn) + '</span> ' + esc(a.checkNote)) : "") +
+      row(a.completed ? "Completed" : "Expected", (late ? '<span style="color:var(--red);font-weight:600">' +
+        fmtTime(a.expected) + ' · ' + dur(NOW - a.expected) + ' over</span>' : fmtTime(a.completed || a.expected))) +
+      row("Proof", esc(a.proof)) +
+    '</div>' +
+    (a.status === "unassigned" ? asnSuggestion(a) : "") +
+    '</div>';
+}
+function nearbyTrip(a){
+  return state.assignments.find(x => x.staff && x.status !== "done" && x.portKey === a.portKey && x.id !== a.id) || null;
+}
+function asnSuggestion(a){
+  const near = nearbyTrip(a);
+  if (near) return '<div class="ai-box" style="margin-top:9px;padding:9px 10px">' +
+    '<div class="ai-box-h"><span class="ai-tag">' + I.spark + 'Suggestion</span></div>' +
+    '<p style="font-size:12px">' + esc(staffName(near.staff)) + ' is already at ' + esc(shortPlace(a.place)) +
+    ' until about ' + fmtTime(near.expected) + ' for ' + esc(near.shipment) +
+    '. Adding this pickup avoids a second trip to the same port.</p>' +
+    '<div class="ai-acts"><button class="btn sm primary" data-act="assign:' + a.id + ':' + near.staff + '">Assign ' +
+    esc(staffName(near.staff).split(" ")[0]) + '</button>' +
+    '<button class="btn sm" data-act="rec:' + a.id + '">Other options</button></div></div>';
+  return '<div style="display:flex;gap:6px;margin-top:9px">' +
+    '<button class="btn sm primary" data-act="rec:' + a.id + '">Recommend staff</button></div>';
+}
+function recommendFor(id){
+  const a = asnById(id);
+  if (!a || a.staff) return;
+  const near = state.assignments.find(x => x.staff && x.status !== "done" && x.portKey === a.portKey && x.id !== a.id);
+  const free = availableStaff().filter(s => s.role.indexOf("Field") === 0)[0];
+  if (near){
+    toast("Trip can be combined", "<b>" + staffName(near.staff) + "</b> is already at " + esc(a.place.split(" · ")[0]) +
+      " until about " + fmtTime(near.expected) + " for " + near.shipment +
+      ". Adding this pickup avoids a second trip to the same port.",
+      [{ label:"Assign " + staffName(near.staff).split(" ")[0], act:"assign:" + a.id + ":" + near.staff },
+       { label:"Someone else", act:"dismiss" }]);
+  } else if (free){
+    toast("Staff available", "<b>" + free.name + "</b> has no field assignment today and can take this pickup.",
+      [{ label:"Assign " + free.name.split(" ")[0], act:"assign:" + a.id + ":" + free.id }, { label:"Dismiss", act:"dismiss" }]);
+  } else {
+    toast("No one free", "Everyone with a field role is committed until this afternoon. The earliest opening is " +
+      fmtTime(NOW + 3 * HOUR) + ".", [{ label:"Dismiss", act:"dismiss" }]);
+  }
+}
+function assignTo(id, staff, silent){
+  const a = asnById(id);
+  if (!a) return;
+  a.staff = staff;
+  a.status = "scheduled";
+  a.next = "Return to office";
+  const s = shipByRef(a.shipment);
+  if (s) s.timeline.push(T(NOW, "dispatch", a.id + " assigned to " + staffName(staff) + ", grouped with an existing trip to the same port", ""));
+  render();
+  if (!silent) toast("Assigned", "<b>" + staffName(staff) + "</b> now has " + a.id + " at " +
+    esc(a.place.split(" · ")[0]) + ". Both tasks are on one trip.", [{ label:"Open dispatch", act:"view:dispatch" }]);
+}
+function completeAsn(id, silent){
+  const a = asnById(id);
+  if (!a) return;
+  a.status = "done";
+  a.checkIn = NOW - 22 * 60000;
+  a.checkNote = "Release order released by the terminal, documents in hand.";
+  a.completed = NOW;
+  a.next = "Available";
+  const s = shipByRef(a.shipment);
+  if (s){
+    const rel = s.docs.find(d => d.type === "Release Documents");
+    if (rel){ rel.status = "approved"; rel.ref = docRef(s, "Release Documents"); rel.ts = NOW; rel.note = "Uploaded by " + staffName(a.staff) + " at the port"; }
+    s.timeline.push(T(NOW - 22 * 60000, "dispatch", staffName(a.staff) + " checked in at " + a.place.split(" · ")[0], a.staff));
+    s.timeline.push(T(NOW, "file", "Release order uploaded from the field and attached to the case", a.staff));
+  }
+  render();
+  if (!silent) toast("Field task completed", "<b>" + staffName(a.staff) + "</b> uploaded the release order. It was attached to " +
+    a.shipment + " automatically.", [{ label:"Open case", act:"ship:" + a.shipment }]);
+}
+
+/* =========================================================================
+   Documents
+   ========================================================================= */
+let docFilter = "outstanding";
+function viewDocuments(){
+  const open = openShipments();
+  const readiness = open.map(s => {
+    const app = s.docs.filter(d => d.status !== "na");
+    const ok = app.filter(d => d.status === "approved" || d.status === "received").length;
+    return { s, ok, tot: app.length, pct: Math.round(ok / app.length * 100), out: outstandingDocs(s) };
+  }).sort((a,b) => a.pct - b.pct);
+
+  const rows = [];
+  open.forEach(s => s.docs.forEach(d => {
+    if (d.status === "na") return;
+    const isOut = outstandingDocs(s).indexOf(d) !== -1;
+    if (docFilter === "outstanding" && !isOut) return;
+    if (docFilter === "discrepancy" && d.status !== "discrepancy") return;
+    rows.push({ s, d, isOut });
+  }));
+  rows.sort((a,b) => {
+    const w = { discrepancy:0, review:1, missing:2, received:3, approved:4 };
+    return (w[a.d.status] - w[b.d.status]) || (a.s.eta - b.s.eta);
+  });
+
+  const summary = '<div class="metrics" style="grid-template-columns:repeat(4,1fr)">' +
+    metric(open.reduce((n, s) => n + s.docs.filter(d => d.status === "discrepancy").length, 0), "Discrepancies found", "Flagged by automated check", "crit") +
+    metric(docCount().docs, "Documents outstanding", "In " + docCount().cases + " open cases", "warn") +
+    metric(open.filter(s => (s.blockerType || "").startsWith("client")).length, "Waiting on the client", "Document, payment or instruction", "warn") +
+    metric(readiness.filter(r => r.pct === 100).length, "Complete checklists", "Ready to progress", "") +
+    '</div>';
+
+  const rd = '<section class="panel" style="margin-top:16px"><div class="panel-head"><h3>Checklist readiness by case</h3>' +
+    '<span class="rt">Lowest first</span></div><div class="tblwrap" style="border:0;border-radius:0">' +
+    '<table class="t"><thead><tr><th>Case</th><th>Client</th><th>Stage</th><th>ETA</th>' +
+    '<th>Readiness</th><th>Outstanding</th></tr></thead><tbody>' +
+    readiness.map(r => '<tr data-ship="' + r.s.ref + '">' +
+      '<td class="mono" style="color:var(--cobalt)">' + r.s.ref + '</td>' +
+      '<td>' + esc(clientName(r.s.clientId)) + '</td>' +
+      '<td class="muted">' + esc(stageName(r.s.stage)) + '</td>' +
+      '<td class="mono" style="font-size:11.5px">' + etaShort(r.s.eta) + '</td>' +
+      '<td><span class="readiness"><span class="bar-track"><span class="bar-fill ' +
+        (r.pct === 100 ? "ok" : r.pct >= 60 ? "" : r.pct >= 35 ? "warn" : "crit") + '" style="width:' + r.pct + '%"></span></span>' +
+        '<span class="mono muted" style="font-size:11px">' + r.ok + '/' + r.tot + '</span></span></td>' +
+      '<td>' + (r.out.length ? r.out.map(d => docChip(d.status)).slice(0,2).join(" ") +
+        (r.out.length > 2 ? ' <span class="muted" style="font-size:11px">+' + (r.out.length - 2) + '</span>' : "") :
+        '<span class="muted" style="font-size:11.5px">None</span>') + '</td></tr>').join("") +
+    '</tbody></table></div></section>';
+
+  const tbl = '<section class="panel" style="margin-top:16px"><div class="panel-head"><h3>Document register</h3>' +
+    '<div style="margin-left:auto;display:flex;gap:6px">' +
+    ["outstanding","discrepancy","all"].map(f => '<button class="btn sm' + (docFilter === f ? " primary" : "") +
+      '" data-docf="' + f + '">' + (f === "outstanding" ? "Outstanding" : f === "discrepancy" ? "Discrepancies" : "All documents") +
+      '</button>').join("") + '</div></div>' +
+    '<div class="tblwrap" style="border:0;border-radius:0"><table class="t"><thead><tr>' +
+    '<th>Document</th><th>Case</th><th>Client</th><th>Reference</th><th>Received</th><th>Needed by</th><th>Status</th>' +
+    '</tr></thead><tbody>' + (rows.length ? rows.map(r => '<tr data-ship="' + r.s.ref + '">' +
+      '<td>' + esc(r.d.type) + (r.d.note ? '<div class="muted" style="font-size:11px;margin-top:2px">' + esc(r.d.note) + '</div>' : "") + '</td>' +
+      '<td class="mono" style="color:var(--cobalt)">' + r.s.ref + '</td>' +
+      '<td>' + esc(clientName(r.s.clientId)) + '</td>' +
+      '<td class="mono" style="font-size:11.5px">' + (r.d.ref ? esc(r.d.ref) : '<span class="muted">—</span>') + '</td>' +
+      '<td class="mono" style="font-size:11.5px">' + (r.d.ts ? fmtDate(r.d.ts) : '<span class="muted">—</span>') + '</td>' +
+      '<td class="muted" style="font-size:11.5px">' + esc(STAGES[DOC_NEED[r.d.type]].name) + '</td>' +
+      '<td>' + docChip(r.d.status) + '</td></tr>').join("") :
+      '<tr><td colspan="7" class="muted" style="text-align:center;padding:22px">Nothing outstanding.</td></tr>') +
+    '</tbody></table></div></section>';
+
+  return '<div class="wrap">' + summary + rd + tbl + '</div>';
+}
+
+/* =========================================================================
+   AI Briefing view
+   ========================================================================= */
+const QUESTIONS = [
+  "Which shipments are arriving this week?",
+  "What is currently blocked by clients?",
+  "Where is Marco assigned today?",
+  "Which cases have been waiting longest?",
+  "What documents are missing?",
+  "Which staff member is available?",
+  "What did we last tell Harborline?",
+  "Which trips can be combined?",
+  "Summarize today's operational risks."
+];
+let thread = [];
+function viewBriefing(){
+  const risks = buildAttention();
+  const left = briefingPanel(false) +
+    '<section class="panel" style="margin-top:16px"><div class="panel-head"><h3>Operational risk today</h3>' +
+    '<span class="rt">' + risks.filter(r => r.sev === "crit").length + ' critical · ' +
+      risks.filter(r => r.sev === "warn").length + ' watch</span></div>' +
+    risks.slice(0, 6).map((a, i) => attentionRow(a, i + 1)).join("") +
+    '<div style="padding:10px 13px;border-top:1px solid var(--line);font-size:11px;color:var(--ink-4);line-height:1.5">' +
+    'Ranking reflects time pressure, cost exposure and who is waiting. It is a prompt for the manager, not an automatic decision.</div></section>';
+
+  const right = '<section class="panel"><div class="panel-head">' +
+    '<span class="ai-tag">' + I.spark + 'Ask</span><h3>Operations questions</h3></div>' +
+    '<div class="qchips">' + QUESTIONS.map(q => '<button class="qchip" data-q="' + esc(q) + '">' + esc(q) + '</button>').join("") + '</div>' +
+    '<div class="thread" id="thread"></div>' +
+    '<div class="cmd-in" style="border-top:1px solid var(--line);border-bottom:0">' + I.spark +
+    '<input id="askInput" type="text" placeholder="Ask about shipments, documents, staff…" autocomplete="off" /></div>' +
+    '<div class="cmd-foot">' + I.info + 'Every answer is built from the records in this prototype and links back to them.</div></section>';
+
+  return '<div class="wrap"><div class="brief-grid"><div>' + left + '</div><div>' + right + '</div></div></div>';
+}
+function renderThread(){
+  const el = document.getElementById("thread");
+  if (!el) return;
+  el.innerHTML = thread.length ? thread.map(t =>
+    '<div><div class="q"><span class="qi">?</span><span class="qt">' + esc(t.q) + '</span></div>' +
+    '<div class="a">' + renderAnswer(t.a) + '</div></div>').join("") :
+    '<div class="empty">Ask a question, or pick one above.<br />Answers come from the shipment, document and dispatch records on this board.</div>';
+  const qs = el.querySelectorAll(".q");
+  if (qs.length) el.scrollTop = qs[qs.length - 1].offsetTop - el.offsetTop - 4;
+}
+function renderAnswer(a){
+  return '<div class="a-t">' + a.text + '</div>' +
+    (a.list && a.list.length ? '<ul class="a-list">' + a.list.map(x =>
+      '<li><span class="li-l">' + x.l + '</span><span class="li-r">' + (x.r || "") + '</span></li>').join("") + '</ul>' : "") +
+    (a.foot ? '<div class="a-foot">' + I.info + '<span>' + a.foot + '</span></div>' : "");
+}
+
+/* ---- question answering ---- */
+function ask(q){
+  const a = answer(q);
+  thread.push({ q, a });
+  if (view === "briefing") renderThread();
+  return a;
+}
+function norm(s){ return s.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim(); }
+
+function answer(qRaw){
+  const q = norm(qRaw);
+
+  // where is <staff>
+  const who = STAFF.find(s => q.indexOf(norm(s.name.split(" ")[0])) !== -1);
+  if (who && /where|assigned|located|doing|today/.test(q) && !/available|free/.test(q)) return ansWhere(who);
+
+  // what did we last tell <client>
+  const cl = CLIENTS.find(c => q.indexOf(norm(c.name.split(" ")[0])) !== -1);
+  if (cl && /tell|told|say|said|send|sent|update|hear|communicat/.test(q)) return ansClient(cl);
+
+  const rules = [
+    { f: ansArriving,  kw:["arriv","this week","eta","coming","due","incoming","vessel","berth","discharg"] },
+    { f: ansBlocked,   kw:["blocked","blocker","waiting on client","client","stuck","hold","pending","held up"] },
+    { f: ansLongest,   kw:["longest","oldest","aging","stale","waiting longest","slow","sitting","delayed"] },
+    { f: ansDocs,      kw:["document","missing","paperwork","checklist","incomplete","invoice","packing list","permit","origin"] },
+    { f: ansAvailable, kw:["available","free","who can","spare","capacity","idle","unassigned staff"] },
+    { f: ansTrips,     kw:["trip","combine","same port","together","route","consolidat","one trip"] },
+    { f: ansRisks,     kw:["risk","summar","priorit","attention","brief","urgent","problem","wrong","worry","escalat","fire","emergency"] }
+  ];
+  let best = null, bestScore = 0;
+  rules.forEach(r => {
+    let sc = 0;
+    r.kw.forEach(k => { if (q.indexOf(k) !== -1) sc += k.length > 6 ? 3 : 2; });
+    if (sc > bestScore){ bestScore = sc; best = r; }
+  });
+  if (best && bestScore >= 2) return best.f();
+  if (cl) return ansClient(cl);
+  if (who) return ansWhere(who);
+  return {
+    text: "This prototype answers from the records on this board. Try one of these:",
+    list: QUESTIONS.map(x => ({ l:'<button class="reflink" data-q="' + esc(x) + '" style="font-family:var(--sans);font-size:12px">' + esc(x) + '</button>' })),
+    foot: "A production system would read your real case files. Nothing here is connected to live data."
+  };
+}
+function ansArriving(){
+  const rows = openShipments().filter(s => s.eta >= NOW - 6 * HOUR && s.eta <= NOW + 7 * DAY).sort((a,b) => a.eta - b.eta);
+  return {
+    text: rows.length + " shipments arrive in the next seven days. " +
+      arriving48().length + " of them land within 48 hours, and " +
+      rows.filter(s => outstandingDocs(s).length).length + " still have documents outstanding.",
+    list: rows.map(s => ({
+      l: refLink(s.ref) + " &nbsp;" + esc(clientName(s.clientId)) + ' <span class="muted">· ' + esc(s.port.split(",")[0]) + '</span>',
+      r: (outstandingDocs(s).length ? chip("crit", outstandingDocs(s).length + " doc") + " " : "") +
+         '<span class="mono muted" style="font-size:11px">' + etaShort(s.eta) + '</span>'
+    })),
+    foot: "Sorted by arrival. Cases already at the port are not listed here."
+  };
+}
+function ansBlocked(){
+  const rows = awaitingClient();
+  return {
+    text: rows.length + " cases are waiting on something the client has to do. " +
+      docBlocked().length + " are blocked by documents, the rest by payment or a decision.",
+    list: rows.map(s => ({
+      l: refLink(s.ref) + " &nbsp;" + esc(clientName(s.clientId)) + '<div class="muted" style="margin-top:2px">' + esc(s.blocker) + '</div>',
+      r: chip(s.urgency === "high" ? "crit" : "warn", dur(NOW - s.stageSince))
+    })),
+    foot: "Waiting time is measured from when the case entered its current stage."
+  };
+}
+const WHERE_VERB = { onsite:"on site at", enroute:"on the way to", scheduled:"scheduled at", blocked:"waiting at", unassigned:"not yet assigned to" };
+function ansWhere(st){
+  const rows = state.assignments.filter(a => a.staff === st.id &&
+    ((a.scheduled >= todayStart()) || (a.completed && a.completed >= todayStart())));
+  if (!rows.length) return {
+    text: st.name + " has no field assignment today and is working from the office.",
+    list: [], foot: "Availability is derived from assignments, not from location tracking."
+  };
+  const cur = rows.find(a => a.status !== "done");
+  return {
+    text: cur ? st.name + " is " + WHERE_VERB[cur.status] + " " + cur.place.split(" · ")[0] +
+        " for " + cur.shipment + (cur.checkIn ? ", last check-in " + fmtTime(cur.checkIn) : "") +
+        ". Expected to finish around " + fmtTime(cur.expected) + "." :
+      st.name + " has finished today's assignments.",
+    list: rows.map(a => ({
+      l: '<button class="reflink" data-asn="' + a.id + '">' + a.id + '</button> &nbsp;' + esc(a.task) +
+         '<div class="muted" style="margin-top:2px">' + esc(a.place) + '</div>',
+      r: dispChip(a) + ' <span class="mono muted" style="font-size:11px">' + fmtTime(a.scheduled) + '</span>'
+    })),
+    foot: "Location comes from the assignment and the staff member's own check-in."
+  };
+}
+function ansLongest(){
+  const rows = openShipments().slice().sort((a,b) => a.stageSince - b.stageSince).slice(0, 6);
+  return {
+    text: "The longest wait is " + refLink(rows[0].ref) + " at " + dur(NOW - rows[0].stageSince) +
+      " in " + stageName(rows[0].stage).toLowerCase() + ". " + agingCases().length +
+      " cases have been in the same stage for more than 36 hours.",
+    list: rows.map(s => ({
+      l: refLink(s.ref) + " &nbsp;" + esc(clientName(s.clientId)) +
+         '<div class="muted" style="margin-top:2px">' + esc(s.blocker || s.nextAction) + '</div>',
+      r: chip(NOW - s.stageSince > 48 * HOUR ? "crit" : "warn", dur(NOW - s.stageSince))
+    })),
+    foot: "Measured from the last stage change on each case."
+  };
+}
+function ansDocs(){
+  const rows = [];
+  openShipments().forEach(s => outstandingDocs(s).forEach(d => rows.push({ s, d })));
+  rows.sort((a,b) => (a.d.status === "discrepancy" ? -1 : 0) - (b.d.status === "discrepancy" ? -1 : 0) || a.s.eta - b.s.eta);
+  const dc = docCount();
+  return {
+    text: dc.docs + " documents are outstanding across " + dc.cases + " open cases. " +
+      rows.filter(r => r.d.status === "discrepancy").length + " of them is a discrepancy rather than a gap, which is the more urgent kind.",
+    list: rows.slice(0, 9).map(r => ({
+      l: esc(r.d.type) + " &nbsp;" + refLink(r.s.ref) + '<div class="muted" style="margin-top:2px">' +
+         esc(clientName(r.s.clientId)) + " · ETA " + etaShort(r.s.eta) + '</div>',
+      r: docChip(r.d.status)
+    })),
+    foot: rows.length > 9 ? "Showing the 9 most time-critical of " + rows.length + "." : "Ordered by arrival date."
+  };
+}
+function ansAvailable(){
+  const free = availableStaff();
+  const soon = activeAsn().filter(a => a.staff && a.expected > NOW).sort((a,b) => a.expected - b.expected);
+  return {
+    text: free.length ? free.map(s => s.name).join(" and ") + " " + (free.length > 1 ? "have" : "has") +
+        " no field assignment today. The next field representative to free up is " +
+        (soon.length ? staffName(soon[0].staff) + " around " + fmtTime(soon[0].expected) : "not scheduled") + "." :
+      "Everyone is committed. The first opening is " + (soon.length ? fmtTime(soon[0].expected) : "tomorrow") + ".",
+    list: STAFF.map(s => {
+      const a = activeAsn().find(x => x.staff === s.id);
+      return {
+        l: esc(s.name) + ' <span class="muted">· ' + esc(s.role) + '</span>' +
+           (a ? '<div class="muted" style="margin-top:2px">' + esc(a.task) + " · " + esc(a.place.split(" · ")[0]) + '</div>' : ""),
+        r: a ? chip("flat", "Free " + fmtTime(a.expected)) : chip("ok", "Available")
+      };
+    }),
+    foot: "Documentation staff are office-based and are not dispatched to the ports."
+  };
+}
+function ansTrips(){
+  const groups = coLocated();
+  const un = unassignedAsn();
+  const combos = [];
+  un.forEach(u => {
+    const near = activeAsn().find(a => a.staff && a.portKey === u.portKey && a.id !== u.id);
+    if (near) combos.push({ u, near });
+  });
+  return {
+    text: combos.length ? combos.length + " unassigned task" + (combos.length > 1 ? "s" : "") +
+        " can ride along with a trip that is already happening. " +
+        (groups.length ? groups.length + " location also has more than one person scheduled." : "") :
+      "No unassigned task overlaps with a trip already scheduled today.",
+    list: combos.map(c => ({
+      l: '<button class="reflink" data-asn="' + c.u.id + '">' + c.u.id + '</button> &nbsp;' + esc(c.u.task) +
+         '<div class="muted" style="margin-top:2px">' + esc(staffName(c.near.staff)) + " is at " +
+         esc(c.u.place.split(" · ")[0]) + " until " + fmtTime(c.near.expected) + " for " + c.near.shipment + '</div>',
+      r: '<button class="btn sm primary" data-act="assign:' + c.u.id + ':' + c.near.staff + '">Assign ' +
+         esc(staffName(c.near.staff).split(" ")[0]) + '</button>'
+    })).concat(groups.map(g => ({
+      l: '<span>' + esc(g.place) + '</span><div class="muted" style="margin-top:2px">' +
+         g.asns.map(a => esc(staffName(a.staff)) + " · " + esc(a.shipment)).join(" and ") + '</div>',
+      r: chip("info", g.asns.length + " trips")
+    }))),
+    foot: "Grouping is a suggestion. The manager decides who actually goes."
+  };
+}
+function ansClient(c){
+  const rows = state.shipments.filter(s => s.clientId === c.id);
+  const msgs = [];
+  rows.forEach(s => s.comms.forEach(m => { if (m.dir === "out") msgs.push({ m, s }); }));
+  msgs.sort((a,b) => b.m.ts - a.m.ts);
+  const last = msgs[0];
+  const drafts = msgs.filter(x => x.m.draft);
+  return {
+    text: last ? "The last message to " + esc(c.name) + " went out " + fmtDT(last.m.ts) + " on " + refLink(last.s.ref) +
+        (last.m.draft ? " and is still a draft, not sent." : ".") +
+        (drafts.length ? " There " + (drafts.length > 1 ? "are " + drafts.length + " drafts" : "is 1 draft") + " waiting for review." : "") :
+      "Nothing has been sent to " + esc(c.name) + " from this board.",
+    list: (last ? [{ l: '<div style="color:var(--ink-2);line-height:1.5">' + esc(last.m.body) + '</div>' +
+        '<div class="muted" style="margin-top:5px">' + esc(last.m.who) + " · " + (last.m.channel === "viber" ? "Viber" : "Email") + '</div>',
+      r: last.m.draft ? chip("info", "Draft") : chip("ok", "Sent") }] : [])
+      .concat(rows.filter(s => s.stage !== "closed").map(s => ({
+        l: refLink(s.ref) + " &nbsp;" + esc(s.cargo) + '<div class="muted" style="margin-top:2px">' +
+           esc(stageName(s.stage)) + (s.blocker ? " · " + esc(s.blocker) : "") + '</div>',
+        r: '<span class="mono muted" style="font-size:11px">' + etaShort(s.eta) + '</span>'
+      }))),
+    foot: "Drafts are held for review. This prototype does not send anything."
+  };
+}
+function ansRisks(){
+  const att = buildAttention();
+  const crit = att.filter(a => a.sev === "crit");
+  return {
+    text: crit.length + " things could cost money or time today, and " + att.filter(a => a.sev === "warn").length +
+      " are worth watching. The sharpest is " + esc(crit.length ? crit[0].title.toLowerCase() : "nothing outstanding") +
+      (crit.length && crit[0].ref ? " on " + refLink(crit[0].ref) : "") + ".",
+    list: att.slice(0, 6).map(a => ({
+      l: esc(a.title) + '<div class="muted" style="margin-top:2px">' + a.meta.map(esc).join(" · ") + '</div>',
+      r: (a.ref ? refLink(a.ref) : a.asn ? '<button class="reflink" data-asn="' + a.asn + '">' + a.asn + '</button>' : "") +
+         " " + chip(a.sev === "crit" ? "crit" : a.sev === "warn" ? "warn" : "info",
+           a.sev === "crit" ? "Critical" : a.sev === "warn" ? "Watch" : "Note")
+    })),
+    foot: "Ranked by consequence, not by how loud the case is."
+  };
+}
+
+/* =========================================================================
+   Command pill
+   ========================================================================= */
+let cmdOpen = false;
+function toggleCmd(force){
+  cmdOpen = force !== undefined ? force : !cmdOpen;
+  document.getElementById("cmdPanel").classList.toggle("on", cmdOpen);
+  if (cmdOpen){ renderCmd(); setTimeout(() => document.getElementById("cmdInput").focus(), 20); }
+}
+let cmdAnswer = null;
+function renderCmd(){
+  document.getElementById("cmdOut").innerHTML = cmdAnswer ?
+    '<div class="q" style="margin-bottom:9px"><span class="qi">?</span><span class="qt">' + esc(cmdAnswer.q) + '</span></div>' +
+    '<div class="a" style="padding-left:0">' + renderAnswer(cmdAnswer.a) + '</div>' +
+    '<div style="margin-top:11px"><button class="btn sm" data-view="briefing">Open full briefing ' + I.chev + '</button></div>' :
+    '<div class="lbl" style="margin-bottom:7px">Try asking</div><div class="cmd-sugg">' +
+    QUESTIONS.map(q => '<button data-q="' + esc(q) + '">' + esc(q) + '</button>').join("") + '</div>';
+}
+function runCmd(q){
+  if (!q.trim()) return;
+  cmdAnswer = { q, a: ask(q) };
+  renderCmd();
+}
+
+/* =========================================================================
+   Toasts
+   ========================================================================= */
+let toastSilent = false;
+function toast(title, body, actions){
+  if (toastSilent) return;
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = '<div class="toast-h"><span class="ai-tag">' + I.spark + 'Suggestion</span>' +
+    '<span style="font-size:12px;font-weight:620;letter-spacing:-.01em">' + esc(title) + '</span>' +
+    '<button class="toast-x" data-act="dismiss">' + I.x + '</button></div>' +
+    '<div class="toast-b">' + body + '</div>' +
+    (actions && actions.length ? '<div class="toast-a">' + actions.map((a, i) =>
+      '<button class="btn sm' + (i === 0 ? " primary" : "") + '" data-act="' + a.act + '">' + esc(a.label) + '</button>').join("") + '</div>' : "");
+  document.getElementById("toasts").appendChild(el);
+  setTimeout(() => { if (el.parentNode) el.remove(); }, 14000);
+}
+function clearToasts(){ document.getElementById("toasts").innerHTML = ""; }
+
+/* =========================================================================
+   Guided demo — the connected Harborline scenario
+   ========================================================================= */
+const HERO = "HBS-2026-018";
+const DEMO = [
+  { t:"A container arrives tomorrow", s:"Cebu International Port, 6:30 AM. Documents came in yesterday afternoon and the case is sitting in Awaiting Documents.",
+    run(){
+      const s = shipByRef(HERO);
+      s.stage = "awaiting"; s.stageSince = at(-1,15,20); s.urgency = "med";
+      s.blocker = "Documents received, verification not yet run"; s.blockerType = "";
+      s.nextAction = "Verify the document set before entry preparation";
+      s.lastUpdate = null;
+      s.docs.find(d => d.type === "Packing List").status = "review";
+      s.docs.find(d => d.type === "Packing List").note = "Uploaded by client, not yet verified";
+      s.docs.find(d => d.type === "Bill of Lading").status = "received";
+      s.timeline = s.timeline.filter(e => e.ts <= at(-1,10,40));
+      s.comms = s.comms.filter(m => m.ts <= at(-2,14,20));
+      state.assignments = state.assignments.filter(a => a.shipment !== HERO);
+      go("shipments"); flashCard(HERO);
+    }},
+  { t:"Everything arrived, nothing was cross-checked", s:"Invoice, packing list, bill of lading and Form E are all on file. Today that comparison is somebody reading two PDFs side by side.",
+    run(){ go("shipments"); openShip(HERO); }},
+  { t:"Flagged, and the case is held", s:"The packing list says 486 cartons, the bill of lading says 468. The case is blocked before anything is filed, and the reason is written down.",
+    run(){ runCheck(HERO); go("shipments"); openShip(HERO); }},
+  { t:"A request to the client is drafted", s:"Written from the case record, addressed to the right contact, held as a draft. Nothing is sent automatically.",
+    run(){ draftFor(HERO, true); openShip(HERO); }},
+  { t:"The client sends a corrected packing list", s:"468 cartons, matching the bill of lading. The re-check passes, the blocker clears, and the case advances to entry preparation.",
+    run(){ resolveDiscrepancy(HERO, true); openShip(HERO); }},
+  { t:"Filed, assessed, and cleared for release", s:"Reaching For Release creates the field task automatically, and leaves it unassigned for the manager.",
+    run(){
+      moveShipment(HERO, "filed", true);
+      moveShipment(HERO, "payex", true);
+      moveShipment(HERO, "release", true);
+      const s = shipByRef(HERO);
+      s.nextAction = "Collect the release order at Cebu International Port";
+      if (!state.assignments.some(a => a.shipment === HERO)) createReleaseTask(s);
+      closePanel(); go("shipments"); flashCard(HERO);
+    }},
+  { t:"Someone is already going there", s:"Marco is at Cebu International Port until about 12:15 PM for the Northshore examination. The second task is at the same port.",
+    run(){ go("dispatch"); const a = state.assignments.find(x => x.shipment === HERO); if (a) flashAsn(a.id); }},
+  { t:"The trip is combined", s:"One person, one trip, two tasks. The manager approves the suggestion rather than the system deciding on its own.",
+    run(){ const a = state.assignments.find(x => x.shipment === HERO && x.status === "unassigned");
+      if (a) assignTo(a.id, "marco", true); go("dispatch"); }},
+  { t:"Marco checks in and uploads the release order", s:"The document lands on the case by itself. No one has to remember to forward it.",
+    run(){ const a = state.assignments.find(x => x.shipment === HERO); if (a) completeAsn(a.id, true); go("dispatch"); }},
+  { t:"The shipment moves to delivery", s:"Completing the field task advances the case. The board reflects what happened at the port, not what someone remembered to type.",
+    run(){ moveShipment(HERO, "delivery", true); go("shipments"); openShip(HERO); }},
+  { t:"A client update is drafted from the record", s:"It quotes the release order that was actually uploaded, so the update matches what happened.",
+    run(){ draftFor(HERO, true); go("shipments"); openShip(HERO); }},
+  { t:"The manager sees all of it without asking anyone", s:"Stage, blocker, owner, next action, field assignment and the latest client message, on one board.",
+    run(){ closePanel(); go("overview"); }}
+];
+let demoStep = -1;
+function startDemo(){ gotoStep(0); }
+function gotoStep(n){
+  if (n < 0 || n >= DEMO.length) return;
+  clearToasts();
+  toastSilent = true;
+  state = JSON.parse(INITIAL);
+  closePanel();
+  for (let i = 0; i <= n; i++) DEMO[i].run();
+  toastSilent = false;
+  demoStep = n;
+  render();
+  renderDemoBar();
+}
+function endDemo(){
+  demoStep = -1;
+  document.getElementById("demobar").classList.remove("on");
+  document.body.classList.remove("demo-on");
+  clearToasts();
+}
+function renderDemoBar(){
+  const bar = document.getElementById("demobar");
+  document.body.classList.toggle("demo-on", demoStep >= 0);
+  if (demoStep < 0){ bar.classList.remove("on"); return; }
+  const d = DEMO[demoStep];
+  bar.classList.add("on");
+  if (cmdOpen) toggleCmd(false);
+  bar.innerHTML = '<span class="step">' + (demoStep + 1) + ' / ' + DEMO.length + '</span>' +
+    '<span class="txt"><b>' + esc(d.t) + '</b> &nbsp;<span>' + esc(d.s) + '</span></span>' +
+    '<span class="acts">' +
+      '<button class="btn sm" data-demo="prev"' + (demoStep === 0 ? " disabled" : "") + '>Back</button>' +
+      (demoStep === DEMO.length - 1 ?
+        '<button class="btn sm" data-demo="end">Finish</button>' :
+        '<button class="btn sm primary" data-demo="next">Next</button>') +
+      '<button class="btn sm" data-demo="end">Exit</button>' +
+    '</span><span class="demo-prog" style="width:' + ((demoStep + 1) / DEMO.length * 100) + '%"></span>';
+}
+function flashCard(ref){
+  setTimeout(() => {
+    const el = document.querySelector('[data-card="' + ref + '"]');
+    if (el){ el.classList.add("flash"); el.scrollIntoView({ block:"nearest", inline:"center", behavior:"smooth" }); }
+  }, 40);
+}
+function flashAsn(id){
+  setTimeout(() => {
+    const el = document.querySelector('[data-acard="' + id + '"]');
+    if (el){ el.classList.add("flash"); el.scrollIntoView({ block:"nearest", inline:"center", behavior:"smooth" }); }
+  }, 40);
+}
+
+/* =========================================================================
+   Events
+   ========================================================================= */
+document.addEventListener("click", e => {
+  if (suppressClick) return;
+  const t = e.target;
+
+  const dismiss = t.closest('[data-act="dismiss"]');
+  if (dismiss){ const tt = dismiss.closest(".toast"); if (tt) tt.remove(); return; }
+
+  const act = t.closest("[data-act]");
+  if (act){
+    const [kind, arg, arg2] = act.getAttribute("data-act").split(":");
+    const tt = act.closest(".toast");
+    if (kind === "close") return closePanel();
+    if (kind === "check") runCheck(arg);
+    if (kind === "draft") draftFor(arg);
+    if (kind === "resolve") resolveDiscrepancy(arg);
+    if (kind === "advance") advance(arg);
+    if (kind === "rec") recommendFor(arg);
+    if (kind === "assign"){ assignTo(arg, arg2); if (tt) tt.remove(); }
+    if (kind === "copy"){ act.textContent = "Copied"; setTimeout(() => { act.textContent = "Copy draft"; }, 1400); }
+    if (kind === "ship") openShip(arg);
+    if (kind === "view"){ go(arg); if (tt) tt.remove(); }
+    if (openRef && kind !== "close") renderPanel();
+    return;
+  }
+
+  const dq = t.closest("[data-q]");
+  if (dq){
+    const q = dq.getAttribute("data-q");
+    if (dq.closest("#cmdOut") || dq.closest(".cmd-panel")) runCmd(q);
+    else { ask(q); if (view !== "briefing") go("briefing"); }
+    return;
+  }
+
+  const nav = t.closest("[data-view]");
+  if (nav){ go(nav.getAttribute("data-view")); return; }
+
+  const jump = t.closest("[data-jump]");
+  if (jump){ go(jump.getAttribute("data-jump")); return; }
+
+  const ship = t.closest("[data-ship]");
+  if (ship){ openShip(ship.getAttribute("data-ship")); return; }
+
+  const asn = t.closest("[data-asn]");
+  if (asn){ closePanel(); go("dispatch"); flashAsn(asn.getAttribute("data-asn")); return; }
+
+  const client = t.closest("[data-client]");
+  if (client){
+    const c = clientById(client.getAttribute("data-client"));
+    ask("What did we last tell " + c.name.split(" ")[0] + "?");
+    go("briefing");
+    return;
+  }
+
+  const staff = t.closest("[data-staff]");
+  if (staff){
+    const s = staffById(staff.getAttribute("data-staff"));
+    ask("Where is " + s.name.split(" ")[0] + " assigned today?");
+    go("briefing");
+    return;
+  }
+
+  const df = t.closest("[data-docf]");
+  if (df){ docFilter = df.getAttribute("data-docf"); render(); return; }
+
+  const dm = t.closest("[data-demo]");
+  if (dm){
+    const a = dm.getAttribute("data-demo");
+    if (a === "next") gotoStep(demoStep + 1);
+    if (a === "prev") gotoStep(demoStep - 1);
+    if (a === "end") endDemo();
+    return;
+  }
+});
+
+document.getElementById("scrim").addEventListener("click", closePanel);
+document.getElementById("demoBtn").addEventListener("click", startDemo);
+document.getElementById("resetBtn").addEventListener("click", () => {
+  state = JSON.parse(INITIAL);
+  filters = { q:"", staff:"", client:"", urg:"", port:"", mode:"" };
+  thread = []; cmdAnswer = null; docFilter = "outstanding";
+  closePanel(); endDemo(); clearToasts(); go("overview");
+});
+document.getElementById("cmdPill").addEventListener("click", () => toggleCmd());
+
+document.addEventListener("input", e => {
+  if (e.target.id === "q"){ filters.q = e.target.value; const p = e.target.selectionStart; render();
+    const n = document.getElementById("q"); if (n){ n.focus(); n.setSelectionRange(p, p); } }
+});
+document.addEventListener("change", e => {
+  const f = e.target.closest("[data-f]");
+  if (f){ filters[f.getAttribute("data-f")] = f.value; render(); }
+});
+document.addEventListener("keydown", e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k"){ e.preventDefault(); toggleCmd(); return; }
+  if (e.key === "Escape"){ if (cmdOpen) toggleCmd(false); else if (openRef) closePanel(); return; }
+  if (e.key === "Enter"){
+    if (e.target.id === "cmdInput"){ runCmd(e.target.value); e.target.value = ""; }
+    if (e.target.id === "askInput"){ ask(e.target.value); e.target.value = ""; renderThread(); }
+    return;
+  }
+  if (demoStep >= 0 && !/input|textarea|select/i.test(e.target.tagName)){
+    if (e.key === "ArrowRight"){ gotoStep(demoStep + 1); e.preventDefault(); }
+    if (e.key === "ArrowLeft"){ gotoStep(demoStep - 1); e.preventDefault(); }
+  }
+});
+document.addEventListener("click", e => {
+  if (cmdOpen && !e.target.closest(".cmd")) toggleCmd(false);
+}, true);
+
+/* dragging cards between stages (pointer based, so mouse, trackpad and touch all work) */
+let drag = null, suppressClick = false;
+
+document.addEventListener("pointerdown", e => {
+  if (e.button !== 0) return;
+  const card = e.target.closest("[data-card]");
+  if (!card) return;
+  drag = { ref: card.getAttribute("data-card"), el: card, x0: e.clientX, y0: e.clientY,
+           ghost: null, col: null, id: e.pointerId };
+});
+document.addEventListener("pointermove", e => {
+  if (!drag) return;
+  if (!drag.ghost){
+    if (Math.abs(e.clientX - drag.x0) + Math.abs(e.clientY - drag.y0) < 6) return;
+    const r = drag.el.getBoundingClientRect();
+    drag.ox = drag.x0 - r.left;
+    drag.oy = drag.y0 - r.top;
+    drag.ghost = drag.el.cloneNode(true);
+    drag.ghost.className = drag.el.className + " ghost";
+    drag.ghost.style.cssText = "position:fixed;z-index:60;pointer-events:none;width:" + r.width +
+      "px;box-shadow:0 8px 24px rgba(21,27,35,.18);opacity:.96;transform:rotate(-1deg)";
+    document.body.appendChild(drag.ghost);
+    drag.el.classList.add("dragging");
+    document.body.style.cursor = "grabbing";
+  }
+  e.preventDefault();
+  drag.ghost.style.left = (e.clientX - drag.ox) + "px";
+  drag.ghost.style.top = (e.clientY - drag.oy) + "px";
+  drag.ghost.style.display = "none";
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  drag.ghost.style.display = "";
+  const col = under && under.closest(".col[data-stage]");
+  if (col !== drag.col){
+    if (drag.col) drag.col.classList.remove("dragover");
+    if (col) col.classList.add("dragover");
+    drag.col = col;
+  }
+});
+function endDrag(){
+  if (!drag) return;
+  const { ghost, col, ref, el } = drag;
+  if (ghost) ghost.remove();
+  if (col) col.classList.remove("dragover");
+  if (el) el.classList.remove("dragging");
+  document.body.style.cursor = "";
+  drag = null;
+  if (ghost){
+    suppressClick = true;
+    setTimeout(() => { suppressClick = false; }, 0);
+    if (col) moveShipment(ref, col.getAttribute("data-stage"));
+  }
+}
+document.addEventListener("pointerup", endDrag);
+document.addEventListener("pointercancel", endDrag);
+
+/* boot */
+render();
+
+</script>
+</body>
+</html>

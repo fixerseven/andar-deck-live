@@ -846,6 +846,57 @@ html:not(.js) .steps{display:none}
   96%,100%{transform:translateX(calc(200% + var(--cg) * 2));opacity:0}
 }
 
+/* ── 13 the worked example · a brokerage's board ──────────────────
+   The as-built set is blueprint because it was built. This one stays on
+   paper on purpose: it is drawn, not constructed, and the stock says so
+   before a word does. Same .screen furniture as sheet 12 — the same firm
+   drew both — with a denser interior, because the room is meant to lean in. */
+.cc-rail{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:1px;background:var(--faint);
+  border:1px solid var(--faint);margin-bottom:calc(var(--k)*12);
+}
+.cc-rail span{
+  background:#fff;padding:calc(var(--k)*7) calc(var(--k)*6) calc(var(--k)*6);
+  display:flex;flex-direction:column;gap:calc(var(--k)*3);min-width:0;
+}
+.cc-rail em{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*8.5);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--mid);font-style:normal;line-height:1.15;
+}
+.cc-rail b{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*15);font-variant-numeric:tabular-nums;line-height:1}
+/* one stage carries the decision, so one stage carries the red */
+.cc-rail span.on{background:rgba(216,64,31,.05);box-shadow:inset 0 calc(var(--k)*2) 0 var(--red)}
+.cc-rail span.on em,.cc-rail span.on b{color:var(--red-ink)}
+
+.cc-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:calc(var(--k)*12);align-items:start}
+.cc-h{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--mid);margin:0 0 calc(var(--k)*7);
+  padding-bottom:calc(var(--k)*6);border-bottom:1px solid var(--faint);
+}
+.cc-h.r{color:var(--red-ink);border-bottom-color:var(--red)}
+.cc-it{padding:calc(var(--k)*7) 0;border-bottom:1px solid var(--hair)}
+.cc-it:last-child{border-bottom:0}
+.cc-it .ref{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*10);letter-spacing:.06em;margin:0}
+.cc-it .ti{font-size:calc(var(--k)*11);color:var(--mid);margin:calc(var(--k)*2) 0 0;line-height:1.35}
+
+.cc-gate{border:1px solid var(--red);background:rgba(216,64,31,.04);padding:calc(var(--k)*10) calc(var(--k)*11)}
+.cc-gate .cc-h{margin-bottom:calc(var(--k)*8)}
+.cc-task{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*12);letter-spacing:.01em;margin:0;line-height:1.25}
+.cc-meta{font-size:calc(var(--k)*10.5);color:var(--mid);margin:calc(var(--k)*3) 0 0}
+.cc-rec{
+  font-size:calc(var(--k)*10.5);color:var(--ink);margin:calc(var(--k)*8) 0 0;
+  padding:calc(var(--k)*6) calc(var(--k)*8);background:#fff;border:1px solid var(--faint);
+}
+.cc-btns{display:flex;gap:calc(var(--k)*6);margin-top:calc(var(--k)*8)}
+.cc-b{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.14em;
+  text-transform:uppercase;padding:calc(var(--k)*5) calc(var(--k)*10);
+  border:1px solid var(--faint);color:var(--mid);background:#fff;
+}
+.cc-b.r{border-color:var(--red);background:var(--red);color:#fff}
+.cc-note{font-size:calc(var(--k)*10);color:var(--red-ink);margin:calc(var(--k)*8) 0 0;line-height:1.4}
+
 /* ── 14 the approval gate, given the whole sheet ──────────────────
    One decision, at the size it has in life. The amount leads, because that
    is what an owner is actually looking at. */
@@ -1478,6 +1529,9 @@ body.splash .prog{background:rgba(255,255,255,.13)}
   .lapcal{align-items:flex-start}
   .laptop{--LW:100%;width:100%}
   .plainly{grid-template-columns:1fr;gap:14px}
+  /* the brokerage board: eight stages will not sit in a row on a phone */
+  .cc-rail{grid-template-columns:repeat(4,1fr)}
+  .cc-grid{grid-template-columns:1fr;gap:14px}
   .creds li{grid-template-columns:12px 1fr}
   .mv-fig{font-size:clamp(44px,13vw,104px)}
   .ovgrid{grid-template-columns:repeat(2,1fr)}
@@ -2117,6 +2171,78 @@ body.splash .prog{background:rgba(255,255,255,.13)}
   </div>
 </section>
 
+<!-- ═══ 13 · the worked example. The proof set ends and the paper comes back,
+     because this one was drawn rather than built. It is what a one-week
+     diagnostic hands over before anybody has paid to construct anything. ═══ -->
+<section class="sh" id="s13" data-dwg="Worked example" data-t="Worked example: a brokerage" aria-label="Sheet 13: A worked example, a customs brokerage">
+  <div class="in split n">
+    <div class="stack">
+      <div class="row en">
+        <span class="lab">Worked example</span>
+        <span class="tagline">Drawn, not built</span>
+      </div>
+      <h2 class="head sm en">A customs brokerage, on one board.</h2>
+      <p class="body en">A brokerage in Cebu clears shipments for a dozen importers. Every case lives in an inbox, a Viber thread, and a folder on somebody's desk. Ask where a container is and three people check three different places.</p>
+      <p class="body en"><strong>This is what the diagnostic hands you.</strong> Eight stages from arrival to closed. Every document scored against the checklist that case actually needs. Every field errand with a name against it. One screen answers the question the owner asks forty times a day.</p>
+      <hr class="rule en">
+      <p class="body en">It is a working prototype, not a picture of one. You can click it. The shipments, the clients and the staff are invented, and it touches no customs, carrier or bank system — the shape is what is being shown, not the data.</p>
+      <div class="row en" style="gap:calc(var(--k)*14)">
+        <a class="btn-red" href="demos/dca-shipment-command-center/" target="_blank" rel="noopener">Open the prototype</a>
+        <span class="lab">New tab · runs offline</span>
+      </div>
+      <p class="pnote en">Presenter note · hand them the laptop here. Overview first, then Field Dispatch. The unassigned task is the whole pitch — let them find it rather than narrating it. Name DCA only in the room it was drawn for.</p>
+    </div>
+
+    <div class="en">
+      <p class="lab" style="margin-bottom:calc(var(--k)*10);text-align:right">Detail E · the board · scale 1:1</p>
+      <div class="screen">
+        <div class="scr-bar">
+          <i></i><i></i><i></i>
+          <span class="u">dca &nbsp;·&nbsp; shipment command center</span>
+        </div>
+        <div class="scr-body">
+          <div class="strip">
+            <span class="stat" style="display:flex;align-items:center;gap:calc(var(--k)*7)"><span class="dot sm"></span>Live</span>
+            <span class="stat">Cases open<b class="tn" data-count="14">0</b></span>
+            <span class="stat">Field tasks today<b class="tn" data-count="6">0</b></span>
+            <span class="stat">Importers<b class="tn" data-count="10">0</b></span>
+            <span class="illus" style="margin-left:auto">Illustrative</span>
+          </div>
+
+          <div class="cc-rail" aria-hidden="true">
+            <span><em>New</em><b>2</b></span>
+            <span><em>Awaiting docs</em><b>2</b></span>
+            <span><em>Entry prep</em><b>2</b></span>
+            <span><em>Filed</em><b>3</b></span>
+            <span><em>Payment / exam</em><b>2</b></span>
+            <span class="on"><em>For release</em><b>2</b></span>
+            <span><em>Delivery</em><b>1</b></span>
+            <span><em>Closed</em><b>2</b></span>
+          </div>
+
+          <div class="cc-grid">
+            <div>
+              <p class="cc-h">Needs attention today · ranked by consequence</p>
+              <div class="cc-it"><p class="ref">HBS-2026-018</p><p class="ti">Packing list quantity differs from the bill of lading</p></div>
+              <div class="cc-it"><p class="ref">RHD-2026-014</p><p class="ti">Assessed value disputed, awaiting client instruction</p></div>
+              <div class="cc-it"><p class="ref">HBS-2026-021</p><p class="ti">Certificate of Origin missing</p></div>
+              <div class="cc-it"><p class="ref">BCS-2026-016</p><p class="ti">Assessment complete, client payment still pending</p></div>
+            </div>
+            <div class="cc-gate">
+              <p class="cc-h r">Waiting for you</p>
+              <p class="cc-task">A-3316 · Collect release order and gate pass</p>
+              <p class="cc-meta">Cebu International Port · Pier 4 · VPF-2026-020</p>
+              <p class="cc-rec"><strong>Suggested</strong> — Marco Villareal. He is already at CIP on another case.</p>
+              <div class="cc-btns"><span class="cc-b r">Assign</span><span class="cc-b">Somebody else</span></div>
+              <p class="cc-note">Left unassigned on purpose. The board knows who should go. It does not send him.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="sh" id="s14" data-t="The approval gate" aria-label="Sheet 14: The approval gate">
   <div class="in stack" style="gap:calc(var(--k)*18)">
     <div class="split en" style="align-items:end;gap:calc(var(--k)*50)">
@@ -2422,7 +2548,8 @@ body.splash .prog{background:rgba(255,255,255,.13)}
       document.body.classList.toggle('asbuilt',ab);
       /* the cover has no drawing furniture on it at all */
       document.body.classList.toggle('splash',s.classList.contains('splash'));
-      dwgVal.textContent=ab?'As-built record':'Company profile';
+      /* a sheet may name its own drawing — the worked example is neither */
+      dwgVal.textContent=s.dataset.dwg||(ab?'As-built record':'Company profile');
       /* arriving forward starts a build at zero; arriving backward starts it complete */
       if(maxStep(i)&&i!==prev){
         /* forward arrival starts at Day 0; stepping back into it lands complete */
