@@ -42,7 +42,7 @@ believe they have to choose. The site's job is to show they don't.
 ### Written for
 
 The owner of a Cebu business with ten to two hundred people. Distribution, trading,
-brokerage, delivery, export, service. Not technical, not against technology, sold to badly
+brokerage, delivery, export, courts and gyms, service. Not technical, not against technology, sold to badly
 before. Decides about you in ninety seconds, standing up, on a phone.
 
 ### How we write
@@ -85,7 +85,7 @@ live mockups, rebuilt as components, each stamped *Illustrative*.
 00  Nav            mark · Work · How it goes · Who · [Book a walk-through] · Cebu clock
 01  Hero           "Make it run."  — the assembly drawing that starts running
 02  Recognition    "Right now, it runs because you're there."   — one screen
-03  Rail (pinned)  six cards, six businesses, right to left     — THE MOMENT
+03  Rail (pinned)  seven cards, six businesses, right to left   — THE MOMENT
 04  The gate       "It still asks you first."                   — interactive
 05  In writing     four promises
 06  How it goes    we come and look · we pick one thing · we build it · we keep it running
@@ -110,7 +110,7 @@ without a sentence spent on it. Transparent over the hero; gains a paper fill wh
 - H1: **Make it run.**
 - Sub: *So your business keeps moving when you're not there. Built in Cebu by two people
   who run businesses of their own.*
-- Buttons: **Book a walk-through** · **See five businesses that do ↓**
+- Buttons: **Book a walk-through** · **See six businesses that do ↓**
 - Small, below the fold line: *andar, v. — to run; to operate; of a machine, to be working.*
 - The drawing: four numbered parts of a business — stock, invoice, terms, the gate — as a
   still line drawing, readable in a screenshot. Then it starts: flow lines advance, parts tick
@@ -129,14 +129,14 @@ without a sentence spent on it. Transparent over the hero; gains a paper fill wh
 
 No numbers, no fear. The reader supplies the evidence from last week.
 
-### 03 · The rail — six businesses
+### 03 · The rail — six businesses, then yours
 
 The reference mechanic (ohmd.com): the section pins, a headline is held behind the cards,
 cards travel right to left across it, the section releases when the last card clears.
 
 - Held headline: **It runs. Even when you're not there.**
-- Sub: *Five businesses. Two of them are ours.*
-- Progress: a datum line, ticked 01–06, in the drawing's idiom.
+- Sub: *Six businesses. Two of them are ours.*
+- Progress: a datum line, ticked 01–07, in the drawing's idiom.
 
 **Card anatomy**, the same on every card: *the business* (eyebrow) → *what they needed*
 (one plain line) → *what changed* (headline) → two or three sentences of what a day looks
@@ -170,21 +170,31 @@ Now the shelf stays put, your phone gets a message, and nothing moves until you 
 Screen: the picking terminal — *Release held · ₱312,880 overdue · Ask the boss*.
 Truth: Built for our own business.
 
-#### 02 · A materials trader · two warehouses · *needed one glance, not three phone calls*
+#### 02 · A badminton court · six courts, open till midnight · *needed to stop taking bookings on Messenger*
+**Members book on your page. It looks like yours, because it is.**
+Your name, your colours, your courts. A member picks a court and a time on their phone,
+pays, and gets the confirmation. Nobody's answering Messenger at eleven at night, and no
+court gets booked twice. Works the same for a gym, a pool, or a futsal pitch.
+Screen: the court's own booking page, in the court's own colours — *Court 3 · Tonight 8–9 ·
+₱350 · Booked*. Not an Andar screen; theirs.
+Truth: A working sample. Click it. *(If this is live for Ac's fitness brand, label it
+"Built for our own business" and it becomes the second "ours".)*
+
+#### 03 · A materials trader · two warehouses · *needed one glance, not three phone calls*
 **How much stock do we have? You look at your phone. That's it.**
 Stock in both warehouses, money owed to you, money you owe, and anything waiting on your
 say-so. As of right now, wherever you are.
 Screen: the handset — four numbers and *1 waiting on you*.
 Truth: Built for our own business.
 
-#### 03 · A furniture exporter · billing in dollars · *needed to get paid faster*
+#### 04 · A furniture exporter · billing in dollars · *needed to get paid faster*
 **The invoice goes out before the container does.**
 It's ready the moment the order is, in pesos and dollars at today's rate, and the customer
 pays by scanning it. Nobody retypes a number, so nobody gets one wrong.
 Screen: the invoice, the QR, *Scan to pay*.
 Truth: Built for our own business.
 
-#### 04 · A delivery company · vans and three branches · *needed to stop being the person everyone calls*
+#### 05 · A delivery company · vans and three branches · *needed to stop being the person everyone calls*
 **Every problem, written down, with a name on it.**
 A van's GPS drops. A branch count is off. A customer wants a receipt reprinted. Each one
 lands on a board, somebody's name goes on it, and the owner sees what came in and what's
@@ -192,7 +202,7 @@ done — without a single call.
 Screen: the board — *14 open · 38 sorted today*.
 Truth: Running every day at a Cebu company. Named once they say yes.
 
-#### 05 · A customs brokerage · a dozen importers · *needed every shipment in one place*
+#### 06 · A customs brokerage · a dozen importers · *needed every shipment in one place*
 **Where's the container? One screen answers it.**
 Every shipment moves through eight steps, arrival to delivered. Every document ticked off.
 Every errand at the port has a name next to it. Ask forty times a day and get the same
@@ -200,12 +210,12 @@ answer every time.
 Screen: the command centre. Button: **Click the working sample** (new tab, runs offline).
 Truth: A working sample with made-up data. Click it.
 
-#### 06 · Your business
+#### 07 · Your business
 **What's waiting on you right now?**
 Tell us. We'll come and look, and we'll say honestly whether there's something worth
 building. The one-page picture of your business is yours to keep either way.
 Button: **Book a walk-through**.
-The rail ends on the visitor's own business. They've just slid through five others and
+The rail ends on the visitor's own business. They've just slid through six others and
 arrived at theirs.
 
 ### 04 · The gate — full width, interactive
