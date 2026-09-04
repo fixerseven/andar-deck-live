@@ -439,6 +439,7 @@
           .to({},{duration:12},'>')
           .to(A,{opacity:0,y:-90,ease:'power2.in',duration:16},'>')
           .fromTo(B,{opacity:0,y:110},{opacity:1,y:0,ease:'power2.out',duration:16},'<+=6')
+          .to(B.querySelector('.now-bg'),{opacity:1,ease:'none',duration:18},'<')
           .to(bWords,{opacity:1,ease:'none',stagger:{each:1},duration:bWords.length},'>-=4')
           .to({},{duration:8},'>')
           .to(hand,{opacity:1,y:0,ease:'power2.out',duration:10},'>')
