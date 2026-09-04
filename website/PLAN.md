@@ -1,239 +1,403 @@
 # Andar website · content and section plan
 
-Drawing: Company website · Rev A · 2026-09-03
-Companion: `website/UX-RESEARCH.md` (interaction design, motion, stack, wireframes)
+Drawing: Company website · Rev B · 2026-09-04
+Companion: `website/UX-RESEARCH.md` — interaction design, motion, stack, wireframes.
 
-## 1. What the site has to do
+Rev B rebuilds the content from first principles. Rev A borrowed its argument from the
+pitch deck (the ₱1,000,000 vendor quote, the APQC and Hackett benchmarks, the NBER 89%
+figure, the GCash adoption curve). All of that is retired. It argued *that automation is
+worth doing* — a case the reader either already accepts or will not be argued into. This
+revision argues something narrower and truer: *this specific thing, in your operation,
+should stop depending on somebody remembering.*
 
-One page. Two readers, one job each.
+---
 
-| Reader | What they must get | Test |
-|---|---|---|
-| Owner of a Cebu operation, not technical | "These two build the thing that stops my stock leaving unpaid, and they'll do it in weeks." | Can they say what Andar does after the hero and one card? |
-| Creative director / awards jury | A visual language nobody else in the category has: the general-assembly drawing, used with restraint, that starts to run. | Do they stop at the hero, and does the rail feel inevitable rather than borrowed? |
+## 1. Positioning
 
-The reference video (OhMD, "100M patient interactions") gives the skeleton: a headline held in place, then a pinned section where mixed-width cards slide right-to-left across it. We keep that mechanic and replace the healthcare photography with Andar's drawings and live device mockups.
+### The enemy, named in the reader's own words
 
-Copy rules, from the deck and kept for the web:
+Every small operation in Cebu is held together by a person remembering. Somebody
+remembers which customer is over their terms. Somebody remembers that the container
+cleared on Tuesday. Somebody remembers to send the invoice. It works, until that person
+is on leave, or busy, or wrong, and it never scales past the number of things one head
+can hold.
 
-- One idea per viewport. If a screen needs two headlines it is two screens.
-- Plain words. Grade-8 reading level. Pesos, weeks, Tuesday.
-- Show the outcome, not the feature. "You stop asking how much stock you have," never "real-time inventory API."
-- Every use-case card carries a "What it replaces" line. That line is where the owner recognises themself.
-- The word "AI" does not appear in a headline anywhere on the page. (The deck's whole argument is that nobody diagnosed the problem first.)
-- Nothing on the page claims a client name until written permission is in hand.
+That is the whole pitch, and it needs no statistic to land. The owner has lived it.
 
-## 2. Visual language, inherited from the deck
+> **Right now, your business runs on someone remembering.**
 
-Everything below already exists in `index.html` and carries over unchanged unless the UX research argues otherwise.
+### The promise
 
-| Token | Light | Dark (navy sheet) |
+> **We make it run.**
+> *andar, v. — to run; to operate; of a machine, to be working.*
+
+One line under it, for the reader who needs the literal version:
+
+> We build the one system your operation is missing, put it in production in weeks, and
+> leave every decision it makes in your hands.
+
+### Three pillars
+
+| | Pillar | The line | Why it is defensible |
+|---|---|---|---|
+| 01 | **Operators, not vendors** | "We run businesses of our own. Both of us are in the room, every engagement." | Not a claim a freelancer or a dev shop can copy. It is a biography. |
+| 02 | **Narrow, and actually shipped** | "One bottleneck. In production in weeks, used by your staff on an ordinary Tuesday." | Falsifiable, and the prototype on the page proves the shape. |
+| 03 | **You keep every decision** | "Nothing automatic touches your money. The system asks, and waits." | **The ownable one.** Nobody else in this category is selling restraint. |
+
+Pillar 03 is the position. Everyone selling software to an owner promises to take work
+off their plate; the owner hears "take control away from me," and that fear is the real
+reason the sale dies. Andar is the only one saying: the system does the remembering, you
+keep the deciding. The approval gate is not a feature on the list — it is the argument,
+and the site should be built so a visitor cannot leave without having pressed it.
+
+### Who this is written for
+
+The owner of a Cebu operation with somewhere between 10 and 200 staff — distribution,
+trading, brokerage, service, light manufacturing. They are not technical. They are not
+anti-technology; they have simply been sold to badly before. They can sign a cheque
+without asking anyone. They will decide about you in ninety seconds.
+
+### What we no longer say
+
+- No borrowed benchmarks. If a number is on the page it is Andar's own, or it is not there.
+- The word "AI" appears nowhere in a headline. It is a category the reader distrusts and
+  it describes none of the value.
+- No "digital transformation," "solutions," "leverage," "streamline," "empower."
+- No claim about a client until written permission is in hand.
+- No fear-based framing. The reader is running a working business. Insulting it loses them.
+
+---
+
+## 2. Visual language
+
+Carried from the deck unchanged, unless the UX research argues otherwise.
+
+| Token | Light | Dark |
 |---|---|---|
 | paper | `#FAF9F5` | `#10293A` |
-| bone (panels) | `#F1EFE8` | `#0B1E2B` |
+| bone | `#F1EFE8` | `#0B1E2B` |
 | ink | `#16181A` | `#DCE8EE` |
 | mid | `#5F6469` | `#93AAB8` |
-| red (one accent, spent on the approval gate and CTAs only) | `#D8401F` | `#F2673C` |
-| hair / faint / grid | 8% / 14% / 4.5% ink | 12% / 22% / 5.5% ink |
+| red — one accent, spent only on the approval gate and the CTA | `#D8401F` | `#F2673C` |
 
-- Display: FF DIN, falling back to Barlow Semi Condensed. Reading: Barlow.
-- Ease: `cubic-bezier(.16, 1, .3, 1)`. Nothing bounces.
-- Motifs: sheet number, title block, "Detail E · bay 05 · scale 1:1" callouts, datum lines, "Illustrative" stamp on every mockup. On the web these are used once per section at most, as labels, never as decoration.
-- Mockups are rebuilt as live HTML components (picking terminal, handset, invoice, kanban board, command center), not screenshots. They already exist in the deck's markup.
+Display: FF DIN → Barlow Semi Condensed. Reading: Barlow. Ease `cubic-bezier(.16,1,.3,1)`.
+Nothing bounces.
+
+Motifs from the general-assembly drawing — sheet numbers, title blocks, `Detail E · bay 05
+· scale 1:1` callouts, datum lines, the `Illustrative` stamp on every mockup. Used once
+per section at most, always carrying information (a real label, a real scale), never as
+decoration. The moment a callout labels nothing, it is a gimmick and it comes out.
+
+Device mockups are rebuilt as live HTML, not screenshots. They already exist in the deck.
+
+---
 
 ## 3. Page map
 
 ```
-00  Nav            mark · Work · Method · Who · [Book a diagnostic]
-01  Hero           "We make it run."  + the assembly drawing that starts running
-02  Rail (pinned)  six use-case cards + three stat interstitials, right to left
-03  The ₱1M        the cold open, one number, one week
-04  By hand        what manual is already costing you · three benchmarks
-05  Problem first  tool-first vs problem-first routing · the 89% stat
-06  Method         Diagnose · Narrow · Ship · Hold, drawn to scale
-07  Who            two founders
-08  Engagements    Diagnostic · Sprint · Retainer
-09  Move first     "You have done this before" · GCash
-10  CTA            "Let's map your operation."
-11  Footer         title block · registered entity · Cebu
+00  Nav              mark · Work · Method · Who · [Book a diagnostic]
+01  Hero             "We make it run."          — the assembly drawing that starts running
+02  Recognition      "Right now, it runs on someone remembering."   — one screen, one idea
+03  Rail  (pinned)   six use-case cards, right to left              — THE MOMENT
+04  The gate         "Nothing moves until you say so."              — interactive, the position
+05  In writing       four promises, drawn as a title block          — replaces the old stats
+06  Method           Diagnose · Narrow · Ship · Hold, drawn to scale
+07  Who              two operators
+08  Engagements      Diagnostic · Sprint · Retainer
+09  CTA              "Let's map your operation."
+10  Footer           title block
 ```
 
-Sections 03 to 05 are the argument. Sections 06 to 08 are the offer. An owner who reads only 01, 02 and 10 still gets the whole pitch. That is the Apple test and it is the reason the rail comes second, not fifth.
+An owner who reads only 01, 02 and 09 still gets the entire pitch. That is the Apple test,
+and it is why the rail sits third rather than sixth. Sections 04 and 05 are the trust
+argument, and they are made of Andar's own conduct rather than anybody's research.
+
+---
 
 ## 4. Section by section
 
 ### 00 · Nav
 
-- Left: Andar mark. Right: Work, Method, Who, then the one red pill: "Book a diagnostic".
-- Far right, small and monospace-ish: "Cebu · GMT+8 · 14:22" (live clock, from the deck's header). It says "we are a real place, contactable now" without a sentence.
-- Nav is transparent over the hero, gains a hairline and paper fill once the rail pins.
+Left, the Andar mark. Centre-right, three words: Work, Method, Who. Right, one red pill:
+**Book a diagnostic**. Far right, small: `Cebu · GMT+8 · 14:22`, a live clock.
+
+That clock is doing real work. It says *we are a real place in your time zone and you can
+reach us now*, which is the single largest objection to hiring anyone for software, and it
+says it without a sentence of copy.
+
+Transparent over the hero; gains a hairline and a paper fill the moment the rail pins.
 
 ### 01 · Hero
 
 - Eyebrow: `Sheet 01 · General assembly`
 - H1: **We make it run.**
-- Sub (max 2 lines): "Software for the part of your business that still runs by hand. Built in Cebu by two people who run businesses of their own. Weeks, not quarters."
-- Primary CTA: Book a diagnostic. Secondary: "See what we've built ↓" (scrolls to the rail).
-- Dictionary line, small, below the fold line: *andar, v. — to run; to operate; of a machine, to be working.*
-- Visual: the deck's title-sheet drawing, the four numbered parts of an operation (01 Stock, 02 Invoice, 03 Terms, 04 Approval gate) as a line drawing. At load it is a still drawing. On the first scroll tick or after 1.5 s idle, it starts running: the dashed flow lines advance, the parts tick through their states, and the gate at 04 holds until a small "Approved" stamp lands. The whole thing is the tagline, drawn.
-- Three hero concepts are ranked in the UX research. This is the content brief; the mechanism is theirs to pick.
+- Sub, two lines maximum:
+  > Software for the part of your business that still runs on someone remembering.
+  > Built in Cebu by two people who run operations of their own.
+- Primary: **Book a diagnostic**. Secondary: **See what we've built ↓**
+- Below the fold line, small: *andar, v. — to run; to operate; of a machine, to be working.*
 
-### 02 · The rail
+**The visual.** The four numbered parts of an operation as a line drawing — `01 Stock`,
+`02 Invoice`, `03 Terms`, `04 Approval gate`. At load it is a still technical drawing, and
+it must be readable as one in a screenshot. Then it starts running: dashed flow lines
+advance, each part ticks through its states, and the gate at `04` holds — everything
+upstream keeps moving, the gate does not open, until a small stamp lands and it releases.
 
-The reference mechanic, exactly: the section pins; a headline sits centred on the sheet grid; cards enter from the right and travel left across it; the headline is glimpsed between cards; the section releases when the last card clears.
+The tagline is the drawing. The position is in the drawing. Nobody has to read a word.
 
-- Headline held behind the cards: **Built for our own operation first. Then for yours.**
-- Sub, under it: "Five systems in production. Four run our business. One runs somebody else's."
-- Progress: a datum line along the bottom with card numbers as ticks, `01 — 06`, and the current card's label. This replaces the reference's dots and stays in the drawing language.
-- Card anatomy (same on every card, same positions): label top-left in the callout style, headline, one outcome sentence, a "Replaces:" line, and the device mockup. Tall cards put the device beside the text; wide cards put it under.
-- Interstitials: three narrow stat cards between the big ones, like the reference's logo cards. They give the rail its rhythm and mixed widths.
-- Mobile: agent to decide between a vertical stack and native horizontal snap. The copy is written so either works: every card stands alone.
+Three hero concepts are ranked in the UX research; this is the content brief, and the
+mechanism is theirs to choose.
 
-#### Card 01 · Stock & terms · wide
+### 02 · Recognition — one screen, one idea
 
-- Label: `Detail E · picking terminal · bay 05`
-- Headline: **Stock doesn't leave until the terms are met.**
-- Outcome: "Terms unmet, stock does not move. Nobody argues with a customer they like. The only way past it is a named person approving it on the record."
-- Replaces: a payment policy your warehouse staff have to win against the customer.
-- Mockup: the picking terminal, three states cycling. `SO-2291 · Checking terms · Release blocked · Overdue ₱312,880.00 · Request approval`.
-- For: distributors, traders, anyone who has released stock and then chased the payment for three months.
+The screen where the owner recognises themself. It must be short enough to read standing up.
 
-#### Interstitial A · stat
+- H2: **Right now, it runs on someone remembering.**
+- Three lines, each one a person and a thing held in their head — set as a list, no prose:
+  > Somebody remembers which customer is over their terms.
+  > Somebody remembers that the delivery went out but the invoice didn't.
+  > Somebody remembers what actually happened last Tuesday.
+- The turn, one line, weighted:
+  > It works. It just doesn't scale past one person's memory — and it goes on leave.
 
-- `1 week` against `1 quarter` quoted. Build time.
+No statistics. No fear. The reader supplies the evidence, because it is their own week.
+
+### 03 · The rail — the awwwards moment
+
+The reference mechanic (ohmd.com), rebuilt in Andar's language. The section pins; a
+headline is held on the sheet grid behind the cards; cards enter from the right and travel
+left across it, so the headline is read in fragments between them; the section releases
+when the last card clears.
+
+- Held headline: **Built so nobody has to remember.**
+- Sub: *Five systems in production. Four run our own businesses. One runs somebody else's.*
+- Progress: a datum line across the bottom, card numbers as ticks `01 — 06`, current card
+  labelled. This is the drawing's own idiom, and it replaces the reference's dots.
+
+**Card anatomy** — identical positions on every card, so the eye learns it once:
+
+```
+┌──────────────────────────────────────────────┐
+│ Detail E · picking terminal · bay 05         │  ← callout label, mono, mid
+│                                              │
+│ Stock doesn't leave until                    │  ← headline, display, 2 lines max
+│ the terms are met.                           │
+│                                              │
+│ Terms unmet, stock does not move. Nobody     │  ← outcome, one sentence, plain
+│ has to argue with a customer they like.      │
+│                                              │
+│ Replaces  the policy your warehouse staff    │  ← the recognition line
+│           have to win an argument to enforce │
+│                                              │
+│ ┌────────────────────────┐      Illustrative │  ← live mockup, not a screenshot
+│ │  SO-2291   Release     │                   │
+│ │  blocked · ₱312,880    │                   │
+│ └────────────────────────┘                   │
+└──────────────────────────────────────────────┘
+```
+
+Every card carries a `Replaces` line. That line is where the owner recognises their own
+operation, and it is the single most important sentence on each card — write it before
+writing the headline.
+
+Mixed widths give the rail its rhythm, as in the reference: wide cards for boards and
+desks, tall cards for handsets, narrow fact cards between them.
+
+---
+
+#### Card 01 · Stock and terms · wide
+
+- `Detail E · picking terminal · bay 05`
+- **Stock doesn't leave until the terms are met.**
+- Terms unmet, stock does not move. Nobody has to argue with a customer they like, and the
+  only way past it is a named person approving it on the record.
+- Replaces — the policy your warehouse staff have to win an argument to enforce.
+- Mockup: the picking terminal cycling `SO-2291 · checking terms · release blocked ·
+  overdue ₱312,880.00 · request approval`.
+- Reads to: distributors and traders who have released stock and then chased the payment
+  for three months.
+
+#### Fact A · narrow
+
+`5` systems in production. Four run our own businesses. One runs somebody else's.
 
 #### Card 02 · Live numbers · tall
 
-- Label: `Detail D · handset · scale 1:1`
-- Headline: **You stop asking how much stock you have.**
-- Outcome: "Stock, receivables, payables and the approvals waiting on you. On your phone, between deliveries, true as of a second ago."
-- Replaces: the end-of-day call to the warehouse, and the spreadsheet somebody updates on Friday.
-- Mockup: the handset. `Updated 12s ago · Receivables open · Stock on hand · Payables due 7 days · 1 release awaiting your approval`.
+- `Detail D · handset · scale 1:1`
+- **You stop asking how much stock you have.**
+- Stock, receivables, payables, and whatever is waiting on your approval. On your phone,
+  between deliveries, true as of a second ago.
+- Replaces — the end-of-day call to the warehouse, and the spreadsheet somebody updates on
+  Friday.
+- Mockup: the handset, `Updated 12s ago`, four figures, `1 release awaiting your approval`.
 
 #### Card 03 · Billing · wide
 
-- Label: `Detail A · billing desk · scale 1:2`
-- Headline: **Invoices out the same day.**
-- Outcome: "Branded PDF. Scan to pay from the document. Rate booked automatically. Nobody retypes a figure, so nobody mistypes one."
-- Replaces: spreadsheet math, and the three-day admin backlog your money waits behind.
-- Mockup: `INV-2026-0418`, the line items, `Booked at USD 1 = ₱58.40 · Auto`, the QR, `Amount due ₱249,088.00`.
+- `Detail A · billing desk · scale 1:2`
+- **Invoices out the same day.**
+- Branded PDF, scan-to-pay from the document itself, the rate booked automatically. Nobody
+  retypes a figure, so nobody mistypes one.
+- Replaces — the admin backlog your money is sitting behind.
+- Mockup: `INV-2026-0418`, line items, `Booked at USD 1 = ₱58.40 · Auto`, QR, amount due.
 
-#### Interstitial B · stat
+#### Fact B · narrow
 
-- `₱0` licence, per seat, ever. "Source code: ours. And yours, when we build for you."
+`2–4 weeks` to production. The ceiling goes in the contract, not the pitch.
 
 #### Card 04 · Service desk · wide · the external proof
 
-- Label: `Detail C · live for a Cebu client · scale 1:1`
-- Headline: **Every problem in the business, written down in one place.**
-- Outcome: "A driver's GPS drops. A count doesn't match. A receipt needs reprinting. Each becomes a card with a name on it, and the owner stops being the person everyone rings."
-- Replaces: group chats, sticky notes, and "I thought you were handling that."
-- Mockup: the board. `Problems open 14 · Sorted today 38 · Typical time to first reply 6m`, three columns.
-- Client name is `[client]` until written permission. Strongest version names them and says in one sentence what they do.
+- `Detail C · live for a Cebu client · scale 1:1`
+- **Every problem in the business, written down in one place.**
+- A driver's GPS drops out. A branch count doesn't match. A customer wants a receipt
+  reprinted. Each becomes a card with a name against it, and the owner stops being the
+  person everybody has to ring.
+- Replaces — group chats, sticky notes, and "I thought you were handling that."
+- Mockup: the board. `Problems open 14 · Sorted today 38 · Time to first reply 6m`.
+- Client shown as `[client]` until written permission. The strongest version names them and
+  says in one sentence what they do.
 
 #### Card 05 · Customs brokerage · wide · worked example
 
-- Label: `Worked example · drawn, not built`
-- Headline: **A customs brokerage, on one board.**
-- Outcome: "Eight stages from arrival to closed. Every document scored against the checklist that case needs. Every field errand with a name against it."
-- Replaces: an inbox, a Viber thread, and a folder on somebody's desk.
-- Mockup: the command center header and the "Waiting for you" task, unassigned on purpose. Button: "Open the prototype" (new tab, `demos/dca-shipment-command-center`, runs offline).
-- This is the card that says "this is what the diagnostic hands you."
+- `Worked example · drawn, not built`
+- **A shipment on one board, not in three places.**
+- Eight stages from arrival to closed. Every document scored against the checklist that
+  case actually needs. Every field errand with a name against it.
+- Replaces — an inbox, a Viber thread, and a folder on somebody's desk.
+- Mockup: the command centre header and the *Waiting for you* task, left unassigned on
+  purpose. Button: **Open the prototype** → `demos/dca-shipment-command-center`, new tab,
+  runs offline.
+- The honest label stays: it is a working prototype with invented data, and it touches no
+  customs, carrier or bank system. Saying so is worth more than the claim it gives up.
 
-#### Interstitial C · stat
+#### Fact C · narrow
 
-- `5` systems in production. `4` inside our own operation. `1` live for a client.
+`Source code: yours.` No per-seat licence. No renewal you didn't sign.
 
-#### Card 06 · The approval gate · tall · the closer
+#### Card 06 · The gate · tall · the closer
 
-- Label: `Detail B · the rule under all of it`
-- Headline: **Nothing automatic touches your money.**
-- Outcome: "You never open the software. It messages you. You answer it like you'd answer your foreman, and nothing moves until you do."
-- Replaces: trusting a system you can't see with a number you can't get back.
-- Mockup: the phone message `Release control · SO-2291 · Release stock · Bay 05 · ₱482,400.00 · Held · waiting on you`. Interactive: the visitor presses Approve, the stamp lands, the card reads "Approved". Then "Run it again". This is the one card that asks the visitor to do something, and it is the last one, so the rail ends on their fingerprint.
+- `Detail B · the rule under all of it`
+- **Nothing automatic touches your money.**
+- You never open the software. It messages you, you answer it the way you'd answer your
+  foreman, and nothing moves until you do.
+- Replaces — trusting software with a decision you would normally make yourself.
+- Mockup, and it is **interactive**: `Release control · SO-2291 · Bay 05 · ₱482,400.00 ·
+  Held · waiting on you`. The visitor presses **Approve**; the stamp lands; the card reads
+  `Approved`. Then: *Run it again.*
 
-### 03 · The ₱1 million question
+The rail ends on the visitor's own fingerprint. That is deliberate: the last thing they do
+before leaving the section is exercise control, which is the thing they were afraid of losing.
 
-- One idea, one number. Headline: **A vendor quoted us ₱1,000,000 and a quarter. We built it in a week.**
-- Body: "Inventory and accounting, for our own materials business. It is still running. The gap was never the software. It was knowing what to build, and that gap exists in almost every operation in Cebu."
-- Visual: the bill of materials as quoted, two lines, `Total, first year ₱1,000,000+`, next to a counter still climbing labelled "the licence and renewals you never signed."
+### 04 · The gate, full width
 
-### 04 · What manual is already costing you
+The rail's last card, given a whole screen because it is the position rather than a feature.
 
-- Headline: **What doing it by hand already costs you.**
-- Sub: "Not one of these numbers mentions software. They measure what a business pays to keep retyping numbers."
-- Three counters on scroll, each with a plain caption and the source in the datum line:
-  - `5×` cost per invoice, top vs bottom performers. APQC.
-  - `days` gap in days sales outstanding, top quartile vs median. Hackett 2025.
-  - `65%` of stock records wrong on the shelf. DeHoratius & Raman, 2008.
-- Footnote in the deck's voice: "The point is the order of magnitude, not the decimal. Multiply it against your own invoice volume and you have done the arithmetic yourself."
+- H2: **Nothing moves until you say so.**
+- Body: Every consequential action — releasing stock, issuing a credit, changing a price —
+  stops and waits for a named person. The system does the remembering. You do the deciding.
+- The phone, larger, live, and it will wait there all afternoon if the visitor doesn't press
+  it. That patience is the demonstration; do not time it out.
+- One line under: *It will wait all afternoon if it has to. That is the whole design.*
 
-### 05 · Problem first
+### 05 · What we put in writing
 
-- Headline: **Most of this fails. Here is why ours doesn't.**
-- Stat, put up by us: `89%` of firms report no productivity gain from AI over three years (NBER, 6,000 executives). "We are putting this on the screen ourselves."
-- The routing diagram, animated as a drawing: Tool first → Buy the tool → Look for a use → Nothing changes → repeats until the budget is gone → ✕. Problem first → Walk the operation → Find the bottleneck → Build one rule → It runs.
-- One line under it: "Nobody walked their operation first."
+This is the section that replaces the old benchmark stats. Borrowed research proved a
+general case; these four promises prove Andar's, and they are checkable.
 
-### 06 · The Andar Method
+- H2: **Four things we put in writing.**
+- Drawn as a title block, four cells:
 
-- Headline: **Four stages. Each with a ceiling in writing.**
-- Timeline drawn to scale, horizontal, progress tied to scroll: Day 0 · Diagnose 1 week · Narrow days · Ship 2–4 weeks · Hold ongoing.
-- Each stage: one sentence and one promise.
-  - Diagnose: "We walk your operation and follow the paper." Promise: a written operations map, yours whether or not you hire us.
-  - Narrow: "One bottleneck. Not a transformation roadmap."
-  - Ship: "In production, used by your staff on an ordinary Tuesday. Not a pilot." Promise: a written pass/fail standard handed over with it.
-  - Hold: "Software nobody maintains quietly dies."
+| | Promise |
+|---|---|
+| 01 | **The map is yours.** The written operations map from the diagnostic is yours to keep, whether or not you hire us. |
+| 02 | **You own the code.** Source code delivered to you. No per-seat licence, no renewal. |
+| 03 | **A date you can hold us to.** Every stage has a ceiling, and it goes in the contract. |
+| 04 | **A written pass/fail standard.** We hand you the test the system has to pass, and it either passes or we are not finished. |
+
+Closing line, and it belongs on the page:
+> And if we look at your operation and don't find something worth building, we'll tell you
+> that, and we'll stop there.
+
+### 06 · Method
+
+- H2: **Four stages. Each with a ceiling.**
+- Drawn to real proportion, horizontal, progress tied to scroll.
+
+| Stage | Ceiling | One sentence |
+|---|---|---|
+| Diagnose | 1 week | We walk your operation, follow the paper, and sit with your people. |
+| Narrow | days | One bottleneck. Not a transformation roadmap. |
+| Ship | 2–4 weeks | In production, used by your staff on an ordinary Tuesday. Not a pilot. |
+| Hold | ongoing | Support and the next thing on the list. Software nobody maintains quietly dies. |
 
 ### 07 · Who
 
-- Headline: **Two Cebu business owners who build.**
-- Two panels, photo plus three facts each, from the deck:
-  - Ac Co · Delivery & systems. 15+ years running his own businesses. Built the system that replaced the ₱1M quote. Five systems in production.
-  - Nath Ybañez · Experience & marketing. Almost 15 years running his own businesses. Worked with Rockwell Land and the Ayala group. "Has sat on the other side of this table."
-- Close: "We run operations of our own. That is the qualification, and both of us are in the room on every engagement."
-- The three "why that matters" points become one row of short lines: Operator credibility · Legitimacy, not gig risk · Shipping speed.
+- H2: **Two Cebu operators who build.**
+- **Ac Co** · Delivery and systems. 15+ years running his own businesses — materials trading
+  and a fitness brand, both still trading, his own stock and his own payroll. Owns every
+  technical decision and the approval-gate standard.
+- **Nath Ybañez** · Experience and marketing. Almost 15 years running his own businesses
+  across agriculture, technology and marketing. Has worked with Rockwell Land and the Ayala
+  group. Has bought the software, hired the freelancer, and paid for the pilot that never
+  shipped — and will say so.
+- Close: *We run operations of our own. That is the qualification, and both of us are in the
+  room on every engagement.*
 
 ### 08 · Engagements
 
-- Headline: **Three ways in. Stop after any one and still be holding something you can use.**
-- Three columns: Diagnostic 1 week · Sprint 2–4 weeks · Retainer monthly. One sentence each, from the deck.
-- Footer line: "No prices on this page. Ask either of us and you'll get a straight number."
+- H2: **Three ways in. Stop after any one and you're still holding something you can use.**
+- Diagnostic · 1 week — we walk your operation and hand you the written map.
+- Sprint · 2–4 weeks — one working system, in production, verified against the written standard.
+- Retainer · monthly — support, monitoring, and the next thing on the list.
+- Foot: *No prices on this page. Ask either of us and you'll get a straight number.*
 
-### 09 · Move first
+### 09 · CTA
 
-- Short. Headline: **You have done this before.**
-- "You never decided to accept GCash. Your customers started paying that way, and you adapted. Last time your customers decided for you. This time you can move first."
-- One counter: share of Philippine retail payments made digitally, 2013 to 2024 (BSP). The other two survey stats stay in the deck; one number is enough here.
+- H2: **Let's map your operation.**
+- One week. We come to you. You get a written map of where your money and your hours
+  actually go — yours to keep whether or not you ever work with us.
+- Button: **Book a diagnostic**, with email and mobile beside it as plain text.
+- No form in v1. A form is a place for a lead to die; these are two people who can answer a
+  phone.
 
-### 10 · CTA
+### 10 · Footer
 
-- Headline: **Let's map your operation.**
-- "One week. We come to you. You get a written map of where your money and your hours actually go, yours to keep whether or not you ever work with us."
-- The honest line, kept: "If we look and don't find something worth automating, we'll tell you that, and we'll stop there."
-- Button: Book a diagnostic. Beside it: email and mobile as plain text. No form in v1; a form is a place for a lead to die.
+Drawn as a title block: `Drawing · Company website · Rev B · Scale NTS · Cebu City,
+Philippines`, registered entity and number, year. Links: the deck, the prototype, email.
 
-### 11 · Footer
+---
 
-- Drawn as a title block: Drawing · Company website · Rev A · Scale NTS · Cebu City, Philippines · registered entity and number · © year.
-- Links: the deck (`/`), the prototype, email.
+## 5. Copy rules
 
-## 5. Assets and inputs still needed
+1. One idea per viewport. Two headlines means two screens.
+2. Plain words, grade-8 reading level. Pesos, weeks, Tuesday, foreman.
+3. Show the outcome, never the mechanism. "You stop asking how much stock you have," not
+   "real-time inventory sync."
+4. Every card carries a `Replaces` line, written before its headline.
+5. Numbers on the page are Andar's own or they are not on the page.
+6. No "AI" in any headline.
+7. Name nothing we don't have permission to name.
+8. Read every headline aloud. If it sounds like a brochure, it is one.
+
+---
+
+## 6. Open inputs
 
 | Item | Status | Owner |
 |---|---|---|
-| Domain and hosting decision | Open. Deck is on GitHub Pages; UX research to confirm it holds for the site. | Nath |
-| Founder photos | In `assets/` (AC CO.jpg, NATH YBANEZ.jpeg). Need consistent crops and a colour treatment that sits on paper. | Nath |
-| Client name for card 04 | Pending written permission. Ship with `[client]` hidden, not a placeholder. | Ac |
-| Email, mobile, registered entity | "To confirm" in the deck. Must be real before launch. | Both |
-| Decision on publishing the 89% stat | Recommended yes. It is the most creative-director-stopping content on the page. | Both |
-| Mockup components | Extract from `index.html` into reusable components. | Build |
-| Hero drawing | New. The four-part assembly as SVG with animatable strokes. | Build |
+| Email, mobile, registered entity and number | `To confirm` in the deck. Must be real before launch. | Both |
+| Client name for card 04 | Pending written permission. Ships as `[client]`, not as a placeholder. | Ac |
+| Founder photographs | In `assets/`. Need matched crops and a treatment that sits on paper. | Nath |
+| Domain and hosting | Deck is on GitHub Pages. UX research confirms or replaces. | Nath |
+| Hero assembly drawing | New build. SVG with animatable strokes. | Build |
+| Mockup components | Extract from `index.html` into reusable pieces. | Build |
 
-## 6. Phases
+## 7. Phases
 
-1. **Foundation, week 1.** Design tokens, type scale, nav, hero with the running drawing, the rail with two real cards. This is the awards moment and the thing to get right before anything else is built.
-2. **The page, week 2.** All six cards and interstitials, sections 03 to 11, mobile behaviour, reduced-motion path.
-3. **Polish, week 3.** Performance budget (LCP, CLS, INP targets in the UX research), font loading, copy pass with an owner who has never seen the deck, then Awwwards submission checklist.
+1. **Foundation.** Tokens, type scale, nav, hero with the running drawing, the rail with two
+   real cards. This is the awards moment; nothing else is built until it is right.
+2. **The page.** Remaining cards, sections 04–10, mobile behaviour, reduced-motion path.
+3. **Polish.** Performance budget, font loading, and a copy pass read aloud to an owner who
+   has never seen the deck. If they can't say what Andar does afterwards, the copy failed,
+   not the listener.
 
-Phase 2 of the site itself, not this plan: one page per use case at `/work/…`, each the long-form version of its card, and the diagnostic booking flow.
+Later, not now: one page per use case at `/work/…`, each the long-form version of its card.
