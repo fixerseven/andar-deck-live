@@ -170,13 +170,13 @@ Now the shelf stays put, your phone gets a message, and nothing moves until you 
 Screen: the picking terminal — *Release held · ₱312,880 overdue · Ask the boss*.
 Truth: Built for our own business.
 
-#### 02 · A pickleball club · four courts, 300 members · *needed to stop taking bookings on Messenger*
+#### 02 · A sports club · pickleball, tennis, a pool, 300 members · *needed to stop taking bookings on Messenger*
 **Members book on your page. It looks like yours, because it is.**
-Your name, your colours, your courts. A member opens your page, picks a court and a time,
-and it's booked. Memberships renew on their own, guests pay by scanning, and no court gets
-booked twice. Nobody's answering Messenger at eleven at night. Same for a gym, a pool, or
-a badminton hall.
-Screen: the club's own booking page, in the club's own colours — *Court 2 · Tonight 7–8 ·
+Your name, your colours, your courts. A member opens your page, picks pickleball or tennis,
+a court and a time, and it's booked. Memberships renew on their own, guests pay by scanning,
+and no court gets booked twice. Nobody's answering Messenger at eleven at night. Same for a
+gym, a badminton hall, or a single court.
+Screen: the club's own booking page, in the club's own colours — *Tennis · Court 2 · Tonight 7–8 ·
 Member · Booked*. Not an Andar screen; theirs.
 Truth: A working sample. Click it. *(If this is live for Ac's fitness brand, label it
 "Built for our own business" and it becomes the second "ours".)*
