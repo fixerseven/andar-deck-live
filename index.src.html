@@ -42,35 +42,48 @@
 
 <main>
 
-<section id="hero" class="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-text">
-      <p class="lab en">Sheet 01 · The tagline</p>
-      <h1 class="hero-h1 en">Make it run.</h1>
-      <p class="hero-sub en">So your business keeps moving when you're not there. Built in Cebu by two people who run businesses of their own.</p>
-      <div class="hero-actions en">
-        <a class="btn" href="mailto:work@andar.ph?subject=Come%20and%20look">Book a walk-through</a>
-        <button class="btn-ghost" type="button" data-scroll-to="#work">See six businesses that do ↓</button>
-      </div>
-      <div class="datum-rule hero-datum en" aria-hidden="true"></div>
-      <p class="hero-def en">andar, v. — to run; to operate; of a machine, to be working.</p>
+<section id="hero" class="hero on-navy" aria-labelledby="hero-h1">
+  <div class="hero-bg" aria-hidden="true">
+    <picture>
+      <source media="(max-width:700px)" srcset="assets/hero-bg-m.jpg">
+      <img src="assets/hero-bg.jpg" alt="" fetchpriority="high" decoding="async">
+    </picture>
+    <div class="hero-bg-fade"></div>
+  </div>
+  <div class="wrap hero-center">
+    <p class="hero-pill hl" style="--i:0">Made in Cebu</p>
+    <h1 id="hero-h1" class="hero-h1 hl" style="--i:1">Make it run.</h1>
+    <p class="hero-sub hl" style="--i:2">So your business keeps moving when you're not there. Built by two people who run businesses of their own.</p>
+    <div class="hero-actions hl" style="--i:3">
+      <a class="btn btn-pill" href="mailto:work@andar.ph?subject=Come%20and%20look">Book a walk-through</a>
     </div>
-    <div class="hero-fig" aria-hidden="true">
-      <!-- @include: partials/hero-drawing.html -->
-    </div>
+  </div>
+  <div class="hero-device hl" style="--i:4" aria-hidden="true">
+    <!-- @include: partials/screen-phone.html -->
+  </div>
+  <div class="hero-fg" aria-hidden="true">
+    <picture>
+      <source media="(max-width:700px)" srcset="assets/hero-fg-m.png">
+      <img src="assets/hero-fg.png" alt="" decoding="async">
+    </picture>
   </div>
 </section>
 
-<section id="now" class="now">
+<section id="now" class="now on-navy" aria-labelledby="now-h2">
   <div class="wrap">
-    <p class="lab en">Sheet 02 · Right now</p>
-    <h2 class="h2 en">Right now, it runs because you're there.</h2>
-    <ul class="now-list en">
+    <h2 id="now-h2" class="h2 now-h2">Right now, it runs because you're there.</h2>
+    <ul class="now-list">
       <li>Every question comes to you.</li>
       <li>Every release waits for you.</li>
       <li>Every mistake finds you.</li>
     </ul>
-    <p class="now-turn en">Take a day off and the whole thing slows down. That isn't a business running. That's you running.</p>
+  </div>
+</section>
+
+<section id="turn" class="now now--turn on-navy" aria-labelledby="turn-h2">
+  <div class="wrap">
+    <h2 id="turn-h2" class="now-turn">Take a day off and the whole thing slows down. That isn't a business running. That's you running.</h2>
+    <p class="now-hand"><span class="now-hand-line" aria-hidden="true"></span><span class="now-hand-text">So what does a business look like when the owner isn't in the room?</span></p>
   </div>
 </section>
 
@@ -78,11 +91,10 @@
   <div class="rail-stage" data-rail-stage>
 
     <div class="rail-bg" aria-hidden="true">
-      <p class="lab">Sheet 03 · The rail</p>
-      <p class="rail-head">It runs. Even when you're not there.</p>
-      <p class="rail-sub">Six businesses. Two of them are ours.</p>
+      <p class="rail-head">Like these six.</p>
+      <p class="rail-sub">Six businesses that run without the owner in the room. Two of them are ours.</p>
     </div>
-    <h2 id="rail-h" class="visually-hidden">It runs. Even when you're not there.</h2>
+    <h2 id="rail-h" class="visually-hidden">Six businesses that run without the owner in the room</h2>
 
     <ol class="rail-track" tabindex="0" role="group" aria-label="Seven businesses. Scroll, swipe, or use the arrow buttons.">
 
@@ -185,7 +197,7 @@
             <!-- @include: partials/screen-cc.html -->
           </figure>
           <p class="card-truth">A working sample with made-up data. Click it.</p>
-          <a class="card-link" href="../demos/dca-shipment-command-center/" target="_blank" rel="noopener">Click the working sample →</a>
+          <a class="card-link" href="demos/dca-shipment-command-center/" target="_blank" rel="noopener">Click the working sample →</a>
         </div>
       </li>
 
@@ -217,7 +229,6 @@
 <section id="gate" class="gate">
   <div class="wrap gate-grid">
     <div class="gate-text">
-      <p class="lab en">Sheet 04 · The gate</p>
       <h2 class="h2 en">It still asks you first.</h2>
       <p class="lead en">Running without you in the room doesn't mean running behind your back. Anything that touches your money — releasing stock, giving credit, changing a price — stops and asks. It messages you the way a good assistant would, and it waits. All afternoon, if it has to.</p>
       <p class="gate-turn en">You're in the decision. Not in the errand.</p>
@@ -231,7 +242,6 @@
 
 <section id="promise" class="promise">
   <div class="wrap">
-    <p class="lab en">Sheet 05 · In writing</p>
     <h2 class="h2 en">Four things we promise, in writing.</h2>
     <div class="tblock promise-table en" role="table" aria-label="Four promises">
       <div role="row">
@@ -261,7 +271,6 @@
 
 <section id="how" class="how">
   <div class="wrap">
-    <p class="lab en">Sheet 06 · How it goes</p>
     <h2 class="h2 en">How it goes.</h2>
     <div class="how-track" data-how-track>
       <div class="how-stage" data-how-stage style="--w:7">
@@ -295,7 +304,6 @@
 
 <section id="who" class="who-sec">
   <div class="wrap">
-    <p class="lab en">Sheet 07 · Who</p>
     <h2 class="h2 en">Two Cebu business owners who build.</h2>
     <div class="who-grid">
       <article class="who-card en">
@@ -315,7 +323,6 @@
 
 <section id="ways" class="ways">
   <div class="wrap">
-    <p class="lab en">Sheet 08 · Three ways in</p>
     <h2 class="h2 en">Three ways in.</h2>
     <p class="lead en">Stop after any one and you're still holding something useful.</p>
     <ol class="ways-list en">
@@ -341,7 +348,6 @@
 
 <section id="ask" class="ask">
   <div class="wrap ask-grid">
-    <p class="lab en">Sheet 09 · The ask</p>
     <h2 class="h2 en">Let's come and look.</h2>
     <p class="lead en">One week. We come to you. You get a one-page picture of where your hours and your money actually go — yours to keep, whether or not you ever work with us.</p>
     <div class="ask-actions en">
@@ -378,8 +384,8 @@
     <div class="foot-legal">
       <span class="lab">Registered name · to confirm</span>
       <span class="lab">
-        <a href="../index.html">The deck</a> ·
-        <a href="../demos/dca-shipment-command-center/" target="_blank" rel="noopener">The working sample</a>
+        <a href="deck/">The deck</a> ·
+        <a href="demos/dca-shipment-command-center/" target="_blank" rel="noopener">The working sample</a>
       </span>
       <span class="lab tn" id="clock-foot" aria-hidden="true">Cebu · 14:22</span>
     </div>

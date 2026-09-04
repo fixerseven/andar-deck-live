@@ -1,0 +1,2970 @@
+<!doctype html>
+<!--
+  DIRECTION CONTRACT — Andar company profile deck · DATUM
+
+  THESIS: Andar's product is knowing which part of an operation is holding it back before anything
+  gets built. So the deck is the artifact that makes that possible: an engineering
+  drawing. The business is drawn as an assembly, parts are ballooned, and a leader line
+  points at the one that fails. Refuses the dark AI-vendor deck with its glowing network
+  render, and equally refuses its opposite, the white consultancy PDF.
+
+  OWN-WORLD: Paper #FAF9F5 under a drafting grid, inside a real sheet frame with A–E / 1–4
+  coordinates and a live title block. FF DIN — the German technical-drawing standard —
+  used in the room it was drawn for. One warm red does all the pointing. Furniture is
+  native only: balloons, leaders, dimension lines, datum triangles, detail circles,
+  section hatching, rubber stamps.
+
+  STORY: A room of Cebu owners sees that two in three Philippine AI efforts never leave
+  the pilot; that these two operators built and ran the systems themselves first; that
+  nothing automatic touches money without a person. They book a one-week diagnostic they
+  keep either way.
+
+  FIRST VIEWPORT: ANDAR set monumentally at left over the sheet's B2 coordinate. At right,
+  the business as an exploded axonometric assembly that drifts and answers the pointer,
+  four balloons drawing their leaders in sequence to STOCK / INVOICE / TERMS / APPROVAL
+  GATE — the last one red. Title block bottom-right reads SHEET 01 OF 18. The close sits
+  in the bottom rail.
+
+  FORM: User-pinned world (Datum), chosen from four tested comps, so no seed was drawn.
+  Staging: presenter-driven viewport sheets, arrow/scroll/swipe, ambient assembly motion,
+  and a live approval stamp on sheet 13 as the operable signature.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Andar — We make it run</title>
+<meta name="description" content="Andar is an operating partner for Cebu businesses. We find the one bottleneck costing you money, build the rule that clears it, and put it in production in weeks.">
+<script>document.documentElement.className='js draft';</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════ TOKENS ═══════════════════════════ */
+:root{
+  --paper:#FAF9F5;
+  --bone:#F1EFE8;
+  --ink:#16181A;
+  --mid:#5F6469;
+  --faint:rgba(22,24,26,.14);
+  --hair:rgba(22,24,26,.08);
+  --grid:rgba(22,24,26,.045);
+  --red:#D8401F;
+  --red-ink:#A82F13;
+
+  --k: min(calc(100vw / 1600), calc(100vh / 900));
+  --ease:cubic-bezier(.16,1,.3,1);
+  /* a stamp hits paper and stops dead — hard deceleration, no overshoot */
+  --stampEase:cubic-bezier(.22,.86,.26,1);
+
+  /* FF DIN first — installs locally if licensed; DIN-lineage fallback otherwise */
+  --din:'FF DIN','FF DIN Pro','DIN Next LT Pro','DIN Next Pro','DIN Pro','D-DIN','DIN Alternate','Barlow Semi Condensed','Barlow',sans-serif;
+  --read:'Barlow','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+/* ═══ THE AS-BUILT SET ═══════════════════════════════════════════
+   Proof sheets 08–12 are the record of what was actually constructed,
+   and an as-built record is reproduced as a blueprint. The stock changes
+   under the reader; every token flips, so nothing else has to know. */
+body.asbuilt{
+  --paper:#10293A;
+  --bone:#0B1E2B;
+  --ink:#DCE8EE;
+  --mid:#93AAB8;
+  --faint:rgba(220,232,238,.22);
+  --hair:rgba(220,232,238,.12);
+  --grid:rgba(220,232,238,.055);
+  --red:#F2673C;
+  --red-ink:#F2673C;
+}
+body,.sheet,.tblock,.hdr,.btn-ghost{transition:background-color .55s var(--ease),color .55s var(--ease),border-color .55s var(--ease)}
+
+/* A lit device is still a lit device on a blueprint: screens and paper
+   documents carry the light set with them. */
+.screen,.phone,.inv{
+  --paper:#FAF9F5;--bone:#F1EFE8;--ink:#16181A;--mid:#5F6469;
+  --faint:rgba(22,24,26,.14);--hair:rgba(22,24,26,.08);
+  --red:#D8401F;--red-ink:#A82F13;
+  color:var(--ink);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+html{background:var(--bone);-webkit-text-size-adjust:100%}
+body{
+  background:var(--bone);color:var(--ink);
+  font-family:var(--read);font-size:calc(var(--k)*17);line-height:1.55;
+  overflow:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+::selection{background:var(--red);color:#fff}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+
+/* ═══════════════════════ SHEET FURNITURE ═══════════════════════ */
+.sheet{
+  position:fixed;inset:calc(var(--k)*24);z-index:1;pointer-events:none;
+  background:var(--paper);border:1px solid var(--faint);
+  background-image:
+    linear-gradient(to right,var(--grid) 1px,transparent 1px),
+    linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+  background-size:calc(var(--k)*40) calc(var(--k)*40);
+  box-shadow:0 calc(var(--k)*2) calc(var(--k)*22) rgba(22,24,26,.06);
+}
+.coords{position:fixed;inset:calc(var(--k)*24);z-index:2;pointer-events:none}
+.coords span{
+  position:absolute;font-family:var(--din);font-weight:500;
+  font-size:calc(var(--k)*10);letter-spacing:.16em;color:var(--mid);
+}
+.coords .cx{top:calc(var(--k)*8)}
+.coords .cy{left:calc(var(--k)*10)}
+.coords i{position:absolute;background:var(--faint)}
+.coords i.tx{top:0;width:1px;height:calc(var(--k)*7)}
+.coords i.ty{left:0;height:1px;width:calc(var(--k)*7)}
+
+.hdr{
+  position:fixed;top:calc(var(--k)*24);left:calc(var(--k)*24);right:calc(var(--k)*24);
+  height:calc(var(--k)*52);z-index:12;pointer-events:none;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 calc(var(--k)*30);border-bottom:1px solid var(--faint);
+}
+.hdr .brand{display:flex;align-items:baseline;gap:calc(var(--k)*14)}
+.hdr .brand b{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*22);letter-spacing:.06em;text-transform:uppercase}
+/* the mark itself, not a typeset approximation of it */
+.logo{display:block;height:calc(var(--k)*23);width:auto}
+body.asbuilt .logo{filter:brightness(0) invert(1)}
+#s1 .logo-hero{height:auto;width:100%;max-width:calc(var(--k)*600)}
+
+/* the icon's own geometry, radiating — the mark doing what the name means */
+.arch{
+  fill:none;stroke:var(--red);stroke-width:1.6;vector-effect:non-scaling-stroke;
+  transform-box:fill-box;transform-origin:50% 100%;opacity:0;
+}
+.js .is-live .arch{animation:radiate 7.5s ease-out infinite}
+.js .is-live .arch:nth-of-type(2){animation-delay:2.5s}
+.js .is-live .arch:nth-of-type(3){animation-delay:5s}
+@keyframes radiate{
+  0%  {transform:scale(.22);opacity:0}
+  10% {opacity:.5}
+  70% {opacity:.14}
+  100%{transform:scale(2.6);opacity:0}
+}
+/* the mark as a mask, so it takes the sheet's own ink and stays crisp at any size */
+.markwash{
+  position:absolute;right:calc(var(--k)*26);bottom:calc(var(--k)*16);z-index:0;
+  width:calc(var(--k)*330);aspect-ratio:1.131;opacity:.055;pointer-events:none;
+  background:currentColor;
+  -webkit-mask:url("assets/andar-mark.svg") center/contain no-repeat;
+  mask:url("assets/andar-mark.svg") center/contain no-repeat;
+}
+.js .is-live .markwash{animation:washbreathe 9s ease-in-out infinite}
+@keyframes washbreathe{0%,100%{opacity:.045}50%{opacity:.085}}
+
+.tblock{
+  position:fixed;right:calc(var(--k)*24);bottom:calc(var(--k)*24);z-index:12;
+  display:grid;grid-template-columns:repeat(4,auto);
+  background:var(--paper);border-top:1px solid var(--faint);border-left:1px solid var(--faint);
+}
+.tblock div{padding:calc(var(--k)*9) calc(var(--k)*17);border-right:1px solid var(--faint)}
+.tblock div:last-child{border-right:0}
+.tblock .v{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*15);letter-spacing:.02em;margin:calc(var(--k)*2) 0 0;text-transform:uppercase}
+.tblock .v.tn{font-variant-numeric:tabular-nums}
+
+.railL{
+  position:fixed;left:calc(var(--k)*24);bottom:calc(var(--k)*24);z-index:13;
+  padding:calc(var(--k)*12) calc(var(--k)*30);display:flex;align-items:center;gap:calc(var(--k)*16);
+}
+.btn-ghost{
+  font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10.5);
+  letter-spacing:.2em;text-transform:uppercase;color:var(--mid);
+  background:var(--paper);border:1px solid var(--faint);
+  padding:calc(var(--k)*7) calc(var(--k)*14);cursor:pointer;border-radius:2px;
+  transition:color .2s,border-color .2s,background .2s;
+}
+.btn-ghost:hover{color:var(--red-ink);border-color:var(--red);background:rgba(216,64,31,.05)}
+.btn-red{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*10.5);
+  letter-spacing:.2em;text-transform:uppercase;color:#fff;
+  background:var(--red);border:1px solid var(--red);
+  padding:calc(var(--k)*8) calc(var(--k)*15);cursor:pointer;border-radius:2px;
+  transition:filter .2s,transform .15s;
+}
+.btn-red:hover{filter:brightness(1.07)}
+.btn-red:active{transform:translateY(1px)}
+
+.prog{position:fixed;left:calc(var(--k)*24);right:calc(var(--k)*24);bottom:calc(var(--k)*24);height:1px;background:var(--hair);z-index:11}
+.prog i{display:block;height:100%;width:100%;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+
+/* ═══════════════════════ PRIMITIVES ═══════════════════════ */
+.lab{font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10.5);letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin:0}
+.lab.r{color:var(--red-ink)}
+.tn{font-variant-numeric:tabular-nums}
+.mono-fig{font-family:var(--din);font-weight:600;font-variant-numeric:tabular-nums}
+h1,h2,h3,h4{margin:0}
+.mon{font-family:var(--din);font-weight:800;line-height:.82;letter-spacing:-.025em;text-transform:uppercase}
+.head{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*70);line-height:.88;letter-spacing:-.022em;text-transform:uppercase;max-width:15ch;text-wrap:balance}
+.head.sm{font-size:calc(var(--k)*54)}
+.head-xl{font-size:calc(var(--k)*86)}
+.mon-xl{font-size:calc(var(--k)*70)}
+.mon-lg{font-size:calc(var(--k)*56)}
+.stmt-xl{font-size:calc(var(--k)*46)}
+.stmt-lg{font-size:calc(var(--k)*35)}
+.stmt{font-size:calc(var(--k)*30);line-height:1.3;font-weight:500;letter-spacing:-.012em;max-width:24ch;margin:0;text-wrap:balance}
+.body{font-size:calc(var(--k)*17);line-height:1.62;color:var(--mid);max-width:62ch;margin:0}
+.body strong{color:var(--ink);font-weight:600}
+.src{font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin:0}
+
+.balloon{
+  width:calc(var(--k)*30);height:calc(var(--k)*30);border:1px solid var(--ink);border-radius:50%;
+  display:grid;place-items:center;font-family:var(--din);font-weight:700;font-size:calc(var(--k)*13);
+  background:var(--paper);flex:0 0 auto;
+}
+.balloon.r{border-color:var(--red);background:var(--red);color:#fff}
+
+.tagline{display:inline-block;font-family:var(--din);font-weight:600;font-size:calc(var(--k)*10);letter-spacing:.16em;text-transform:uppercase;color:var(--red-ink);border:1px solid var(--red);padding:calc(var(--k)*4) calc(var(--k)*9)}
+
+/* dimension line */
+.dim{position:relative;height:calc(var(--k)*30);display:flex;align-items:center}
+/* the drawn rule is its own layer, so scaling it never scales the
+   ticks and figures sitting on it */
+.dimline{position:relative;height:1px;flex:1}
+.dimline::before{content:'';position:absolute;inset:0;background:var(--ink);transform-origin:left center}
+.js .dimline::before{transform:scaleX(0);transition:transform .95s var(--ease) .2s}
+.js .is-live .dimline::before{transform:scaleX(1)}
+.tick{position:absolute;top:calc(var(--k)*-6);width:1px;height:calc(var(--k)*13);background:var(--ink)}
+.dimval{
+  position:absolute;top:calc(var(--k)*-25);font-family:var(--din);font-weight:600;
+  font-size:calc(var(--k)*12.5);background:var(--paper);padding:0 calc(var(--k)*7);
+  letter-spacing:.02em;white-space:nowrap;
+}
+.dimval.r{color:var(--red-ink)}
+
+.datum{display:flex;align-items:center;gap:calc(var(--k)*10)}
+.datum svg{display:block;flex:0 0 auto}
+
+.stamp{
+  display:inline-block;font-family:var(--din);font-weight:700;
+  font-size:calc(var(--k)*14);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--red);border:calc(var(--k)*2.5) solid var(--red);border-radius:calc(var(--k)*3);
+  padding:calc(var(--k)*5) calc(var(--k)*12);transform:rotate(-6deg);opacity:.92;flex:0 0 auto;
+}
+.js .stamp{opacity:0;transform:rotate(-6deg) scale(1.32)}
+.js .is-live .stamp{opacity:.92;transform:rotate(-6deg) scale(1);transition:opacity .3s ease,transform .5s var(--stampEase)}
+.js .is-live .ref:nth-of-type(1) .stamp{transition-delay:.20s}
+.js .is-live .ref:nth-of-type(2) .stamp{transition-delay:.38s}
+.js .is-live .ref:nth-of-type(3) .stamp{transition-delay:.56s}
+.js .is-live .ref:nth-of-type(4) .stamp{transition-delay:.74s}
+
+.hatch{background-image:repeating-linear-gradient(45deg,var(--faint) 0 1px,transparent 1px calc(var(--k)*8))}
+.plate{background:var(--paper);border:1px solid var(--faint)}
+.plate.lift{box-shadow:0 calc(var(--k)*14) calc(var(--k)*30) rgba(22,24,26,.10)}
+
+/* Notes written for the presenter, never for the room. Visible while drafting,
+   gone the moment draft mode is off — press D. Unlike .todo, which stays put
+   until the fact behind it is filled in, these must not survive to the day. */
+.pnote{
+  display:block;border-left:1px dashed var(--red);padding-left:calc(var(--k)*12);
+  font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--red-ink);line-height:1.6;
+}
+html:not(.draft) .pnote{display:none}
+.draftflag{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--k)*10);z-index:14;
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.2em;
+  text-transform:uppercase;color:var(--red-ink);border:1px dashed var(--red);
+  padding:calc(var(--k)*4) calc(var(--k)*12);background:var(--paper);pointer-events:none;
+}
+html:not(.draft) .draftflag{display:none}
+
+.todo{
+  display:inline-block;border:1px dashed var(--red);color:var(--red-ink);
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*10);
+  letter-spacing:.16em;text-transform:uppercase;padding:calc(var(--k)*4) calc(var(--k)*9);
+}
+.illus{
+  display:inline-block;border:1px dashed var(--mid);color:var(--mid);
+  font-family:var(--din);font-weight:500;font-size:calc(var(--k)*9.5);
+  letter-spacing:.2em;text-transform:uppercase;padding:calc(var(--k)*3) calc(var(--k)*8);
+}
+.rule{height:1px;background:var(--faint);border:0;margin:0}
+.rule.r{background:var(--red)}
+
+/* ═══════════════════════ DECK ═══════════════════════ */
+#deck{position:relative;z-index:5;height:100dvh;overflow-y:scroll;overflow-x:hidden;scroll-snap-type:y mandatory;scrollbar-width:none}
+#deck::-webkit-scrollbar{display:none}
+.sh{
+  position:relative;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;
+  display:flex;align-items:center;padding:calc(var(--k)*110) calc(var(--k)*86) calc(var(--k)*96);
+}
+.in{width:100%;max-width:calc(var(--k)*1400);margin:0 auto;position:relative}
+.stack{display:flex;flex-direction:column;gap:calc(var(--k)*22)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--k)*68);align-items:center}
+.split.w{grid-template-columns:1.2fr .8fr}
+.split.n{grid-template-columns:.8fr 1.2fr}
+.split.tri{grid-template-columns:repeat(3,1fr);gap:calc(var(--k)*42)}
+.split>*{min-width:0}
+.row{display:flex;gap:calc(var(--k)*10);align-items:center;flex-wrap:wrap}
+
+.js .en{opacity:.001;transform:translateY(calc(var(--k)*12));transition:opacity .6s var(--ease),transform .72s var(--ease)}
+.js .is-live .en{opacity:1;transform:none}
+.js .is-live .en:nth-child(1){transition-delay:.02s}
+.js .is-live .en:nth-child(2){transition-delay:.09s}
+.js .is-live .en:nth-child(3){transition-delay:.16s}
+.js .is-live .en:nth-child(4){transition-delay:.23s}
+.js .is-live .en:nth-child(5){transition-delay:.30s}
+.js .is-live .en:nth-child(6){transition-delay:.37s}
+
+/* ── 01 hero ─────────────── */
+#s1 .word{font-size:calc(var(--k)*168);margin:0}
+#s1 .claim{
+  font-family:var(--din);font-weight:700;font-size:calc(var(--k)*44);line-height:.96;
+  letter-spacing:-.02em;text-transform:uppercase;margin:calc(var(--k)*14) 0 0;max-width:21ch;
+}
+/* the cycling line's box is reserved at the tallest phrase, so the gloss
+   beneath it never moves as the words change */
+.claim-var{
+  display:block;color:var(--red-ink);
+  min-height:calc(var(--k)*44 * .96 * 3);
+  transition:opacity .34s var(--ease),transform .44s var(--ease);
+}
+.claim-var.out{opacity:0;transform:translateY(calc(var(--k)*-16))}
+.claim-var.in{opacity:0;transform:translateY(calc(var(--k)*16))}
+.claim-var.nofx{transition:none}
+#s1 .gloss{font-size:calc(var(--k)*16.5);color:var(--mid);max-width:40ch;margin:calc(var(--k)*18) 0 0;line-height:1.6}
+#s1 .gloss i{color:var(--red-ink);font-weight:600;font-style:italic}
+.asmwrap{position:relative;min-height:calc(var(--k)*470)}
+.asm{position:relative;width:100%;aspect-ratio:1;max-width:calc(var(--k)*440);margin-left:auto;perspective:calc(var(--k)*1500)}
+.asm-rot{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(56deg) rotateZ(-40deg);transition:transform .6s var(--ease)}
+.asm-drift{position:absolute;inset:0;transform-style:preserve-3d}
+.js .asm-drift{animation:drift 24s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:rotateZ(-5deg)}50%{transform:rotateZ(5deg)}}
+.pl{
+  position:absolute;left:19%;top:19%;width:62%;height:62%;
+  border:1px solid rgba(22,24,26,.55);border-radius:calc(var(--k)*6);
+  background:rgba(250,249,245,.9);
+}
+.pl::before{content:'';position:absolute;inset:calc(var(--k)*12);border:1px dashed rgba(22,24,26,.28);border-radius:calc(var(--k)*3)}
+.pl.hot{background:var(--red);border-color:var(--red)}
+.pl.hot::before{border-color:rgba(255,255,255,.55)}
+/* the assembly never settles: parts draw apart, nest back together, and part
+   again, one after another — an operation being taken down and rebuilt.
+   --zo is where a part sits exploded, --zc where it sits nested. */
+.pl{--zo:0px;--zc:0px}
+.pl.p2{--zo:calc(var(--k)*64);--zc:calc(var(--k)*9)}
+.pl.p3{--zo:calc(var(--k)*128);--zc:calc(var(--k)*18)}
+.pl.p4{--zo:calc(var(--k)*192);--zc:calc(var(--k)*27)}
+.js .pl{transform:translateZ(var(--zo))}
+.js .is-live .pl{animation:assemble 17s var(--ease) infinite}
+.js .is-live .pl.p3{animation-delay:.55s}
+.js .is-live .pl.p4{animation-delay:1.15s}
+@keyframes assemble{
+  0%,10%  {transform:translateZ(var(--zo))}
+  34%,56% {transform:translateZ(var(--zc))}   /* nested, and it holds there */
+  80%,100%{transform:translateZ(var(--zo))}
+}
+/* the callout for a part brightens while that part is seated */
+.js .is-live .key{animation:keybeat 17s var(--ease) infinite}
+.js .is-live .key:nth-child(2){animation-delay:.55s}
+.js .is-live .key:nth-child(3){animation-delay:1.15s}
+.js .is-live .key:nth-child(4){animation-delay:1.7s}
+@keyframes keybeat{0%,26%{opacity:.5}38%,54%{opacity:1}72%,100%{opacity:.5}}
+
+/* a port seen from altitude, washed almost to paper — atmosphere under the
+   drawing, never a picture on the sheet. Cleared away from the type entirely. */
+.port{
+  position:absolute;inset:calc(var(--k)*24);z-index:0;pointer-events:none;overflow:hidden;
+  opacity:.36;
+  -webkit-mask-image:linear-gradient(93deg,transparent 0,transparent 20%,rgba(0,0,0,.3) 40%,#000 66%,#000 100%);
+  mask-image:linear-gradient(93deg,transparent 0,transparent 20%,rgba(0,0,0,.3) 40%,#000 66%,#000 100%);
+}
+.port img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1) contrast(.88) brightness(1.3)}
+.port::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,var(--paper) 0%,rgba(250,249,245,0) 20%,rgba(250,249,245,0) 76%,var(--paper) 100%);
+}
+
+/* general arrangement: the larger drawing this detail was called out from */
+/* port, then drawing, then type — all at z 0 so DOM order sets the stack
+   and nothing can paint a hairline across the wordmark */
+.ga{position:absolute;inset:calc(var(--k)*24);z-index:0;pointer-events:none;width:auto;height:auto}
+#s1 .in{position:relative;z-index:1}
+.ga *{fill:none;stroke:var(--ink);vector-effect:non-scaling-stroke}
+.ga .thin{stroke-width:1;opacity:.07}
+.ga .hair{stroke-width:1;opacity:.045;stroke-dasharray:6 7}
+.ga .warm{stroke:var(--red);stroke-width:1;opacity:.16}
+.js .ga .spin{transform-box:fill-box;transform-origin:center;animation:gaspin 190s linear infinite}
+@keyframes gaspin{to{transform:rotate(360deg)}}
+.keys{position:absolute;left:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:calc(var(--k)*28);z-index:6}
+.key{display:flex;align-items:center;gap:calc(var(--k)*12)}
+.key i{display:block;height:1px;background:var(--ink);width:calc(var(--k)*62);transform-origin:left}
+.key i.r{background:var(--red)}
+.js .key i{transform:scaleX(0);transition:transform .7s var(--ease)}
+.js .is-live .key i{transform:scaleX(1)}
+.js .is-live .key:nth-child(1) i{transition-delay:.45s}
+.js .is-live .key:nth-child(2) i{transition-delay:.58s}
+.js .is-live .key:nth-child(3) i{transition-delay:.71s}
+.js .is-live .key:nth-child(4) i{transition-delay:.84s}
+.key em{font-family:var(--din);font-weight:600;font-size:calc(var(--k)*12);letter-spacing:.16em;text-transform:uppercase;font-style:normal;color:var(--mid)}
+.key em.r{color:var(--red-ink)}
+
+/* ── 02 bill of materials ─────────────── */
+.bom{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.bom th,.bom td{border:1px solid var(--faint);padding:calc(var(--k)*11) calc(var(--k)*14);text-align:left}
+.bom th{font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);letter-spacing:.16em;text-transform:uppercase;color:var(--mid)}
+.bom td{font-size:calc(var(--k)*15.5)}
+.bom td.n{width:calc(var(--k)*54);font-family:var(--din);font-weight:700}
+.bom tr.tot td{border-top:calc(var(--k)*2) solid var(--ink);font-family:var(--din);font-weight:800;font-size:calc(var(--k)*30);letter-spacing:-.02em}
+.bom tr.tot td.lbl{font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);letter-spacing:.16em;text-transform:uppercase;color:var(--mid)}
+
+/* ── 03 survey grid ─────────────── */
+.legend{display:flex;flex-direction:column;gap:calc(var(--k)*17)}
+.leg{display:grid;grid-template-columns:calc(var(--k)*30) 1fr;gap:calc(var(--k)*13);align-items:start}
+.leg .fig{font-family:var(--din);font-weight:800;font-size:calc(var(--k)*38);line-height:.9;letter-spacing:-.02em;margin:0}
+.leg p{margin:calc(var(--k)*4) 0 0;font-size:calc(var(--k)*14.5);color:var(--mid);max-width:34ch;line-height:1.5}
+.leg .sw{width:calc(var(--k)*14);height:calc(var(--k)*14);margin-top:calc(var(--k)*7)}
+
+/* the line-type legend, still used by the flow column headers */
+.lt{font-family:var(--din);font-weight:500;font-size:calc(var(--k)*9.5);letter-spacing:.16em;text-transform:uppercase;color:var(--mid);display:flex;align-items:center;gap:calc(var(--k)*9)}
+.lt::before{content:'';width:calc(var(--k)*40);border-top:1px solid var(--ink)}
+.lt.phantom::before{border-top:1px dashed var(--mid)}
+
+/* ── 03 / 04a the cost of manual, stated as three magnitudes ────── */
+.rank{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--k)*40);border-top:1px solid var(--faint)}
+.rk{padding:calc(var(--k)*22) calc(var(--k)*26) calc(var(--k)*20) 0;border-right:1px solid var(--faint);position:relative}
+.rk:last-child{border-right:0}
+.rk .fig{
+  font-family:var(--din);font-weight:800;font-size:calc(var(--k)*86);line-height:.86;
+  letter-spacing:-.035em;font-variant-numeric:tabular-nums;margin:0;
+}
+.rk .fig.r{color:var(--red)}
+.rk h3{
+  font-family:var(--din);font-weight:700;font-size:calc(var(--k)*17);letter-spacing:.02em;
+  text-transform:uppercase;margin:calc(var(--k)*12) 0 calc(var(--k)*8);
+}
+.rk p{margin:0;font-size:calc(var(--k)*14);color:var(--mid);line-height:1.5}
+.rk .cite{
+  display:block;margin-top:calc(var(--k)*12);font-family:var(--din);font-weight:500;
+  font-size:calc(var(--k)*9.5);letter-spacing:.1em;text-transform:uppercase;color:var(--mid);line-height:1.55;
+}
+/* sheet 17 carries a plate as well as the rank, so its rank runs tighter */
+#s17 .in{gap:calc(var(--k)*12)}
+#s17 .rk{padding:calc(var(--k)*14) calc(var(--k)*22) calc(var(--k)*12) 0}
+#s17 .rk .fig{font-size:calc(var(--k)*44)}
+#s17 .rk h3{font-size:calc(var(--k)*15);margin:calc(var(--k)*9) 0 calc(var(--k)*6)}
+#s17 .rk p{font-size:calc(var(--k)*13);line-height:1.45}
+#s17 .rk .cite{margin-top:calc(var(--k)*9)}
+#s17 .plate{padding:calc(var(--k)*14)}
+#s17 .rk .fig{font-size:calc(var(--k)*42)}
+
+.rk .maps{
+  position:absolute;top:calc(var(--k)*22);right:calc(var(--k)*26);
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--red-ink);
+}
+/* the concession sheet: one number, given away before anyone can use it */
+.concede{text-align:left}
+.concede .big{
+  font-family:var(--din);font-weight:800;font-size:calc(var(--k)*196);line-height:.78;
+  letter-spacing:-.05em;font-variant-numeric:tabular-nums;margin:0;color:var(--red);
+}
+.concede .sub{
+  font-family:var(--din);font-weight:700;font-size:calc(var(--k)*38);line-height:1;
+  letter-spacing:-.02em;text-transform:uppercase;margin:calc(var(--k)*14) 0 0;
+}
+
+/* ── 04 full-sheet routing diagram ──────────────────────────────
+   Two paths run down the sheet in parallel, so every press compares the
+   same beat on both. They differ only at the bottom. */
+#s4 .in{max-width:none}
+.flowhd{display:flex;justify-content:space-between;align-items:baseline;gap:calc(var(--k)*30);flex-wrap:wrap}
+.flow{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--k)*112);align-content:start}
+.fcol{position:relative;display:flex;flex-direction:column}
+.fcol-hd{
+  display:flex;align-items:baseline;gap:calc(var(--k)*14);flex-wrap:wrap;
+  padding-bottom:calc(var(--k)*11);border-bottom:1px solid var(--faint);margin-bottom:calc(var(--k)*22);
+}
+.fcol-hd b{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*22);letter-spacing:.05em;text-transform:uppercase}
+.fcol.void .fcol-hd b{color:var(--red-ink)}
+.fnodes{position:relative;display:flex;flex-direction:column}
+.fnode{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*26);
+  letter-spacing:.01em;text-transform:uppercase;text-align:center;
+  padding:calc(var(--k)*19) calc(var(--k)*20);
+}
+.fnode.ghost{border:1px dashed var(--faint);color:var(--mid)}
+.fnode.solid{border:1px solid var(--ink);color:var(--ink);background:var(--paper)}
+.conn{position:relative;display:block;width:1px;height:calc(var(--k)*36);margin:0 auto}
+.conn.dash{border-left:1px dashed var(--mid)}
+.conn.solid{border-left:1px solid var(--ink)}
+.conn::after{
+  content:'';position:absolute;bottom:calc(var(--k)*-1);left:calc(var(--k)*-4.5);
+  border-left:calc(var(--k)*4.5) solid transparent;border-right:calc(var(--k)*4.5) solid transparent;
+  border-top:calc(var(--k)*7) solid var(--mid);
+}
+.conn.solid::after{border-top-color:var(--ink)}
+.outcome{
+  text-align:center;font-family:var(--din);font-weight:700;font-size:calc(var(--k)*32);
+  letter-spacing:.01em;text-transform:uppercase;padding:calc(var(--k)*19);
+}
+.outcome.dead{
+  border:1px dashed var(--red);color:var(--red);
+  display:flex;align-items:center;justify-content:center;gap:calc(var(--k)*15);
+}
+.outcome.dead i{
+  width:calc(var(--k)*30);height:calc(var(--k)*30);border:1px solid var(--red);border-radius:50%;
+  display:grid;place-items:center;font-size:calc(var(--k)*15);font-style:normal;flex:0 0 auto;
+}
+.outcome.runs{background:var(--ink);color:var(--paper)}
+/* out of the last node, down the outside, and back into the first */
+.retv{
+  position:absolute;left:calc(var(--k)*-42);width:calc(var(--k)*42);
+  top:calc(var(--k)*36);bottom:calc(var(--k)*36);
+  border-left:1px dashed var(--mid);border-top:1px dashed var(--mid);border-bottom:1px dashed var(--mid);
+}
+.retv::after{
+  content:'';position:absolute;top:calc(var(--k)*-4.5);right:calc(var(--k)*-1);
+  border-top:calc(var(--k)*4.5) solid transparent;border-bottom:calc(var(--k)*4.5) solid transparent;
+  border-left:calc(var(--k)*7) solid var(--mid);
+}
+.retv span{
+  position:absolute;left:50%;top:50%;white-space:nowrap;
+  transform:translate(-50%,-50%) rotate(-90deg);background:var(--paper);padding:0 calc(var(--k)*10);
+}
+
+/* any sheet carrying data-steps reveals its parts one beat at a time */
+.js [data-steps] [data-at]{opacity:0;transition:opacity .45s var(--ease),transform .55s var(--ease)}
+.js [data-steps] [data-at].on{opacity:1;transform:none}
+.js #s4 .fnode[data-at],.js #s4 .conn[data-at]{transform:translateY(calc(var(--k)*-10))}
+.js #s4 .outcome[data-at]{transform:translateY(calc(var(--k)*12))}
+.js #s4 .retv[data-at]{transform:scaleX(.9);transform-origin:right center}
+.js #s3 .rk[data-at]{transform:translateY(calc(var(--k)*14))}
+.js #s4a [data-at]{transform:translateY(calc(var(--k)*14))}
+/* sheet 07 ghosts its stages rather than hiding them — keep that */
+.js #s7.sh .seg[data-at]{opacity:.14;transform:none}
+.js #s7.sh .seg[data-at].on{opacity:1}
+/* ── 07 proportional timeline · presenter-stepped build ─────────────
+   The line does not draw itself. It advances one stage per keypress,
+   so the room is looking at the stage being talked about. */
+.js #s7.is-live .dimline::before{transform:scaleX(var(--fill,0));transition:transform .95s var(--ease)}
+.js #s7 .seg{opacity:.14;transition:opacity .55s var(--ease)}
+.js #s7 .seg.on{opacity:1}
+.js #s7 .tick,.js #s7 .dimval{opacity:0;transition:opacity .45s var(--ease)}
+.js #s7 .tick.on,.js #s7 .dimval.on{opacity:1}
+html:not(.js) .steps{display:none}
+.steps{
+  display:flex;align-items:center;gap:calc(var(--k)*11);margin-top:calc(var(--k)*18);
+  font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);letter-spacing:.2em;
+  text-transform:uppercase;color:var(--mid);cursor:pointer;user-select:none;width:fit-content;
+}
+.steps .pips{display:flex;gap:calc(var(--k)*6)}
+.steps .pips i{
+  width:calc(var(--k)*20);height:calc(var(--k)*3);background:var(--faint);
+  transition:background .3s var(--ease);
+}
+.steps .pips i.on{background:var(--red)}
+#s3 .steps,#s4a .steps{margin-top:calc(var(--k)*6)}
+.steps .adv{
+  border:1px solid var(--faint);padding:calc(var(--k)*5) calc(var(--k)*11);
+  transition:border-color .2s,color .2s;
+}
+.steps:hover .adv{border-color:var(--red);color:var(--red-ink)}
+
+/* ── 07 proportional timeline ─────────────── */
+.tlrow{display:grid;grid-template-columns:6fr 2fr 20fr 14fr}
+.seg{position:relative;padding:calc(var(--k)*22) calc(var(--k)*18) calc(var(--k)*24);border-left:1px solid var(--faint)}
+.seg:last-child{border-right:1px solid var(--faint)}
+.seg h3{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*32);line-height:1;letter-spacing:-.015em;text-transform:uppercase;margin:calc(var(--k)*9) 0 calc(var(--k)*8)}
+.seg .d{font-family:var(--din);font-weight:600;font-size:calc(var(--k)*12);letter-spacing:.14em;text-transform:uppercase;color:var(--red-ink)}
+.seg p{margin:0;font-size:calc(var(--k)*14);color:var(--mid);line-height:1.5}
+.seg p em{color:var(--ink);font-style:normal;font-weight:600}
+
+/* ── 08 halt ─────────────── */
+.spec{display:grid;grid-template-columns:auto 1fr;gap:calc(var(--k)*8) calc(var(--k)*24);margin:0}
+.spec dt{font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);letter-spacing:.16em;text-transform:uppercase;color:var(--mid);margin:0;align-self:center}
+.spec dd{margin:0;font-size:calc(var(--k)*15.5);font-variant-numeric:tabular-nums}
+
+/* ── 09 monument ─────────────── */
+.fig-mon{font-family:var(--din);font-weight:800;font-size:calc(var(--k)*160);line-height:.8;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin:0}
+.fig-mon sup{font-size:.3em;vertical-align:super;color:var(--red)}
+/* the sourced figure stays exactly what it is; the accrual rides above it as
+   a separate mark, so the number on screen never drifts past the evidence */
+.tickup{
+  font-size:.24em;vertical-align:super;color:var(--red);letter-spacing:0;
+  font-variant-numeric:tabular-nums;font-weight:700;margin-left:.08em;
+}
+.units{display:grid;grid-template-columns:repeat(3,auto);gap:calc(var(--k)*72);justify-content:start}
+.units b{display:block;font-family:var(--din);font-weight:700;font-size:calc(var(--k)*38);line-height:1;letter-spacing:-.015em;text-transform:uppercase;margin:calc(var(--k)*5) 0}
+
+/* ── 10 gauges ─────────────── */
+.gauges{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--faint)}
+.g{padding:calc(var(--k)*20) calc(var(--k)*18);border-right:1px solid var(--faint)}
+.g:last-child{border-right:0}
+.g .v{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*42);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:calc(var(--k)*9) 0 0}
+.g .v.r{color:var(--red)}
+.g .d{font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin:calc(var(--k)*6) 0 0}
+
+/* ── 10 handset: the object drawn, then annotated ─────────────── */
+.phwrap{display:flex;align-items:center;gap:calc(var(--k)*26);justify-content:flex-end}
+.phcal{display:flex;flex-direction:column;gap:calc(var(--k)*26);align-items:flex-end}
+.phcal .key{flex-direction:row}
+/* the handset as a real object: six faces, machined rails, held in space */
+.phone{
+  --W:calc(var(--k)*236);--H:calc(var(--k)*486);--D:calc(var(--k)*15);--R:calc(var(--k)*22);
+  width:var(--W);height:var(--H);flex:0 0 auto;
+  perspective:calc(var(--k)*1500);perspective-origin:50% 42%;
+}
+.ph-tilt{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .55s var(--ease)}
+.ph-body{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(7deg) rotateY(-28deg)}
+.js .ph-body{animation:phdrift 20s ease-in-out infinite}
+@keyframes phdrift{
+  0%,100%{transform:rotateX(7deg) rotateY(-28deg)}
+  50%    {transform:rotateX(2deg) rotateY(-9deg)}
+}
+/* it swings into the sheet when the sheet arrives */
+.js .phone .ph-tilt{transform:rotateY(-46deg);opacity:.001}
+.js .is-live .phone .ph-tilt{transform:none;opacity:1;transition:transform 1.1s var(--ease) .15s,opacity .7s var(--ease) .15s}
+
+.f{position:absolute;left:50%;top:50%;transform-style:preserve-3d;backface-visibility:hidden}
+.f.front{
+  width:var(--W);height:var(--H);border-radius:var(--R);
+  transform:translate(-50%,-50%) translateZ(calc(var(--D) / 2));
+  background:#15181A;padding:calc(var(--k)*7);overflow:hidden;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
+}
+/* a reflection, because it is glass — not a glow */
+.f.front::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:5;
+  background:linear-gradient(128deg,rgba(255,255,255,.34) 0 15%,rgba(255,255,255,.05) 34%,rgba(255,255,255,0) 52%);
+}
+.f.back{
+  width:var(--W);height:var(--H);border-radius:var(--R);
+  transform:translate(-50%,-50%) rotateY(180deg) translateZ(calc(var(--D) / 2));
+  background:linear-gradient(148deg,#EDEBE5,#C9C6BE 52%,#DCD9D1);
+  box-shadow:inset 0 0 0 1px rgba(22,24,26,.22);
+}
+.f.left,.f.right{width:var(--D);height:calc(var(--H) - var(--R));}
+.f.left {transform:translate(-50%,-50%) rotateY(-90deg) translateZ(calc(var(--W) / 2))}
+.f.right{transform:translate(-50%,-50%) rotateY(90deg)  translateZ(calc(var(--W) / 2))}
+.f.top,.f.bottom{width:calc(var(--W) - var(--R));height:var(--D)}
+.f.top   {transform:translate(-50%,-50%) rotateX(90deg)  translateZ(calc(var(--H) / 2))}
+.f.bottom{transform:translate(-50%,-50%) rotateX(-90deg) translateZ(calc(var(--H) / 2))}
+.f.left,.f.right,.f.top,.f.bottom{
+  background:linear-gradient(90deg,#7E7B74,#D8D5CD 26%,#AEABA3 58%,#7E7B74);
+}
+.f.top,.f.bottom{background:linear-gradient(0deg,#7E7B74,#D8D5CD 26%,#AEABA3 58%,#7E7B74)}
+/* side keys */
+.f.right::before,.f.left::before,.f.left::after{
+  content:'';position:absolute;left:0;right:0;background:rgba(22,24,26,.34);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+}
+.f.right::before{top:26%;height:calc(var(--k)*54)}
+.f.left::before {top:24%;height:calc(var(--k)*28)}
+.f.left::after  {top:34%;height:calc(var(--k)*28)}
+
+.ph-cam{
+  position:absolute;top:calc(var(--k)*12);left:50%;transform:translateX(-50%);z-index:4;
+  width:calc(var(--k)*38);height:calc(var(--k)*4);border-radius:calc(var(--k)*3);
+  background:#000;opacity:.72;
+}
+.ph-scr{
+  position:relative;height:100%;background:#fff;border-radius:calc(var(--k)*17);
+  overflow:hidden;padding-top:calc(var(--k)*20);
+  display:flex;flex-direction:column;
+}
+.ph-scr .ph-tabs{margin-top:auto}
+/* the pending approval arrives while they are looking at it */
+.js .ph-appr{opacity:0;transform:translateY(calc(var(--k)*12))}
+.js .is-live .ph-appr{
+  opacity:1;transform:none;
+  transition:opacity .5s var(--ease) 1.5s,transform .65s var(--ease) 1.5s;
+}
+.ph-top{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:calc(var(--k)*7) calc(var(--k)*13) calc(var(--k)*9);
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.1em;color:var(--mid);
+}
+.ph-hd{
+  display:flex;justify-content:space-between;align-items:center;gap:calc(var(--k)*8);
+  padding:calc(var(--k)*9) calc(var(--k)*13);border-top:1px solid var(--faint);border-bottom:1px solid var(--faint);
+}
+.ph-hd b{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*12);letter-spacing:.08em;text-transform:uppercase}
+.ph-hero{padding:calc(var(--k)*14) calc(var(--k)*13) calc(var(--k)*12);border-bottom:1px solid var(--faint)}
+.ph-hero .v{
+  font-family:var(--din);font-weight:800;font-size:calc(var(--k)*30);line-height:1;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--red);margin:calc(var(--k)*5) 0 0;
+}
+.ph-row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:calc(var(--k)*8);
+  padding:calc(var(--k)*9) calc(var(--k)*13);border-bottom:1px solid var(--faint);
+}
+.ph-row span{font-size:calc(var(--k)*11);color:var(--mid)}
+.ph-row b{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*13);font-variant-numeric:tabular-nums}
+.ph-appr{
+  display:flex;align-items:center;gap:calc(var(--k)*9);
+  padding:calc(var(--k)*11) calc(var(--k)*13);background:rgba(216,64,31,.06);border-bottom:1px solid var(--faint);
+}
+.ph-appr p{margin:0;font-size:calc(var(--k)*11.5);color:var(--red-ink);font-weight:600;flex:1}
+.ph-appr .chev{color:var(--red);font-family:var(--din);font-size:calc(var(--k)*13)}
+.ph-tabs{display:grid;grid-template-columns:repeat(4,1fr);padding:calc(var(--k)*9) 0 calc(var(--k)*11)}
+.ph-tabs span{
+  text-align:center;font-family:var(--din);font-weight:600;font-size:calc(var(--k)*7.5);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+}
+.ph-tabs span.on{color:var(--red)}
+
+/* ── 08 the picker's handheld: where the rule actually bites ─────── */
+/* a site photograph under the drawing — the as-built record's own device.
+   Masked away from the text column so nothing competes with the copy. */
+.bay{
+  position:absolute;inset:calc(var(--k)*24);z-index:0;pointer-events:none;overflow:hidden;
+  opacity:.62;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.25) 26%,#000 58%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.25) 26%,#000 58%,#000 100%);
+}
+.bay img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.12) brightness(.62) saturate(.5)}
+.bay::after{content:'';position:absolute;inset:0;background:#10293A;mix-blend-mode:color;opacity:.7}
+/* the survey annotation that turns a photograph into a record */
+.bays{
+  position:absolute;left:0;right:0;bottom:calc(var(--k)*30);z-index:1;pointer-events:none;
+  display:flex;justify-content:flex-end;gap:calc(var(--k)*54);padding-right:calc(var(--k)*20);
+}
+.bays b{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.2em;
+  color:var(--mid);position:relative;padding-top:calc(var(--k)*11);
+}
+.bays b::before{content:'';position:absolute;top:0;left:50%;width:1px;height:calc(var(--k)*7);background:var(--faint)}
+.scanner .ph-body{transform:rotateX(6deg) rotateY(21deg)}
+.js .scanner .ph-body{animation:scdrift 22s ease-in-out infinite}
+@keyframes scdrift{
+  0%,100%{transform:rotateX(6deg) rotateY(21deg)}
+  50%    {transform:rotateX(2deg) rotateY(6deg)}
+}
+.js .scanner .ph-tilt{transform:rotateY(40deg);opacity:.001}
+.js .is-live .scanner .ph-tilt{transform:none;opacity:1;transition:transform 1.1s var(--ease) .15s,opacity .7s var(--ease) .15s}
+
+.scanner{
+  --W:calc(var(--k)*250);--H:calc(var(--k)*400);--D:calc(var(--k)*30);--R:calc(var(--k)*16);
+  width:var(--W);height:var(--H);flex:0 0 auto;
+  perspective:calc(var(--k)*1500);perspective-origin:50% 45%;
+}
+.scanner .f.front{background:#1B1F21;padding:calc(var(--k)*12)}
+.scanner .f.back{background:linear-gradient(148deg,#4C5153,#2A2E30 60%,#3A3F41)}
+.scanner .f.left,.scanner .f.right,.scanner .f.top,.scanner .f.bottom{
+  background:linear-gradient(90deg,#232729,#585D5F 26%,#33383A 58%,#232729);
+}
+.scanner .f.top,.scanner .f.bottom{background:linear-gradient(0deg,#232729,#585D5F 26%,#33383A 58%,#232729)}
+.scanner .f.right::before{top:22%;height:calc(var(--k)*76)}   /* scan trigger */
+.sc-scr{
+  position:relative;height:64%;background:#F3F5F2;border-radius:calc(var(--k)*3);
+  overflow:hidden;border:1px solid #0C0E0F;
+}
+.sc-state{position:absolute;inset:0;padding:calc(var(--k)*13);display:flex;flex-direction:column;gap:calc(var(--k)*7)}
+.sc-hd{display:flex;justify-content:space-between;font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.16em;text-transform:uppercase;color:#5F6469}
+.sc-big{font-family:var(--din);font-weight:800;font-size:calc(var(--k)*27);line-height:.96;letter-spacing:-.01em;text-transform:uppercase;color:#16181A;margin:calc(var(--k)*3) 0 0}
+.sc-big.halt{color:#C0341A}
+.sc-kv{display:flex;justify-content:space-between;font-size:calc(var(--k)*11);color:#5F6469;font-variant-numeric:tabular-nums;border-top:1px solid rgba(22,24,26,.14);padding-top:calc(var(--k)*5)}
+.sc-kv b{color:#16181A;font-weight:600}
+.sc-cta{
+  margin-top:auto;text-align:center;font-family:var(--din);font-weight:700;font-size:calc(var(--k)*11);
+  letter-spacing:.16em;text-transform:uppercase;border:1px solid #C0341A;color:#C0341A;padding:calc(var(--k)*7);
+}
+.sc-beam{position:absolute;left:0;right:0;height:calc(var(--k)*2);background:#C0341A;opacity:.85}
+.js .sc-beam{animation:beam 8s linear infinite}
+@keyframes beam{0%{top:0;opacity:0}2%{opacity:.85}14%{top:100%;opacity:.85}16%,100%{opacity:0;top:0}}
+.js .sc-state{opacity:0}
+.js .s1{animation:st1 8s linear infinite}
+.js .s2{animation:st2 8s linear infinite}
+.js .s3{animation:st3 8s linear infinite}
+@keyframes st1{0%,15%{opacity:1}19%,100%{opacity:0}}
+@keyframes st2{0%,16%{opacity:0}20%,31%{opacity:1}35%,100%{opacity:0}}
+@keyframes st3{0%,32%{opacity:0}36%,95%{opacity:1}99%,100%{opacity:0}}
+.sc-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--k)*5);margin-top:calc(var(--k)*10)}
+.sc-keys i{
+  aspect-ratio:2.1;border-radius:calc(var(--k)*3);
+  background:linear-gradient(180deg,#42474A,#2A2E30);box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+}
+.sc-trig{
+  margin-top:calc(var(--k)*6);height:calc(var(--k)*22);border-radius:calc(var(--k)*4);
+  background:linear-gradient(180deg,#8E3A22,#5E2413);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+/* ── 11 invoice ─────────────── */
+.inv{padding:calc(var(--k)*22) calc(var(--k)*24);max-width:calc(var(--k)*410)}
+.invline{display:flex;justify-content:space-between;font-size:calc(var(--k)*13.5);color:var(--mid);padding:calc(var(--k)*5) 0;font-variant-numeric:tabular-nums}
+.invline b{color:var(--ink);font-weight:500}
+.qr{width:calc(var(--k)*96);height:calc(var(--k)*96);display:grid;grid-template-columns:repeat(21,1fr);background:#fff;padding:calc(var(--k)*5);border:1px solid var(--faint)}
+.qr i{background:transparent}
+.qr i.on{background:var(--ink)}
+
+/* ── screen: a detail view of a real component, drawn on the sheet ─────── */
+.screen{
+  background:#fff;border:1px solid var(--ink);border-radius:calc(var(--k)*4);
+  box-shadow:0 calc(var(--k)*16) calc(var(--k)*34) rgba(22,24,26,.13);overflow:hidden;
+}
+.scr-bar{
+  display:flex;align-items:center;gap:calc(var(--k)*7);
+  padding:calc(var(--k)*9) calc(var(--k)*13);
+  border-bottom:1px solid var(--faint);background:var(--bone);
+}
+.scr-bar i{width:calc(var(--k)*7);height:calc(var(--k)*7);border-radius:50%;border:1px solid var(--mid);flex:0 0 auto}
+.scr-bar .u{
+  font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--mid);margin-left:calc(var(--k)*8);
+}
+.scr-body{padding:calc(var(--k)*13)}
+.strip{
+  display:flex;align-items:center;gap:calc(var(--k)*16);flex-wrap:wrap;
+  padding-bottom:calc(var(--k)*11);border-bottom:1px solid var(--faint);margin-bottom:calc(var(--k)*12);
+}
+.stat{font-family:var(--din);font-size:calc(var(--k)*10);letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+.stat b{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-size:calc(var(--k)*13);margin-left:calc(var(--k)*5)}
+.dot.sm{width:calc(var(--k)*7);height:calc(var(--k)*7)}
+
+/* ticket board — a card actually travels the pipeline, on a loop */
+.cols{--cg:calc(var(--k)*9);display:grid;grid-template-columns:repeat(3,1fr);gap:var(--cg);position:relative}
+.colh{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--mid);padding-bottom:calc(var(--k)*6);border-bottom:1px solid var(--faint);
+}
+.cards{display:flex;flex-direction:column;gap:calc(var(--k)*6);padding-top:calc(var(--k)*74)}
+.tkt{border:1px solid var(--faint);border-radius:calc(var(--k)*2);padding:calc(var(--k)*8) calc(var(--k)*9);background:#fff}
+.tkt .id{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*10);letter-spacing:.06em}
+.tkt .ti{font-size:calc(var(--k)*11);color:var(--mid);margin:calc(var(--k)*2) 0 0;line-height:1.3}
+.tkt.done .id{color:var(--mid)}
+.trav{
+  position:absolute;top:calc(var(--k)*26);left:0;z-index:3;
+  width:calc((100% - var(--cg) * 2) / 3);
+  border-color:var(--red);background:#fff;
+  box-shadow:0 calc(var(--k)*5) calc(var(--k)*12) rgba(22,24,26,.13);
+}
+.trav .id{color:var(--red)}
+.js .trav{animation:travel 11s var(--ease) infinite}
+@keyframes travel{
+  0%      {transform:translateX(0);opacity:0}
+  4%,20%  {transform:translateX(0);opacity:1}
+  28%,48% {transform:translateX(calc(100% + var(--cg)));opacity:1}
+  56%,88% {transform:translateX(calc(200% + var(--cg) * 2));opacity:1}
+  96%,100%{transform:translateX(calc(200% + var(--cg) * 2));opacity:0}
+}
+
+/* ── 13 the worked example · a brokerage's board ──────────────────
+   The as-built set is blueprint because it was built. This one stays on
+   paper on purpose: it is drawn, not constructed, and the stock says so
+   before a word does. Same .screen furniture as sheet 12 — the same firm
+   drew both — with a denser interior, because the room is meant to lean in. */
+.cc-rail{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:1px;background:var(--faint);
+  border:1px solid var(--faint);margin-bottom:calc(var(--k)*12);
+}
+.cc-rail span{
+  background:#fff;padding:calc(var(--k)*7) calc(var(--k)*6) calc(var(--k)*6);
+  display:flex;flex-direction:column;gap:calc(var(--k)*3);min-width:0;
+}
+.cc-rail em{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*8.5);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--mid);font-style:normal;line-height:1.15;
+}
+.cc-rail b{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*15);font-variant-numeric:tabular-nums;line-height:1}
+/* one stage carries the decision, so one stage carries the red */
+.cc-rail span.on{background:rgba(216,64,31,.05);box-shadow:inset 0 calc(var(--k)*2) 0 var(--red)}
+.cc-rail span.on em,.cc-rail span.on b{color:var(--red-ink)}
+
+.cc-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:calc(var(--k)*12);align-items:start}
+.cc-h{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--mid);margin:0 0 calc(var(--k)*7);
+  padding-bottom:calc(var(--k)*6);border-bottom:1px solid var(--faint);
+}
+.cc-h.r{color:var(--red-ink);border-bottom-color:var(--red)}
+.cc-it{padding:calc(var(--k)*7) 0;border-bottom:1px solid var(--hair)}
+.cc-it:last-child{border-bottom:0}
+.cc-it .ref{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*10);letter-spacing:.06em;margin:0}
+.cc-it .ti{font-size:calc(var(--k)*11);color:var(--mid);margin:calc(var(--k)*2) 0 0;line-height:1.35}
+
+.cc-gate{border:1px solid var(--red);background:rgba(216,64,31,.04);padding:calc(var(--k)*10) calc(var(--k)*11)}
+.cc-gate .cc-h{margin-bottom:calc(var(--k)*8)}
+.cc-task{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*12);letter-spacing:.01em;margin:0;line-height:1.25}
+.cc-meta{font-size:calc(var(--k)*10.5);color:var(--mid);margin:calc(var(--k)*3) 0 0}
+.cc-rec{
+  font-size:calc(var(--k)*10.5);color:var(--ink);margin:calc(var(--k)*8) 0 0;
+  padding:calc(var(--k)*6) calc(var(--k)*8);background:#fff;border:1px solid var(--faint);
+}
+.cc-btns{display:flex;gap:calc(var(--k)*6);margin-top:calc(var(--k)*8)}
+.cc-b{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*9);letter-spacing:.14em;
+  text-transform:uppercase;padding:calc(var(--k)*5) calc(var(--k)*10);
+  border:1px solid var(--faint);color:var(--mid);background:#fff;
+}
+.cc-b.r{border-color:var(--red);background:var(--red);color:#fff}
+.cc-note{font-size:calc(var(--k)*10);color:var(--red-ink);margin:calc(var(--k)*8) 0 0;line-height:1.4}
+
+/* ── 14 the approval gate, given the whole sheet ──────────────────
+   One decision, at the size it has in life. The amount leads, because that
+   is what an owner is actually looking at. */
+#s14 .in{max-width:calc(var(--k)*1180)}
+.gate2{
+  position:relative;border:1px solid var(--ink);background:var(--paper);
+  padding:calc(var(--k)*22) calc(var(--k)*34) calc(var(--k)*22);
+  box-shadow:0 calc(var(--k)*18) calc(var(--k)*40) rgba(22,24,26,.11);
+}
+.gate2 .top{display:flex;justify-content:space-between;align-items:center;gap:calc(var(--k)*20);
+  padding-bottom:calc(var(--k)*16);border-bottom:1px solid var(--faint)}
+.gate2 .what{
+  font-family:var(--din);font-weight:700;font-size:calc(var(--k)*26);letter-spacing:.01em;
+  text-transform:uppercase;margin:calc(var(--k)*20) 0 0;color:var(--mid);
+}
+.gate2 .amt{
+  font-family:var(--din);font-weight:800;font-size:calc(var(--k)*94);line-height:.88;
+  letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin:calc(var(--k)*4) 0 0;
+}
+.gate2 .amt.done{color:var(--mid);text-decoration:line-through;text-decoration-color:var(--red)}
+.gate2 .state{
+  display:flex;align-items:center;gap:calc(var(--k)*12);margin-top:calc(var(--k)*15);
+  padding:calc(var(--k)*11) calc(var(--k)*16);background:var(--bone);border:1px solid var(--faint);
+}
+.gate2 .state .lab{font-size:calc(var(--k)*13);letter-spacing:.2em}
+.gate2 .acts{display:flex;gap:calc(var(--k)*12);margin-top:calc(var(--k)*15)}
+.gate2 .btn-red,.gate2 .btn-ghost{font-size:calc(var(--k)*13);padding:calc(var(--k)*15) calc(var(--k)*34)}
+.gate2 .record{
+  margin:calc(var(--k)*18) 0 0;font-size:calc(var(--k)*16);color:var(--mid);line-height:1.55;
+  min-height:calc(var(--k)*38);max-width:62ch;
+}
+.gate2 .record b{color:var(--ink);font-weight:600}
+.gate2 .applied{right:calc(var(--k)*36);top:calc(var(--k)*84)}
+/* the three protections compress to a rank under the gate */
+.guards{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--k)*30);border-top:1px solid var(--faint);padding-top:calc(var(--k)*16)}
+.guard{display:grid;grid-template-columns:calc(var(--k)*28) 1fr;gap:calc(var(--k)*12);align-items:start}
+.guard h4{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*15);letter-spacing:.02em;text-transform:uppercase;margin:0 0 calc(var(--k)*5)}
+.guard p{margin:0;font-size:calc(var(--k)*12.5);color:var(--mid);line-height:1.42}
+
+/* ── 13 gate ─────────────── */
+.gate{padding:calc(var(--k)*26) calc(var(--k)*30);max-width:calc(var(--k)*520);position:relative}
+.gate .act{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*30);line-height:1.02;letter-spacing:-.015em;text-transform:uppercase;margin:calc(var(--k)*18) 0 0}
+.gate .val{font-family:var(--din);font-weight:800;font-size:calc(var(--k)*52);line-height:1;letter-spacing:-.025em;font-variant-numeric:tabular-nums;margin:calc(var(--k)*6) 0 0}
+.gate .status{margin-top:calc(var(--k)*16);padding:calc(var(--k)*12) calc(var(--k)*15);border:1px solid var(--faint);background:var(--bone);display:flex;align-items:center;gap:calc(var(--k)*11)}
+.dot{width:calc(var(--k)*9);height:calc(var(--k)*9);border-radius:50%;background:var(--red);flex:0 0 auto}
+.js .dot{animation:blip 2.4s var(--ease) infinite}
+@keyframes blip{0%,100%{opacity:1}50%{opacity:.34}}
+.gate .acts{display:flex;gap:calc(var(--k)*10);margin-top:calc(var(--k)*18)}
+.gate .note{margin:calc(var(--k)*16) 0 0;font-size:calc(var(--k)*15);color:var(--mid);min-height:calc(var(--k)*68);max-width:44ch;line-height:1.55}
+.gate .note b{color:var(--ink);font-weight:600}
+.applied{position:absolute;right:calc(var(--k)*26);top:calc(var(--k)*58);opacity:0;transform:rotate(-9deg) scale(1.35);pointer-events:none;z-index:4}
+.applied.on{opacity:.92;transform:rotate(-9deg) scale(1);transition:opacity .25s ease,transform .45s var(--stampEase)}
+.commits{display:flex;flex-direction:column;gap:calc(var(--k)*13)}
+.commit{display:grid;grid-template-columns:calc(var(--k)*30) 1fr;gap:calc(var(--k)*15);align-items:start}
+.commit h4{font-family:var(--read);font-size:calc(var(--k)*17.5);font-weight:600}
+.commit p{margin:calc(var(--k)*3) 0 0;font-size:calc(var(--k)*14);color:var(--mid);line-height:1.48;max-width:44ch}
+#s13 .stack{gap:calc(var(--k)*17)}
+
+/* ── 14 refusals ─────────────── */
+.ref{display:flex;align-items:center;gap:calc(var(--k)*22);padding:calc(var(--k)*18) 0;border-bottom:1px solid var(--faint)}
+.ref:first-of-type{border-top:1px solid var(--faint)}
+.ref p{margin:0;font-family:var(--din);font-weight:700;font-size:calc(var(--k)*32);line-height:1.04;letter-spacing:-.015em;text-transform:uppercase;color:var(--mid)}
+
+/* ── 14 notes: numbered clauses, the way a drawing carries its terms ── */
+.notes{border-top:1px solid var(--faint)}
+.note{
+  display:grid;grid-template-columns:calc(var(--k)*40) 1fr calc(var(--k)*220);
+  gap:calc(var(--k)*20);align-items:start;
+  padding:calc(var(--k)*11) 0;border-bottom:1px solid var(--faint);
+}
+.note h3{
+  font-family:var(--din);font-weight:700;font-size:calc(var(--k)*22);line-height:1.06;
+  letter-spacing:-.01em;text-transform:uppercase;margin:0 0 calc(var(--k)*5);
+}
+.note p{margin:0;font-size:calc(var(--k)*13.5);color:var(--mid);line-height:1.45;max-width:62ch}
+.note .cost{border-left:1px solid var(--red);padding-left:calc(var(--k)*16)}
+.note .cost b{
+  display:block;font-family:var(--din);font-weight:700;font-size:calc(var(--k)*14.5);
+  line-height:1.15;text-transform:uppercase;color:var(--red-ink);margin-top:calc(var(--k)*3);
+}
+
+/* ── 15 tiers ─────────────── */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--faint)}
+.tier{padding:calc(var(--k)*24) calc(var(--k)*22);border-right:1px solid var(--faint);display:flex;flex-direction:column;gap:calc(var(--k)*13)}
+.tier:last-child{border-right:0}
+.tier h3{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*32);line-height:1;letter-spacing:-.015em;text-transform:uppercase}
+.tier .dur{font-family:var(--din);font-weight:600;font-size:calc(var(--k)*11);letter-spacing:.16em;text-transform:uppercase;color:var(--red-ink)}
+.tier .w{font-size:calc(var(--k)*14.5);color:var(--mid);line-height:1.5;margin:0;flex:1}
+.tier .keep{border-top:1px solid var(--faint);padding-top:calc(var(--k)*11)}
+.tier .keep b{display:block;font-size:calc(var(--k)*14);font-weight:600;margin-top:calc(var(--k)*3)}
+
+/* ── 05 principals: the two of them, as personnel plates ─────────── */
+/* the principals hero: two portraits bled to the sheet edges, the sheet's own
+   paper washing back over them so the type sits in ink, not in a dark scrim */
+#s5 .in{max-width:none;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+#s5 .head{font-size:calc(var(--k)*60)}
+/* a full-bleed hero wants less gutter than a text sheet */
+#s5{padding-top:calc(var(--k)*94);padding-bottom:calc(var(--k)*82)}
+.hero2{position:absolute;inset:calc(var(--k)*24);z-index:0;display:grid;grid-template-columns:1fr 1fr}
+.hcol{position:relative;overflow:hidden;background:var(--bone)}
+.hcol + .hcol{border-left:1px solid var(--faint)}
+.hcol img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  object-position:var(--pos,50% 20%);
+  filter:grayscale(1) contrast(1.12) brightness(1.06);
+}
+.hcol::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  /* the window the portraits show through is narrow on purpose: everything
+     below it is type, and type on a face is type nobody reads */
+  background:linear-gradient(180deg,
+    var(--paper) 0%, rgba(250,249,245,.72) 13%, rgba(250,249,245,.07) 27%,
+    rgba(250,249,245,0) 39%, rgba(250,249,245,.66) 51%, rgba(250,249,245,.93) 61%,
+    var(--paper) 73%);
+}
+.hnames{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--k)*44)}
+.hnames .role{color:var(--red-ink)}
+.hnames .fn{
+  font-family:var(--din);font-weight:800;font-size:calc(var(--k)*46);line-height:.94;
+  letter-spacing:-.025em;text-transform:uppercase;margin:calc(var(--k)*7) 0 calc(var(--k)*9);
+}
+.hnames p.d{margin:0;font-size:calc(var(--k)*13.5);color:var(--mid);line-height:1.48;max-width:46ch}
+.hnames .rule{margin:calc(var(--k)*10) 0}
+
+.crew{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--k)*26)}
+.pplate{
+  position:relative;border:1px solid var(--faint);background:var(--paper);
+  display:grid;grid-template-columns:calc(var(--k)*252) 1fr;
+}
+.pphoto{
+  position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--bone);
+  border-right:1px solid var(--faint);
+}
+/* black and white, full stop — the only tone on the sheet is the red rule */
+.pphoto img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  /* per-portrait crop: set data-pos="50% 14%" on the .pphoto to nudge a face up or down */
+  object-position:var(--pos,50% 22%);
+  filter:grayscale(1) contrast(1.14) brightness(1.03);
+}
+.pmiss{
+  position:absolute;inset:calc(var(--k)*12);display:grid;place-items:center;text-align:center;
+  border:1px dashed var(--red);color:var(--red-ink);gap:calc(var(--k)*6);
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*10);letter-spacing:.16em;text-transform:uppercase;
+}
+.pphoto.ok .pmiss{display:none}
+.pbody{padding:calc(var(--k)*18) calc(var(--k)*20);display:flex;flex-direction:column;gap:calc(var(--k)*8);justify-content:center}
+.pbody .fn{font-family:var(--din);font-weight:800;font-size:calc(var(--k)*40);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;margin:0}
+.pbody p{margin:0;font-size:calc(var(--k)*13);color:var(--mid);line-height:1.46}
+/* registration ticks, as on every other plate in the set */
+.pplate::before,.pplate::after{
+  content:'';position:absolute;width:calc(var(--k)*11);height:calc(var(--k)*11);
+  border:1px solid var(--red);pointer-events:none;z-index:3;
+}
+.pplate::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.pplate::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+
+/* ── 17 dot field ─────────────── */
+.dotfield{position:relative;overflow:hidden}
+.dots{display:grid;grid-template-columns:repeat(88,1fr);gap:calc(var(--k)*2.4);width:100%}
+.dots i{aspect-ratio:1;background:var(--mid);opacity:.42;border-radius:50%}
+.js .dots{clip-path:inset(0 100% 0 0);transition:clip-path 1.3s var(--ease) .25s}
+.js .is-live .dots{clip-path:inset(0 0 0 0)}
+
+/* the survey never finishes: a scan crosses the field forever, and the
+   marks breathe underneath it because every one of them is a live business */
+.scan{
+  position:absolute;top:calc(var(--k)*-6);bottom:calc(var(--k)*-6);left:0;width:100%;
+  border-left:1px solid var(--red);pointer-events:none;opacity:0;
+}
+.scan::before{
+  content:'';position:absolute;top:0;left:calc(var(--k)*-4.5);
+  border-left:calc(var(--k)*4.5) solid transparent;border-right:calc(var(--k)*4.5) solid transparent;
+  border-top:calc(var(--k)*7) solid var(--red);
+}
+.js .is-live .scan{animation:scan 11s linear infinite}
+@keyframes scan{
+  0%  {transform:translateX(0);opacity:0}
+  6%  {opacity:.85}
+  94% {opacity:.85}
+  100%{transform:translateX(100%);opacity:0}
+}
+@keyframes twinkle{0%,100%{opacity:.34}50%{opacity:.92}}
+.js .is-live .dots i.tw{animation:twinkle 5.5s ease-in-out infinite}
+.figs{display:grid;grid-template-columns:repeat(4,auto);gap:calc(var(--k)*42);justify-content:start}
+.figs b{display:block;font-family:var(--din);font-weight:700;font-size:calc(var(--k)*42);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.figs .up b{color:var(--red)}
+.figs span{display:block;font-size:calc(var(--k)*13);color:var(--mid);margin-top:calc(var(--k)*4);max-width:24ch;line-height:1.4}
+
+/* ── 17 one hundred owners, thirteen of whom asked anybody ────── */
+.tally{position:relative;padding-top:calc(var(--k)*30)}
+.marks{display:grid;grid-template-columns:repeat(100,1fr);gap:calc(var(--k)*2);align-items:end}
+.marks i{
+  height:calc(var(--k)*72);background:var(--faint);
+  transform:scaleY(.75);transform-origin:bottom center;
+  transition:background .5s var(--ease),transform .5s var(--ease);
+}
+.marks i.lit{background:var(--red);transform:scaleY(1)}
+.js .marks i.lit{animation:tallybeat 6s ease-in-out infinite}
+@keyframes tallybeat{0%,100%{opacity:1}50%{opacity:.55}}
+/* where the rest of the region sits */
+.apac{position:absolute;top:0;bottom:0;pointer-events:none}
+.apac::before{content:'';position:absolute;top:calc(var(--k)*8);bottom:0;left:0;width:1px;background:var(--ink)}
+.apac b{
+  position:absolute;top:0;left:calc(var(--k)*8);white-space:nowrap;
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*10);
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink);
+}
+.tallyfoot{display:flex;justify-content:space-between;gap:calc(var(--k)*24);margin-top:calc(var(--k)*12);flex-wrap:wrap}
+/* the tick for the regional average arrives after the marks have settled */
+.js .apac{opacity:0;transition:opacity .55s var(--ease) 1.7s}
+.js .is-live .apac{opacity:1}
+
+/* two labelled figures, so nobody has to guess which country is which */
+.pair{display:flex;gap:calc(var(--k)*54);align-items:flex-start}
+.pair .one b{
+  display:block;font-family:var(--din);font-weight:800;font-size:calc(var(--k)*62);
+  line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+}
+.pair .one.us b{color:var(--red)}
+.pair .one span{
+  display:block;margin-top:calc(var(--k)*6);font-family:var(--din);font-weight:600;
+  font-size:calc(var(--k)*10);letter-spacing:.18em;text-transform:uppercase;color:var(--mid);
+}
+.pair .one.us span{color:var(--red-ink)}
+
+/* ── 18 close ─────────────── */
+.close{font-family:var(--din);font-weight:800;font-size:calc(var(--k)*112);line-height:.84;letter-spacing:-.035em;text-transform:uppercase;margin:0}
+.ask{font-size:calc(var(--k)*20.5);line-height:1.5;max-width:30ch;margin:0}
+.ask em{color:var(--red-ink);font-style:normal;font-weight:600}
+.contact{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--faint)}
+.contact div{padding:calc(var(--k)*13) calc(var(--k)*17);border-right:1px solid var(--faint);border-bottom:1px solid var(--faint)}
+.contact div:nth-child(2n){border-right:0}
+.contact div:nth-last-child(-n+2){border-bottom:0}
+.contact .v{font-size:calc(var(--k)*15.5);margin:calc(var(--k)*6) 0 0}
+
+/* ═══════════════════════ INDEX ═══════════════════════ */
+#ov{position:fixed;inset:0;z-index:40;background:var(--bone);display:none;padding:calc(var(--k)*50);overflow-y:auto}
+#ov.open{display:flex;flex-direction:column;justify-content:center}
+.ovhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:calc(var(--k)*20)}
+.ovgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:calc(var(--k)*11)}
+.ovi{
+  text-align:left;background:var(--paper);border:1px solid var(--faint);
+  padding:calc(var(--k)*13) calc(var(--k)*14) calc(var(--k)*15);cursor:pointer;
+  min-height:calc(var(--k)*124);display:flex;flex-direction:column;justify-content:space-between;
+  gap:calc(var(--k)*12);transition:border-color .2s,transform .2s var(--ease),background .2s;
+}
+.ovi:hover{border-color:var(--red);transform:translateY(-2px)}
+.ovi.cur{border-color:var(--red);background:#fff}
+.ovi .n{font-family:var(--din);font-weight:600;font-size:calc(var(--k)*10);letter-spacing:.16em;color:var(--red-ink)}
+.ovi .t{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*20);line-height:1.02;text-transform:uppercase;letter-spacing:-.01em}
+
+/* ═══════════════════════ 00 SPLASH · ADAPTATION ═══════════════════
+   The cover is not a sheet. The ground goes dark, the drawing furniture
+   steps back, and a field of identical lines re-forms itself into one
+   ordered shape after another — scatter, grid, ring, arch, wave, rise.
+   Same parts, rearranged, never redrawn. That is the whole argument of
+   the firm, made before a single word of it is spoken. */
+.splash{background:#080B0D;padding:0;overflow:hidden;justify-content:center}
+.splash .adapt{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+/* the scrim sits under the wordmark, not around the edge — the lines are
+   meant to run to the sheet edge, and only the logo needs a clean bed */
+.splash::after{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 44% 26% at 50% 50%,rgba(8,11,13,.92) 0%,rgba(8,11,13,.66) 48%,rgba(8,11,13,0) 76%),
+    linear-gradient(180deg,rgba(8,11,13,.55) 0%,rgba(8,11,13,0) 22%,rgba(8,11,13,0) 78%,rgba(8,11,13,.7) 100%);
+}
+.splash-in{
+  position:relative;z-index:2;width:100%;
+  display:flex;flex-direction:column;align-items:center;
+}
+.splash .splash-hint{position:absolute;left:50%;bottom:calc(var(--k)*54);transform:translateX(-50%);flex-direction:column;z-index:3}
+.splash-logo{display:block;width:min(50vw,calc(var(--k)*640));height:auto}
+.js .splash-logo{opacity:0;transform:translateY(calc(var(--k)*20)) scale(.982);filter:blur(calc(var(--k)*4))}
+.js .splash.is-live .splash-logo{
+  opacity:1;transform:none;filter:none;
+  transition:opacity 1.6s var(--ease) .4s,transform 1.9s var(--ease) .4s,filter 1.6s var(--ease) .4s;
+}
+.splash-hint{
+  font-family:var(--din);font-weight:500;font-size:calc(var(--k)*10);letter-spacing:.34em;
+  text-transform:uppercase;color:rgba(255,255,255,.34);
+  display:flex;align-items:center;gap:calc(var(--k)*12);
+}
+.splash-hint::after{content:'';width:calc(var(--k)*1);height:calc(var(--k)*26);background:linear-gradient(180deg,rgba(255,255,255,.42),transparent)}
+.js .splash-hint{opacity:0}
+.js .splash.is-live .splash-hint{opacity:1;transition:opacity 1.2s var(--ease) 2.1s}
+.js .splash.is-live .splash-hint::after{animation:hintdrop 2.6s var(--ease) 2.6s infinite}
+@keyframes hintdrop{0%,100%{transform:scaleY(.3);transform-origin:top;opacity:.25}45%{transform:scaleY(1);opacity:1}}
+/* on the cover the drawing furniture is not there yet */
+.sheet,.coords,.hdr,.tblock,.railL{transition:opacity .55s var(--ease)}
+body.splash .sheet,body.splash .coords,body.splash .hdr,
+body.splash .tblock,body.splash .railL,body.splash .draftflag{opacity:0;pointer-events:none}
+body.splash{background:#080B0D}
+body.splash .prog{background:rgba(255,255,255,.13)}
+
+/* ── 05 principals: credentials, and a sheet that answers the hand ──
+   Three planes move at three rates: the portraits behind, the paper
+   wash between, the type in front. It reads as depth, not as a slide. */
+.hcol img{transform:translate3d(var(--px,0),var(--py,0),0) scale(1.09);transition:transform .5s var(--ease)}
+#s5 .in{transition:transform .5s var(--ease)}
+/* the credentials cost the headline and the names some height — take it */
+#s5 .head{font-size:calc(var(--k)*44)}
+.hnames .fn{font-size:calc(var(--k)*38)}
+.hnames p.d{font-size:calc(var(--k)*13)}
+.creds{list-style:none;margin:calc(var(--k)*12) 0 0;padding:0;display:flex;flex-direction:column;gap:calc(var(--k)*7)}
+.creds li{
+  position:relative;padding:calc(var(--k)*7) 0 0 calc(var(--k)*22);
+  border-top:1px solid var(--faint);
+}
+.creds li::before{
+  content:'';position:absolute;left:0;top:calc(var(--k)*14);
+  width:calc(var(--k)*14);height:1px;background:var(--red);
+}
+.creds b{
+  display:block;font-family:var(--din);font-weight:700;font-size:calc(var(--k)*12.5);
+  letter-spacing:.06em;text-transform:uppercase;line-height:1.25;
+}
+.creds span{display:block;font-size:calc(var(--k)*12.5);color:var(--mid);line-height:1.4;margin-top:calc(var(--k)*2)}
+.creds .todo{display:inline-block;margin-top:calc(var(--k)*3)}
+
+/* ── 04 routing: the failing path runs first, alone, then dims ────── */
+.js #s4 .fcol{transition:opacity .7s var(--ease)}
+.js #s4[data-step="5"] .fcol.void,.js #s4[data-step="6"] .fcol.void,
+.js #s4[data-step="7"] .fcol.void,.js #s4[data-step="8"] .fcol.void{opacity:.3}
+
+/* ── 11 the billing desk, drawn as the machine it runs on ──────────
+   The invoice is not a sheet of paper in this business. It is a screen
+   somebody is looking at, so it is drawn as one and then marked up. */
+.lapwrap{display:flex;align-items:center;gap:calc(var(--k)*22);justify-content:flex-end}
+.lapcal{display:flex;flex-direction:column;gap:calc(var(--k)*24);align-items:flex-end}
+.lapcal .key{flex-direction:row}
+.lapcal .key i{width:calc(var(--k)*48)}
+.laptop{--LW:calc(var(--k)*470);width:var(--LW);flex:0 0 auto;perspective:calc(var(--k)*1800)}
+.lap-tilt{transform-style:preserve-3d;transition:transform .55s var(--ease)}
+.js .laptop .lap-tilt{transform:rotateX(16deg) rotateY(-13deg);opacity:.001}
+.js .is-live .laptop .lap-tilt{
+  transform:rotateX(3deg) rotateY(-6deg);opacity:1;
+  transition:transform 1.15s var(--ease) .18s,opacity .7s var(--ease) .18s;
+}
+.lap-lid{
+  position:relative;
+  background:linear-gradient(152deg,#EDEBE5,#C6C3BB 56%,#DAD7CF);
+  border-radius:calc(var(--k)*11) calc(var(--k)*11) calc(var(--k)*2) calc(var(--k)*2);
+  padding:calc(var(--k)*16) calc(var(--k)*11) calc(var(--k)*13);
+  box-shadow:0 calc(var(--k)*24) calc(var(--k)*48) rgba(0,0,0,.26),inset 0 0 0 1px rgba(22,24,26,.26);
+}
+.lap-cam{
+  position:absolute;top:calc(var(--k)*7);left:50%;transform:translateX(-50%);
+  width:calc(var(--k)*5);height:calc(var(--k)*5);border-radius:50%;
+  background:#22262A;box-shadow:0 0 0 1px rgba(255,255,255,.3);
+}
+.lap-scr{
+  position:relative;background:#fff;overflow:hidden;
+  border-radius:calc(var(--k)*3);box-shadow:inset 0 0 0 1px rgba(22,24,26,.55);
+}
+.lap-scr::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:6;
+  background:linear-gradient(122deg,rgba(255,255,255,.3) 0 12%,rgba(255,255,255,.05) 30%,rgba(255,255,255,0) 48%);
+}
+.lap-base{
+  height:calc(var(--k)*11);margin:0 calc(var(--k)*-24);position:relative;
+  background:linear-gradient(180deg,#DCD9D1,#ABA8A0 58%,#7B7871);
+  border-radius:0 0 calc(var(--k)*9) calc(var(--k)*9);
+  box-shadow:0 calc(var(--k)*14) calc(var(--k)*26) rgba(0,0,0,.24);
+}
+.lap-base::after{
+  content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);
+  width:22%;height:calc(var(--k)*3);border-radius:0 0 calc(var(--k)*4) calc(var(--k)*4);
+  background:rgba(22,24,26,.24);
+}
+.lap-scr .scr-bar{padding:calc(var(--k)*7) calc(var(--k)*10)}
+.lap-scr .inv{border:0;padding:calc(var(--k)*15) calc(var(--k)*16) calc(var(--k)*16);max-width:none}
+.lap-scr .inv .mono-fig{font-size:calc(var(--k)*15)}
+.lap-scr .invline{font-size:calc(var(--k)*12)}
+.lap-scr .qr{width:calc(var(--k)*80);height:calc(var(--k)*80)}
+
+/* ── 13 the ops desk, said in words a non-technical owner uses ────── */
+.plainly{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--k)*22);
+  border-top:1px solid var(--faint);padding-top:calc(var(--k)*13);
+}
+.plainly h4{
+  font-family:var(--din);font-weight:700;font-size:calc(var(--k)*13);letter-spacing:.05em;
+  text-transform:uppercase;margin:0 0 calc(var(--k)*5);
+}
+.plainly p{margin:0;font-size:calc(var(--k)*12.5);color:var(--mid);line-height:1.45}
+.plainly .was{color:var(--red-ink)}
+
+/* ── 14 the approval, as it actually happens: a chat, then the system ──
+   The owner never opens the software. They answer a message, the way
+   they already answer their staff, and the system does the rest on the
+   record. Everything on this sheet is pressable. */
+#s14 .in{max-width:calc(var(--k)*1300)}
+.convo{
+  display:grid;grid-template-columns:1fr calc(var(--k)*128) 1fr;
+  gap:0;align-items:stretch;margin-top:calc(var(--k)*6);
+}
+.cv-chat,.cv-sys{
+  position:relative;border:1px solid var(--faint);background:var(--paper);
+  display:flex;flex-direction:column;min-height:calc(var(--k)*396);
+}
+.cv-sys{border-color:var(--ink);box-shadow:0 calc(var(--k)*18) calc(var(--k)*40) rgba(22,24,26,.11)}
+.cv-hd{
+  display:flex;align-items:center;gap:calc(var(--k)*10);
+  padding:calc(var(--k)*11) calc(var(--k)*16);border-bottom:1px solid var(--faint);background:var(--bone);
+}
+.cv-hd b{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*13);letter-spacing:.08em;text-transform:uppercase}
+.cv-hd .lab{margin-left:auto;font-size:calc(var(--k)*9.5)}
+.cv-thread{
+  flex:1;padding:calc(var(--k)*16);display:flex;flex-direction:column;
+  gap:calc(var(--k)*10);justify-content:flex-end;overflow:hidden;
+}
+.bub{
+  max-width:84%;padding:calc(var(--k)*11) calc(var(--k)*14);font-size:calc(var(--k)*14.5);
+  line-height:1.44;border:1px solid var(--faint);background:var(--bone);
+  border-radius:calc(var(--k)*3) calc(var(--k)*12) calc(var(--k)*12) calc(var(--k)*12);
+  animation:bubin .5s var(--ease) both;
+}
+.bub.me{
+  align-self:flex-end;background:var(--ink);color:var(--paper);border-color:var(--ink);
+  border-radius:calc(var(--k)*12) calc(var(--k)*3) calc(var(--k)*12) calc(var(--k)*12);
+}
+.bub b{font-weight:600;color:var(--red-ink)}
+.bub.me b{color:#fff}
+.bub .t{display:block;margin-top:calc(var(--k)*6);font-family:var(--din);font-size:calc(var(--k)*9);letter-spacing:.16em;text-transform:uppercase;opacity:.55}
+@keyframes bubin{from{opacity:0;transform:translateY(calc(var(--k)*14)) scale(.97)}to{opacity:1;transform:none}}
+.typing{display:flex;gap:calc(var(--k)*5);align-items:center;padding:calc(var(--k)*13) calc(var(--k)*15);width:fit-content;
+  border:1px solid var(--faint);background:var(--bone);border-radius:calc(var(--k)*3) calc(var(--k)*12) calc(var(--k)*12) calc(var(--k)*12)}
+.typing i{width:calc(var(--k)*6);height:calc(var(--k)*6);border-radius:50%;background:var(--mid);animation:typedot 1.25s ease-in-out infinite}
+.typing i:nth-child(2){animation-delay:.16s}
+.typing i:nth-child(3){animation-delay:.32s}
+@keyframes typedot{0%,100%{opacity:.28;transform:translateY(0)}45%{opacity:1;transform:translateY(calc(var(--k)*-4))}}
+.cv-reply{
+  display:flex;gap:calc(var(--k)*8);flex-wrap:wrap;
+  padding:calc(var(--k)*12) calc(var(--k)*16);border-top:1px solid var(--faint);min-height:calc(var(--k)*58);
+}
+.chip{
+  font-family:var(--din);font-weight:600;font-size:calc(var(--k)*11);letter-spacing:.16em;text-transform:uppercase;
+  padding:calc(var(--k)*9) calc(var(--k)*16);cursor:pointer;border-radius:calc(var(--k)*40);
+  border:1px solid var(--faint);background:var(--paper);color:var(--mid);
+  transition:color .2s,border-color .2s,background .2s,transform .15s;
+  animation:bubin .4s var(--ease) both;
+}
+.chip:hover{color:var(--red-ink);border-color:var(--red);background:rgba(216,64,31,.06)}
+.chip:active{transform:translateY(1px)}
+.chip.go{background:var(--red);border-color:var(--red);color:#fff}
+.chip.go:hover{background:var(--red);color:#fff;filter:brightness(1.08)}
+/* the wire between the two — nothing crosses it until you send it */
+.cv-wire{position:relative;display:flex;align-items:center;justify-content:center}
+.cv-wire .ln{position:absolute;left:0;right:0;top:50%;height:1px;background:var(--faint)}
+.cv-wire .ln::after{
+  content:'';position:absolute;inset:0;background:var(--red);
+  transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease);
+}
+.cv-wire.live .ln::after{transform:scaleX(1)}
+.cv-wire .pulse{
+  position:absolute;top:50%;left:0;width:calc(var(--k)*7);height:calc(var(--k)*7);
+  border-radius:50%;background:var(--red);margin-top:calc(var(--k)*-3.5);opacity:0;
+  box-shadow:0 0 0 calc(var(--k)*5) rgba(216,64,31,.18);
+}
+.cv-wire.live .pulse{animation:wirerun .85s var(--ease) forwards}
+@keyframes wirerun{0%{left:0;opacity:0}12%{opacity:1}88%{opacity:1}100%{left:100%;opacity:0}}
+.cv-wire .lab{
+  position:absolute;left:calc(var(--k)*6);right:calc(var(--k)*6);top:calc(50% + calc(var(--k)*13));
+  font-size:calc(var(--k)*9);letter-spacing:.14em;line-height:1.35;text-align:center;
+  opacity:0;transition:opacity .4s var(--ease);
+}
+.cv-wire.live .lab{color:var(--red-ink)}
+.cv-wire.live .lab{opacity:1}
+.cv-sys .sy-hd{display:flex;justify-content:space-between;align-items:center;gap:calc(var(--k)*14);
+  padding:calc(var(--k)*11) calc(var(--k)*18);border-bottom:1px solid var(--faint)}
+.cv-sys .sy-in{padding:calc(var(--k)*18) calc(var(--k)*22) calc(var(--k)*20);display:flex;flex-direction:column;flex:1}
+.cv-sys .sy-what{font-family:var(--din);font-weight:700;font-size:calc(var(--k)*19);letter-spacing:.02em;
+  text-transform:uppercase;margin:0;color:var(--mid)}
+.cv-sys .sy-amt{font-family:var(--din);font-weight:800;font-size:calc(var(--k)*62);line-height:.9;
+  letter-spacing:-.035em;font-variant-numeric:tabular-nums;margin:calc(var(--k)*4) 0 0}
+.cv-sys .sy-amt.done{color:var(--mid);text-decoration:line-through;text-decoration-color:var(--red)}
+.cv-sys .sy-state{display:flex;align-items:center;gap:calc(var(--k)*11);margin-top:calc(var(--k)*13);
+  padding:calc(var(--k)*10) calc(var(--k)*14);background:var(--bone);border:1px solid var(--faint)}
+.cv-sys .applied{right:calc(var(--k)*24);top:calc(var(--k)*66)}
+.sy-log{list-style:none;margin:calc(var(--k)*14) 0 0;padding:calc(var(--k)*12) 0 0;border-top:1px solid var(--faint);
+  display:flex;flex-direction:column;gap:calc(var(--k)*5);margin-top:auto}
+.sy-log li{
+  display:grid;grid-template-columns:calc(var(--k)*74) 1fr;gap:calc(var(--k)*10);
+  font-family:var(--din);font-size:calc(var(--k)*11);letter-spacing:.05em;color:var(--mid);
+  animation:logline .45s var(--ease) both;
+}
+.sy-log li em{font-style:normal;font-variant-numeric:tabular-nums;color:var(--red-ink)}
+.sy-log li.hi{color:var(--ink);font-weight:600}
+@keyframes logline{from{opacity:0;transform:translateX(calc(var(--k)*-8))}to{opacity:1;transform:none}}
+.cv-foot{display:flex;align-items:center;gap:calc(var(--k)*16);flex-wrap:wrap;margin-top:calc(var(--k)*14)}
+.cv-foot p{margin:0;font-size:calc(var(--k)*15.5);color:var(--mid);line-height:1.5;max-width:70ch}
+.cv-foot p b{color:var(--ink);font-weight:600}
+
+/* ── 17 one movement, then two figures. Nothing else. ────────────── */
+.movement{border-top:1px solid var(--faint);border-bottom:1px solid var(--faint);padding:calc(var(--k)*18) 0}
+.mv-fig{
+  font-family:var(--din);font-weight:800;font-size:calc(var(--k)*104);line-height:.86;
+  letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin:0;color:var(--red);
+  display:flex;align-items:baseline;gap:calc(var(--k)*22);flex-wrap:wrap;
+}
+.mv-fig .was{color:var(--mid)}
+.mv-fig .mv-ar{font-size:.42em;color:var(--ink);letter-spacing:0}
+.mv-cap{margin:calc(var(--k)*12) 0 0;font-size:calc(var(--k)*16);color:var(--mid);line-height:1.5;max-width:64ch}
+.ptA .p-fig{
+  font-family:var(--din);font-weight:800;font-size:calc(var(--k)*58);line-height:1;
+  letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:0;
+}
+.ptA .p-fig.r{color:var(--red)}
+.ptA .p-fig em{font-style:normal;font-size:.42em;letter-spacing:.02em;color:var(--mid)}
+.ptA .p-cap{margin:calc(var(--k)*9) 0 0;font-size:calc(var(--k)*14.5);color:var(--mid);line-height:1.5;max-width:40ch}
+.stmt em{font-style:normal;font-weight:600;color:var(--red-ink)}
+
+/* ═══════════════════════ RESPONSIVE ═══════════════════════ */
+@media (max-width:900px),(max-aspect-ratio:1/1){
+  :root{--k:1px}
+  body{font-size:16px}
+  .sheet{inset:8px}
+  .coords,.tblock,.hint{display:none}
+  .hdr{top:8px;left:8px;right:8px;height:46px;padding:0 14px;background:var(--paper)}
+  .hdr .brand b{font-size:17px}
+  .hdr .lab{font-size:9px}
+  .railL{left:8px;bottom:8px;padding:8px 12px;gap:8px}
+  .prog{left:8px;right:8px;bottom:8px}
+  #deck{scroll-snap-type:y proximity}
+  .sh{height:auto;min-height:100dvh;padding:66px 20px 62px}
+  .split,.split.w,.split.n,.split.tri,.crew,.contact,.figs,.tiers,.gauges,.tlrow{grid-template-columns:1fr}
+  .figs{grid-template-columns:1fr 1fr;gap:20px}
+  .contact div{border-right:0}
+  .tier,.g{border-right:0;border-bottom:1px solid var(--faint)}
+  .tier:last-child,.g:last-child{border-bottom:0}
+  .seg{border-left:0;border-top:1px solid var(--faint);padding:16px 0 18px}
+  .seg:last-child{border-right:0}
+  #s1 .word{font-size:clamp(62px,17vw,124px)}
+  #s1 .claim{font-size:clamp(27px,7.4vw,46px)}
+  .head{font-size:clamp(31px,8.4vw,52px);max-width:none}
+  .head.sm{font-size:clamp(27px,7.4vw,44px)}
+  .stmt{font-size:clamp(19px,5.2vw,27px);max-width:none}
+  .body{max-width:none;font-size:16px}
+  .fig-mon{font-size:clamp(54px,14.5vw,112px)}
+  .close{font-size:clamp(46px,13.5vw,94px)}
+  .asmwrap{min-height:0}
+  .asm{max-width:270px;margin:0 auto}
+  .keys{position:relative;left:auto;top:auto;transform:none;flex-direction:row;flex-wrap:wrap;gap:12px;margin-top:22px}
+  .key i{width:20px}
+  .dots{grid-template-columns:repeat(40,1fr);gap:2px}
+  .units{grid-template-columns:1fr;gap:16px}
+  /* the three magnitudes stack, each keeping its rule as a divider */
+  /* a hundred marks won't survive a phone; halve the row and drop the tick */
+  .marks{grid-template-columns:repeat(50,1fr);gap:1px}
+  .marks i{height:46px}
+  .apac{display:none}
+  .tallyfoot{gap:10px}
+  .rank{grid-template-columns:1fr;gap:0}
+  .rk{border-right:0;border-bottom:1px solid var(--faint);padding:16px 0}
+  .rk:last-child{border-bottom:0}
+  .rk .fig{font-size:clamp(46px,13vw,80px)}
+  .rk .maps{position:static;display:block;margin-bottom:8px}
+  .concede .big{font-size:clamp(84px,26vw,180px)}
+  .concede .sub{font-size:clamp(22px,6vw,34px)}
+  /* principals stack; the portrait plate keeps its proportion */
+  .crew{grid-template-columns:1fr;gap:18px}
+  /* the hero splits top/bottom on a phone, and the names sit under each face */
+  .hero2{grid-template-columns:1fr;grid-template-rows:1fr 1fr;inset:8px}
+  .hcol + .hcol{border-left:0;border-top:1px solid var(--faint)}
+  .hcol::after{background:linear-gradient(180deg,var(--paper) 0%,rgba(250,249,245,.55) 18%,rgba(250,249,245,0) 42%,rgba(250,249,245,.8) 74%,var(--paper) 92%)}
+  .hnames{grid-template-columns:1fr;gap:22px}
+  .hnames .fn{font-size:clamp(30px,8.4vw,46px)}
+  #s5 .in{height:auto;gap:26px}
+  .pplate{grid-template-columns:1fr}
+  .pphoto{aspect-ratio:4/3;border-right:0;border-bottom:1px solid var(--faint)}
+  .pbody .fn{font-size:clamp(28px,8vw,40px)}
+  /* the site photograph drops behind the copy rather than beside it */
+  .bay{inset:8px;opacity:.34;-webkit-mask-image:none;mask-image:none}
+  .bays{display:none}
+  .scanner{--W:210px;--H:336px;--D:24px;margin:0 auto}
+  /* the two paths stack, and the return loop runs down the outside of the page */
+  .flow{grid-template-columns:1fr;gap:34px}
+  .fnode{font-size:clamp(16px,4.6vw,22px);padding:13px 14px}
+  .outcome{font-size:clamp(18px,5vw,26px);padding:13px}
+  .conn{height:26px}
+  .retv{left:-14px;width:14px}
+  .retv span{display:none}
+  .flowhd{gap:16px}
+  /* the board stacks; the travelling ticket becomes a static one at the head of New */
+  .cols{grid-template-columns:1fr;gap:14px}
+  .cards{padding-top:0}
+  .trav{position:static;width:100%;animation:none!important;opacity:1!important;transform:none!important;margin-top:6px}
+  .strip{gap:12px}
+  .run{flex-direction:column;align-items:flex-start;gap:10px}
+  .run::before{display:none}
+  .run>.node.solid,.run>.term{width:100%;text-align:left}
+  .arrowhead{transform:rotate(90deg)}
+  .ret{height:20px;margin-bottom:26px}
+  .ret span{left:0;transform:none;bottom:-24px;padding:0;background:transparent;white-space:normal;font-size:9px}
+  .dead{font-size:19px;margin-top:30px}
+  .term{font-size:19px}
+  .spec{grid-template-columns:1fr}
+  .spec dd{margin-bottom:8px}
+  .gate2{padding:18px 16px 20px}
+  .gate2 .amt{font-size:clamp(40px,11.5vw,84px)}
+  .gate2 .what{font-size:clamp(18px,5vw,24px)}
+  .gate2 .acts{flex-direction:column}
+  .gate2 .applied{right:12px;top:52px}
+  .guards{grid-template-columns:1fr;gap:16px}
+  .gate,.inv{max-width:none}
+  .gate .val{font-size:clamp(29px,8.2vw,46px)}
+  .gate .act{font-size:clamp(21px,6vw,29px)}
+  .applied{right:14px;top:44px}
+  .head-xl{font-size:clamp(30px,8.4vw,52px)}
+  .mon-xl{font-size:clamp(30px,8.2vw,52px)}
+  .mon-lg{font-size:clamp(28px,7.6vw,46px)}
+  .stmt-xl{font-size:clamp(24px,6.4vw,36px)}
+  .stmt-lg{font-size:clamp(20px,5.4vw,28px)}
+  .applied{right:18px;top:40px}
+  .np .fn{font-size:clamp(31px,8.8vw,44px)}
+  .ref p{font-size:clamp(19px,5.4vw,29px)}
+  .splash-logo{width:72vw}
+  .splash-in{gap:34px}
+  .convo{grid-template-columns:1fr}
+  .cv-chat,.cv-sys{min-height:0}
+  .cv-wire{height:52px}
+  .cv-wire .ln{left:50%;right:auto;top:0;bottom:0;width:1px;height:auto}
+  .cv-wire .ln::after{transform-origin:top;transform:scaleY(0)}
+  .cv-wire.live .ln::after{transform:scaleY(1)}
+  .cv-wire .pulse{display:none}
+  .cv-sys .sy-amt{font-size:clamp(34px,9.4vw,62px)}
+  .lapwrap{flex-direction:column-reverse;align-items:stretch}
+  .lapcal{align-items:flex-start}
+  .laptop{--LW:100%;width:100%}
+  .plainly{grid-template-columns:1fr;gap:14px}
+  /* the brokerage board: eight stages will not sit in a row on a phone */
+  .cc-rail{grid-template-columns:repeat(4,1fr)}
+  .cc-grid{grid-template-columns:1fr;gap:14px}
+  .creds li{grid-template-columns:12px 1fr}
+  .mv-fig{font-size:clamp(44px,13vw,104px)}
+  .ovgrid{grid-template-columns:repeat(2,1fr)}
+  .bom td{font-size:14px}
+  .bom tr.tot td{font-size:24px}
+  .node{white-space:normal}
+  .dimval{font-size:10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  .js .en{opacity:1;transform:none}
+  .js .dots{clip-path:none}
+  .js .stamp{opacity:.92;transform:rotate(-6deg) scale(1)}
+  .js .asm-drift{animation:none}
+  /* the survey rests: no scan, and every mark sits at the same weight */
+  .scan{display:none}
+  .js .is-live .dots i.tw{animation:none;opacity:.42}
+}
+</style>
+</head>
+<body>
+
+<div class="sheet" aria-hidden="true"></div>
+<div class="coords" id="coords" aria-hidden="true"></div>
+
+<header class="hdr" aria-hidden="true">
+  <div class="brand"><img class="logo" src="assets/logo-black.png" alt="Andar"></div>
+  <span class="lab tn" id="clock">GMT+8 00:00</span>
+</header>
+
+<div class="tblock" aria-hidden="true">
+  <div><span class="lab">Drawing</span><p class="v" id="dwgVal">Company profile</p></div>
+  <div><span class="lab">Rev</span><p class="v">A</p></div>
+  <div><span class="lab">Sheet</span><p class="v tn"><span id="shNo">01</span> / <span id="shTot">17</span></p></div>
+  <div><span class="lab">Scale</span><p class="v">NTS</p></div>
+</div>
+
+<div class="railL">
+  <button class="btn-ghost" id="ovBtn">Index</button>
+  <button class="btn-red" id="askBtn">Book a diagnostic</button>
+  <span class="lab hint">← → Navigate</span>
+</div>
+<div class="prog" aria-hidden="true"><i id="prog"></i></div>
+<span class="draftflag" aria-hidden="true">Draft · presenter notes showing · press D</span>
+
+<main id="deck" tabindex="-1">
+
+<!-- ═══ 00 · the cover. One field of lines, re-forming itself. ═══ -->
+<section class="sh splash" id="s0" data-t="Andar" aria-label="Cover: Andar">
+  <canvas class="adapt" id="adaptC" aria-hidden="true"></canvas>
+  <div class="splash-in">
+    <img class="splash-logo" src="assets/logo-white.png" alt="Andar">
+  </div>
+  <span class="splash-hint">Adaptation</span>
+</section>
+
+<section class="sh" id="s1" data-t="We make it run" aria-label="Sheet 1: Andar, we make it run">
+  <div class="port" aria-hidden="true"><img src="assets/port-aerial.png" alt=""></div>
+  <svg class="ga" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <!-- centre lines running off the sheet, as on a general arrangement -->
+    <line class="hair" x1="0" y1="450" x2="1600" y2="450"/>
+    <line class="hair" x1="1128" y1="0" x2="1128" y2="900"/>
+    <!-- the assembly seen in plan, concentric -->
+    <circle class="thin" cx="1128" cy="450" r="392"/>
+    <circle class="thin" cx="1128" cy="450" r="286"/>
+    <circle class="hair" cx="1128" cy="450" r="188"/>
+    <circle class="warm" cx="1128" cy="450" r="96"/>
+    <!-- a graduated ring, turning once every three minutes -->
+    <g class="spin">
+      <circle class="hair" cx="1128" cy="450" r="440"/>
+      <g class="thin">
+        <line x1="1128" y1="10" x2="1128" y2="34"/><line x1="1128" y1="866" x2="1128" y2="890"/>
+        <line x1="688" y1="450" x2="712" y2="450"/><line x1="1544" y1="450" x2="1568" y2="450"/>
+        <line x1="817" y1="139" x2="834" y2="156"/><line x1="1422" y1="744" x2="1439" y2="761"/>
+        <line x1="1422" y1="156" x2="1439" y2="139"/><line x1="817" y1="761" x2="834" y2="744"/>
+      </g>
+    </g>
+    <!-- the icon's own arches, radiating -->
+    <path class="arch" d="M 1038 566 A 90 90 0 0 1 1218 566"/>
+    <path class="arch" d="M 1038 566 A 90 90 0 0 1 1218 566"/>
+    <path class="arch" d="M 1038 566 A 90 90 0 0 1 1218 566"/>
+    <!-- construction lines -->
+    <line class="hair" x1="736" y1="58" x2="1520" y2="842"/>
+    <line class="hair" x1="736" y1="842" x2="1520" y2="58"/>
+    <!-- a dimension running the width of the sheet -->
+    <g class="thin">
+      <line x1="60" y1="836" x2="1540" y2="836"/>
+      <line x1="60" y1="826" x2="60" y2="846"/><line x1="1540" y1="826" x2="1540" y2="846"/>
+      <line x1="1128" y1="826" x2="1128" y2="846"/>
+    </g>
+  </svg>
+  <div class="in split">
+    <div>
+      <p class="lab en" style="margin-bottom:calc(var(--k)*16)">Sheet <span class="shnum"></span> · General assembly</p>
+      <h1 class="en" style="margin:0"><img class="logo logo-hero" src="assets/logo-black.png" alt="Andar"></h1>
+      <p class="claim en">From vision to<span class="claim-var" id="claimVar">a running system.</span></p>
+      <p class="gloss en"><i>andar</i>, v. — to run; to operate; of a machine, to be working. We draw your operation as an assembly, then point at the part that is holding it back.</p>
+    </div>
+    <div class="asmwrap">
+      <div class="keys">
+        <div class="key"><em>Stock</em><i></i><span class="balloon">01</span></div>
+        <div class="key"><em>Invoice</em><i></i><span class="balloon">02</span></div>
+        <div class="key"><em>Terms</em><i></i><span class="balloon">03</span></div>
+        <div class="key"><em class="r">Approval gate</em><i class="r"></i><span class="balloon r">04</span></div>
+      </div>
+      <div class="asm">
+        <div class="asm-rot" id="asmRot"><div class="asm-drift">
+          <div class="pl p1"></div><div class="pl p2"></div><div class="pl p3"></div><div class="pl p4 hot"></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sh" data-t="The ₱1 million question" aria-label="Sheet 2: The one million peso question">
+  <div class="in split">
+    <div class="stack">
+      <p class="lab r en">Cold open</p>
+      <h2 class="head en">The ₱1&nbsp;million question</h2>
+      <p class="stmt en">A vendor quoted us ₱1,000,000+ for an inventory and accounting system. Delivery: one quarter.</p>
+      <p class="stmt en" style="color:var(--red-ink)">We built it ourselves in a week.</p>
+      <p class="body en">The gap is knowing what to build, and it exists in almost every operation in this room.</p>
+    </div>
+    <div class="en">
+      <div class="row" style="justify-content:space-between;margin-bottom:calc(var(--k)*12)">
+        <span class="lab">Bill of materials · as quoted to us</span>
+        <span class="todo">To confirm · add the real line items</span>
+      </div>
+      <table class="bom">
+        <tr><th>Item</th><th>Description</th><th style="text-align:right">Figure</th></tr>
+        <tr><td class="n">01</td><td>Inventory &amp; accounting system</td><td style="text-align:right">—</td></tr>
+        <tr><td class="n">02</td><td>Delivery</td><td style="text-align:right">1 quarter</td></tr>
+        <tr class="tot"><td class="lbl" colspan="2">Total, first year</td><td style="text-align:right;color:var(--red)">₱1,000,000<sup>+</sup></td></tr>
+      </table>
+      <div class="datum" style="margin-top:calc(var(--k)*18)">
+        <svg width="44" height="18" viewBox="0 0 44 18" aria-hidden="true"><path d="M8 3 L14 15 L2 15 Z" fill="#16181A"/><path d="M14 9 H42" stroke="#16181A" stroke-width="1"/></svg>
+        <span class="lab">Datum · what the alternative actually cost</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sh" id="s3" data-steps="3" data-labels="Ready|Cost per invoice|Money earned, not landed|Records that were wrong" data-t="What manual costs you" aria-label="Sheet 3: What manual is already costing you">
+  <div class="in stack" style="gap:calc(var(--k)*18)">
+    <div class="split en" style="align-items:end;gap:calc(var(--k)*50)">
+      <div>
+        <p class="lab r">The cost of doing it by hand · sheet <span class="shnum"></span></p>
+        <h2 class="head" style="margin-top:calc(var(--k)*10);max-width:18ch">What manual is already costing you.</h2>
+      </div>
+      <p class="body">Not one of these three numbers mentions AI. They measure what a business pays to keep doing the work by hand, and how far the best-run operations have pulled ahead of the average ones.</p>
+    </div>
+
+    <div class="rank en">
+      <div class="rk" data-at="1">
+        <span class="maps">Invoicing</span>
+        <p class="fig r"><span class="tn" data-count="5">0</span>×</p>
+        <h3>Cost per invoice</h3>
+        <p>Top-performing accounts payable teams run at one fifth the cost of the bottom, and process five times the invoices per person.</p>
+        <span class="cite">APQC Open Standards Benchmarking</span>
+      </div>
+      <div class="rk" data-at="2">
+        <span class="maps">Receivables</span>
+        <p class="fig"><span class="tn" data-count="18">0</span><span style="font-size:.42em;letter-spacing:0"> days</span></p>
+        <h3>Money earned, not landed</h3>
+        <p>The gap in days sales outstanding between top-quartile and median performers. Invoiced, owed, and still not in the account.</p>
+        <span class="cite">Hackett Group, 2025 Working Capital Survey · audited financials of the top 1,000 US listed non-financial companies</span>
+      </div>
+      <div class="rk" data-at="3">
+        <span class="maps">Stock</span>
+        <p class="fig"><span class="tn" data-count="65">0</span><span style="font-size:.48em;letter-spacing:0">%</span></p>
+        <h3>Records that were wrong</h3>
+        <p>Of nearly 370,000 inventory records across 37 stores, 65% did not match what was actually on the shelf.</p>
+        <span class="cite">DeHoratius &amp; Raman, Inventory Record Inaccuracy · Management Science 54(4), 2008 · peer-reviewed</span>
+      </div>
+    </div>
+
+    <div class="steps en" role="button" tabindex="0" aria-label="Step through the three figures">
+      <span class="adv">Advance &#9656;</span>
+      <span class="pips" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="steplab">Ready</span>
+    </div>
+    <p class="src en" style="max-width:none">The payables and receivables benchmarks come from large operations, and the inventory study is retail. The mechanism is identical at any size: a person retyping a number. The point is the order of magnitude, not the decimal. Multiply it against your own invoice volume and you have done the arithmetic yourself.</p>
+  </div>
+</section>
+
+<section class="sh" id="s4a" data-steps="3" data-labels="Ready|89% report no gain|Average gain 0.29%|Why we are showing you" data-t="The number against us" aria-label="Sheet 4: The number that argues against us">
+  <div class="in split" style="gap:calc(var(--k)*60)">
+    <div class="stack concede">
+      <p class="lab r en">The number that argues against us</p>
+      <p class="big en" data-at="1">89%</p>
+      <p class="sub en" data-at="1">of firms report no productivity gain from AI over three years.</p>
+      <p class="en" data-at="2" style="margin:calc(var(--k)*14) 0 0"><span class="lab">Average measured gain across all firms</span></p>
+      <p class="en" data-at="2" style="font-family:var(--din);font-weight:800;font-size:calc(var(--k)*46);line-height:1;letter-spacing:-.02em;margin:calc(var(--k)*4) 0 0">0.29%</p>
+    </div>
+
+    <div class="stack" style="justify-content:center">
+      <p class="stmt en" data-at="3" style="max-width:34ch">We are putting this on the screen ourselves, because it is the best evidence that exists and you should see it before you spend anything.</p>
+      <hr class="rule r en" data-at="3">
+      <p class="body en" data-at="3">Roughly 6,000 senior executives across the United States, United Kingdom, Germany and Australia, surveyed through central-bank panels between November 2025 and January 2026. It is not a vendor survey and it is not on our side of the argument.</p>
+      <p class="body en" data-at="3"><strong>It argues against building before anybody has found the problem.</strong> The firms in that 89% bought a tool. Nobody walked their operation first.</p>
+      <div class="steps" role="button" tabindex="0" aria-label="Step through this sheet">
+        <span class="adv">Advance &#9656;</span>
+        <span class="pips" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="steplab">Ready</span>
+      </div>
+      <p class="src en" data-at="3">Yotzov, Bloom, Bunn, Mizen, Thwaites &amp; Anayi — Firm Data on AI · NBER Working Paper 34836</p>
+    </div>
+  </div>
+</section>
+
+<section class="sh" id="s4" data-steps="8" data-labels="Ready|Buy the tool|Look for a use|Nothing changes|Quietly abandoned|Walk the operation|Find the bottleneck|Build one rule|It runs"
+         data-t="Routing diagram" aria-label="Sheet 4: Routing diagram, tool first against problem first">
+  <div class="in stack" style="gap:calc(var(--k)*18)">
+
+    <div class="flowhd en">
+      <div>
+        <p class="lab">Routing diagram · sheet <span class="shnum"></span></p>
+        <p class="stmt" style="font-size:calc(var(--k)*24);max-width:30ch;margin-top:calc(var(--k)*7)">Nobody diagnosed the problem first.</p>
+      </div>
+      <div class="steps" role="button" tabindex="0" aria-label="Step through the routing diagram">
+        <span class="adv">Advance &#9656;</span>
+        <span class="pips" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="steplab">Ready</span>
+      </div>
+    </div>
+
+    <!-- the failing route is walked to its dead end first, alone, and only
+         then does the working one start beside it. Two arguments, in order,
+         never two halves of the same one. -->
+    <div class="flow en">
+      <div class="fcol void">
+        <div class="fcol-hd"><b>Tool first</b><span class="lt phantom">Phantom · no terminus</span></div>
+        <div class="fnodes">
+          <div class="fnode ghost" data-at="1">Buy the tool</div>
+          <span class="conn dash" data-at="2"></span>
+          <div class="fnode ghost" data-at="2">Look for a use</div>
+          <span class="conn dash" data-at="3"></span>
+          <div class="fnode ghost" data-at="3">Nothing changes</div>
+          <div class="retv" data-at="4"><span class="lab">Repeats until the budget is gone</span></div>
+        </div>
+        <span class="conn dash" data-at="4"></span>
+        <div class="outcome dead" data-at="4"><i>✕</i>Quietly abandoned</div>
+      </div>
+
+      <div class="fcol live">
+        <div class="fcol-hd" data-at="5"><b>Problem first</b><span class="lt">Continuous · arrives</span></div>
+        <div class="fnodes">
+          <div class="fnode solid" data-at="5">Walk the operation</div>
+          <span class="conn solid" data-at="6"></span>
+          <div class="fnode solid" data-at="6">Find the bottleneck</div>
+          <span class="conn solid" data-at="7"></span>
+          <div class="fnode solid" data-at="7">Build one rule</div>
+        </div>
+        <span class="conn solid" data-at="8"></span>
+        <div class="outcome runs" data-at="8">It runs</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="sh" id="s5" data-t="The principals" aria-label="Sheet 5: The principals">
+  <div class="hero2" aria-hidden="true">
+    <div class="hcol" data-src="assets/AC%20CO.jpg" data-alt="Ac Co, delivery and systems" data-pos="50% 18%"></div>
+    <div class="hcol" data-src="assets/NATH%20YBANEZ.jpeg" data-alt="Nath Ybañez, market and client" data-pos="50% 16%"></div>
+  </div>
+
+  <div class="in">
+    <div class="en">
+      <p class="lab">Principals · sheet <span class="shnum"></span></p>
+      <h2 class="head" style="margin-top:calc(var(--k)*10);max-width:19ch">Two Cebu business owners who build.</h2>
+    </div>
+
+    <div class="en" style="display:flex;flex-direction:column;gap:calc(var(--k)*14)">
+      <div class="hnames">
+        <div>
+          <span class="lab role">Delivery &amp; systems</span>
+          <p class="fn">Ac Co</p>
+          <hr class="rule r" style="width:calc(var(--k)*90)">
+          <p class="d">Architecture, build standards, and the reusable library that makes the fifth system cost a fraction of the first. Final call on every technical decision, and owner of the approval-gate standard.</p>
+          <ul class="creds">
+            <li><b>15+ years running his own businesses</b><span>Materials trading, and a fitness brand. Both still trading, both his own stock and his own payroll.</span></li>
+            <li><b>Built the system that replaced a ₱1M+ quote</b><span>Stock, invoicing and terms — in a week, and still running the business it was built for.</span></li>
+            <li><b>Five systems in production</b><span>Four inside our own operation, one live for an outside Cebu client.</span></li>
+          </ul>
+        </div>
+        <div>
+          <span class="lab role">Experience &amp; marketing</span>
+          <p class="fn">Nath Ybañez</p>
+          <hr class="rule r" style="width:calc(var(--k)*90)">
+          <p class="d">The interfaces your staff will actually use, and how Andar is positioned and presented. If we talk you out of a build, this is the person who’ll say it to your face.</p>
+          <ul class="creds">
+            <li><b>Almost 15 years running his own businesses</b><span>Agriculture, technology and marketing — three operations with three different sets of problems.</span></li>
+            <li><b>Worked with Rockwell Land, the Ayala group</b><span>And other national brands. The standard your customers already expect, brought to an operation your size.</span></li>
+            <li><b>Sat on the other side of this table</b><span>Has bought the software, hired the freelancer, and paid for the pilot that never shipped.</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="src">We run operations of our own. That is the qualification, and both of us are in the room on every engagement.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sh" data-t="Why that matters to you" aria-label="Sheet 6: Why that matters to you">
+  <div class="in stack">
+    <p class="lab en">Why that matters to you</p>
+    <p class="stmt stmt-lg en" style="max-width:34ch">Most AI providers in Cebu are either developers who've never run a business, or consultants who've never shipped software. We've done both, and that is the combination we are betting on.</p>
+    <hr class="rule en">
+    <div class="split tri en" style="align-items:start">
+      <div style="display:flex;gap:calc(var(--k)*14)">
+        <span class="balloon">01</span>
+        <div><h3 class="lab" style="color:var(--ink);margin-bottom:calc(var(--k)*9)">Operator credibility</h3><p class="body" style="font-size:calc(var(--k)*15)">We've had your problem and solved it for ourselves before we ever sold the answer to anybody.</p></div>
+      </div>
+      <div style="display:flex;gap:calc(var(--k)*14)">
+        <span class="balloon">02</span>
+        <div><h3 class="lab" style="color:var(--ink);margin-bottom:calc(var(--k)*9)">Legitimacy, not gig risk</h3><p class="body" style="font-size:calc(var(--k)*15)">Local, reputationally exposed, contactable next year. A freelancer takes your spec and disappears. We interrogate whether the spec is even right.</p></div>
+      </div>
+      <div style="display:flex;gap:calc(var(--k)*14)">
+        <span class="balloon r">03</span>
+        <div><h3 class="lab" style="color:var(--ink);margin-bottom:calc(var(--k)*9)">Shipping speed</h3><p class="body" style="font-size:calc(var(--k)*15)">Weeks, not quarters, and we put the ceiling in writing. One week against a ₱1M+ quote is an invoice we didn't pay.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sh" id="s7" data-steps="4" data-fills="0,.143,.19,.667,1" data-labels="Day 0|Diagnose · 1 week|Narrow · days|Ship · 2–4 weeks|Hold · ongoing" data-t="The Andar Method" aria-label="Sheet 7: The Andar Method">
+  <div class="in stack">
+    <div class="split en" style="align-items:end;gap:calc(var(--k)*50)">
+      <div><p class="lab">Process · drawn to scale</p><h2 class="head" style="margin-top:calc(var(--k)*12)">The Andar Method</h2></div>
+      <p class="body">Four stages, each with a ceiling. Anybody can say they ship fast. A date you can hold us to is something you can enforce. The stages are drawn to their real proportions.</p>
+    </div>
+    <div class="en" style="padding-top:calc(var(--k)*34)">
+      <div class="dim" style="margin-bottom:calc(var(--k)*2)">
+        <div class="dimline">
+          <span class="tick" data-at="0" style="left:0"></span>
+          <span class="tick" data-at="1" style="left:14.3%"></span>
+          <span class="tick" data-at="2" style="left:19%"></span>
+          <span class="tick" data-at="3" style="left:66.7%"></span>
+          <span class="tick" data-at="4" style="right:0"></span>
+          <span class="dimval" data-at="0" style="left:0">Day 0</span>
+          <span class="dimval r" data-at="3" style="left:66.7%;transform:translateX(-50%)">≤ 4 weeks to production</span>
+          <span class="dimval" data-at="4" style="right:0">Ongoing</span>
+        </div>
+      </div>
+      <div class="tlrow">
+        <div class="seg" data-at="1"><span class="d">1 week</span><h3>Diagnose</h3><p>We walk your operation, follow the paper, sit with your people, and trace where the money, the hours and the trust actually go. Output: a written operations map. <em>Yours to keep, whether or not you hire us.</em></p></div>
+        <div class="seg" data-at="2"><span class="d">Days</span><h3>Narrow</h3><p>We pick <em>one</em> bottleneck. Not a transformation roadmap.</p></div>
+        <div class="seg" data-at="3"><span class="d">2–4 weeks</span><h3>Ship</h3><p>A working system, in production, used by your staff on an ordinary Tuesday. <em>Not a pilot.</em> Verified against a written pass/fail standard we hand over with it.</p></div>
+        <div class="seg" data-at="4"><span class="d">Ongoing</span><h3>Hold</h3><p>Support, monitoring, iteration, and the next thing on the list. Software nobody maintains quietly dies.</p></div>
+      </div>
+      <div class="steps" id="s7steps" role="button" tabindex="0" aria-label="Advance the method timeline">
+        <span class="adv">Advance &#9656;</span>
+        <span class="pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="steplab">Day 0</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sh" data-set="asbuilt" data-t="Proof: cash protected" aria-label="Sheet 8: Proof, cash protected">
+  <div class="bay" aria-hidden="true"><img src="assets/warehouse-bay.png" alt=""></div>
+  <div class="bays" aria-hidden="true"><b>Bay 04</b><b>Bay 05</b><b>Bay 06</b><b>Dock 2</b></div>
+
+  <div class="in split" style="position:relative;z-index:2">
+    <div class="stack">
+      <div class="row en">
+        <span class="lab">Proof 01 / 05</span>
+        <span class="tagline">Built for our own operation, then productised</span>
+      </div>
+      <h2 class="head en">Stock doesn't leave until the terms are met.</h2>
+      <p class="body en">Every distributor in this room has released stock and then spent three months chasing the payment. The usual fix is a policy, and a policy is a conversation your warehouse staff have to win against a customer they like.</p>
+      <p class="body en"><strong>We made it a rule the system enforces.</strong> Terms unmet, stock does not move. Nobody has to argue, and nobody has to be the bad guy. The only way past it is a named person approving it on the record.</p>
+      <div class="row en">
+        <span class="illus">Illustrative</span>
+        <span class="lab">Detail E · picking terminal · bay 05</span>
+      </div>
+    </div>
+
+    <div class="en" style="display:flex;justify-content:center;position:relative">
+      <div class="scanner">
+        <div class="ph-tilt">
+          <div class="ph-body">
+            <div class="f back"></div>
+            <div class="f left"></div>
+            <div class="f right"></div>
+            <div class="f top"></div>
+            <div class="f bottom"></div>
+            <div class="f front">
+              <div class="sc-scr">
+                <div class="sc-state s1">
+                  <div class="sc-hd"><span>Andar · pick</span><span>Bay 05</span></div>
+                  <p class="sc-big">Scanning<br>SO-2291</p>
+                  <span class="sc-beam"></span>
+                </div>
+                <div class="sc-state s2">
+                  <div class="sc-hd"><span>Andar · pick</span><span>SO-2291</span></div>
+                  <p class="sc-big">Checking<br>terms</p>
+                  <div class="sc-kv"><span>Customer</span><b>30-day terms</b></div>
+                </div>
+                <div class="sc-state s3">
+                  <div class="sc-hd"><span>Andar · pick</span><span>SO-2291</span></div>
+                  <p class="sc-big halt">Release<br>blocked</p>
+                  <div class="sc-kv"><span>Overdue</span><b>₱312,880.00</b></div>
+                  <div class="sc-kv"><span>Requested</span><b>Warehouse · 14:22</b></div>
+                  <p class="sc-cta">Request approval</p>
+                </div>
+              </div>
+              <div class="sc-keys"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="sc-trig"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;right:calc(var(--k)*-6);top:calc(var(--k)*24);z-index:6"><span class="stamp">Held</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sh" data-set="asbuilt" data-t="Proof: ₱1M+ avoided" aria-label="Sheet 9: Proof, one million pesos avoided">
+  <div class="in stack">
+    <div class="row en">
+      <span class="lab">Proof 02 / 05</span>
+      <span class="tagline">Ours first</span>
+    </div>
+    <p class="lab en">Vendor quote replaced by a system we own outright</p>
+    <p class="fig-mon en" id="bigFig" data-rate="10">₱0<sup>+</sup></p>
+    <p class="lab r en" style="margin-top:calc(var(--k)*4)">And still climbing while we stand here — that is the licence and the renewals you never signed</p>
+    <div class="en" style="max-width:calc(var(--k)*660);padding-top:calc(var(--k)*20)">
+      <div class="dim">
+        <div class="dimline">
+          <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="right:0"></span>
+          <span class="dimval" style="left:0">Start</span>
+          <span class="dimval r" style="left:25%;transform:translateX(-50%)">1 week — ours</span>
+          <span class="dimval" style="right:0">1 quarter — quoted</span>
+        </div>
+      </div>
+    </div>
+    <div class="units en">
+      <div><span class="lab">Build time</span><b>1 week</b><span class="src">Against a quoted quarter</span></div>
+      <div><span class="lab">Licence, per seat</span><b style="color:var(--red)">None</b><span class="src">No lock-in, no renewal</span></div>
+      <div><span class="lab">Source code</span><b style="color:var(--red)">Ours</b><span class="src">And yours, when we build for you</span></div>
+    </div>
+    <p class="stmt en" style="max-width:40ch;font-size:calc(var(--k)*23)">One week against a quoted quarter. We own the code, and that is the arrangement we write into your contract.</p>
+  </div>
+</section>
+
+<section class="sh" id="s10" data-set="asbuilt" data-t="Proof: total visibility" aria-label="Sheet 10: Proof, total visibility">
+  <div class="in split n">
+    <div class="stack">
+      <div class="row en">
+        <span class="lab">Proof 03 / 05</span>
+        <span class="tagline">Ours first</span>
+      </div>
+      <h2 class="head sm en">You stop asking how much stock you have.</h2>
+      <p class="body en">One internal API behind everything: real-time stock, invoice status, AR and AP, with every write approval-gated. The question that used to take until end-of-day now takes as long as looking at it.</p>
+      <p class="body en"><strong>You check it standing in the warehouse.</strong> You do not open a laptop to find out what you are owed. You look at your phone between deliveries, and the number is true as of a second ago.</p>
+      <hr class="rule en">
+      <p class="src en">Figures are illustrative of the panel's shape, not of any client's book. The real one is your data, on your infrastructure, with the keys in your hands.</p>
+    </div>
+
+    <div class="en">
+      <p class="lab" style="margin-bottom:calc(var(--k)*12);text-align:right">Detail D · handset · scale 1:1</p>
+      <div class="phwrap">
+        <div class="phcal">
+          <div class="key"><em>Answer latency · <span class="tn" data-count="1" data-suffix="s">0</span></em><i></i><span class="balloon">01</span></div>
+          <div class="key"><em>Stock, live</em><i></i><span class="balloon">02</span></div>
+          <div class="key"><em>AR and AP together</em><i></i><span class="balloon">03</span></div>
+          <div class="key"><em class="r">Approval waits for you</em><i class="r"></i><span class="balloon r">04</span></div>
+        </div>
+        <div class="phone">
+          <div class="ph-tilt" id="phTilt">
+            <div class="ph-body">
+              <div class="f back"></div>
+              <div class="f left"></div>
+              <div class="f right"></div>
+              <div class="f top"></div>
+              <div class="f bottom"></div>
+              <div class="f front">
+                <span class="ph-cam" aria-hidden="true"></span>
+                <div class="ph-scr">
+                  <div class="ph-top"><span class="tn">9:41</span><span>LTE</span></div>
+                  <div class="ph-hd">
+                    <b>Andar</b>
+                    <span class="lab" style="display:flex;align-items:center;gap:calc(var(--k)*6);font-size:calc(var(--k)*8)"><span class="dot sm"></span>Updated 12s ago</span>
+                  </div>
+                  <div class="ph-hero">
+                    <span class="lab" style="font-size:calc(var(--k)*8.5)">Receivables open</span>
+                    <p class="v tn" data-count="2840620" data-prefix="₱">0</p>
+                  </div>
+                  <div class="ph-row"><span>Stock on hand</span><b class="tn" data-count="4182" data-suffix=" SKU">0</b></div>
+                  <div class="ph-row"><span>Payables due · 7 days</span><b class="tn" data-count="918400" data-prefix="₱">0</b></div>
+                  <div class="ph-row"><span>Invoices open</span><b class="tn" data-count="41">0</b></div>
+                  <div class="ph-appr">
+                    <span class="dot sm"></span>
+                    <p>1 release awaiting your approval</p>
+                    <span class="chev">›</span>
+                  </div>
+                  <div class="ph-tabs"><span>Today</span><span>Stock</span><span>Money</span><span class="on">Approvals</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="illus" style="float:right;margin-top:calc(var(--k)*12)">Illustrative</p>
+    </div>
+  </div>
+</section>
+
+<section class="sh" data-set="asbuilt" data-t="Proof: billing on autopilot" aria-label="Sheet 11: Proof, billing on autopilot">
+  <div class="in split n">
+    <div class="stack">
+      <div class="row en">
+        <span class="lab">Proof 04 / 05</span>
+        <span class="tagline">Ours first</span>
+      </div>
+      <h2 class="head en">Invoices out the same day. No spreadsheet math.</h2>
+      <p class="body en">Branded PDF, QR-first so the client can pay from the document, automatic PHP conversion at the booked rate. Nobody retypes a figure, so nobody mistypes one.</p>
+      <p class="body en"><strong>Bill faster, collect faster.</strong> The money was always there. It was waiting behind somebody's admin backlog.</p>
+    </div>
+    <div class="en">
+      <p class="lab" style="margin-bottom:calc(var(--k)*10);text-align:right">Detail A · billing desk · scale 1:2</p>
+      <div class="lapwrap">
+        <div class="lapcal">
+          <div class="key"><em>Issued the same day</em><i></i><span class="balloon">01</span></div>
+          <div class="key"><em>QR-first · paid from the document</em><i></i><span class="balloon">02</span></div>
+          <div class="key"><em>Rate booked automatically</em><i></i><span class="balloon">03</span></div>
+          <div class="key"><em class="r">Nobody retypes a figure</em><i class="r"></i><span class="balloon r">04</span></div>
+        </div>
+        <div class="laptop">
+          <div class="lap-tilt" id="lapTilt">
+            <div class="lap-lid">
+              <span class="lap-cam" aria-hidden="true"></span>
+              <div class="lap-scr">
+                <div class="scr-bar">
+                  <i></i><i></i><i></i>
+                  <span class="u">andar · billing &nbsp;·&nbsp; INV-2026-0418</span>
+                </div>
+                <div class="inv">
+                  <div class="row" style="justify-content:space-between;align-items:flex-start;padding-bottom:calc(var(--k)*11);border-bottom:1px solid var(--faint)">
+                    <div><span class="lab">Invoice</span><p class="mono-fig" style="margin:calc(var(--k)*4) 0 0">INV-2026-0418</p></div>
+                    <span class="illus">Illustrative</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr auto;gap:calc(var(--k)*16);padding:calc(var(--k)*12) 0">
+                    <div>
+                      <div class="invline"><span>Goods, 3 line items</span><b>₱ 214,000.00</b></div>
+                      <div class="invline"><span>Freight</span><b>₱ 8,400.00</b></div>
+                      <div class="invline"><span>VAT 12%</span><b>₱ 26,688.00</b></div>
+                      <div class="invline"><span>Booked at USD 1 = ₱ 58.40</span><b>Auto</b></div>
+                      <div class="invline" style="color:var(--red-ink)"><span>Terms</span><b style="color:var(--red-ink)">2/10 net 30</b></div>
+                    </div>
+                    <div style="text-align:center">
+                      <div class="qr" id="qr" aria-hidden="true"></div>
+                      <p class="lab" style="margin-top:calc(var(--k)*7);font-size:calc(var(--k)*9)">Scan to pay</p>
+                    </div>
+                  </div>
+                  <div class="row" style="justify-content:space-between;align-items:baseline;border-top:1px solid var(--faint);padding-top:calc(var(--k)*10)">
+                    <span class="lab">Amount due</span>
+                    <b class="mono-fig" style="font-size:calc(var(--k)*27);font-weight:800;letter-spacing:-.02em;color:var(--red)">₱ 249,088.00</b>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="lap-base" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sh" data-set="asbuilt" data-t="Proof: outside client" aria-label="Sheet 12: Proof, live for an outside client">
+  <div class="in split">
+    <div class="stack">
+      <div class="row en"><span class="lab">Proof 05 / 05</span><span class="lab">External client · Cebu</span></div>
+      <p class="stmt stmt-xl en" style="max-width:22ch;font-weight:600;line-height:1.12">Somebody else's business runs on this.</p>
+      <p class="mon mon-lg en" style="color:var(--red)">Live in production</p>
+      <hr class="rule r en">
+      <p class="body en"><strong>Plainly: it is the one place every problem in the business gets written down.</strong> A driver's GPS drops out. A branch's stock count doesn't match. A customer wants a delivery receipt reprinted. Before, that was a phone call, a group chat, and somebody remembering.</p>
+      <p class="body en">Now each one becomes a card on a board with a name against it. Anyone can see what came in, who is on it, and what is finished — without asking. The owner stops being the person everybody has to ring.</p>
+      <div class="plainly en">
+        <div><h4>What it replaces</h4><p class="was">Group chats, sticky notes, and “I thought you were handling that.”</p></div>
+        <div><h4>Who touches it</h4><p>Their staff, every day. Not us, and not a consultant on a retainer.</p></div>
+        <div><h4>What the owner gets</h4><p>One screen that says how many problems came in today and how many are already closed.</p></div>
+      </div>
+      <div class="row en" style="gap:calc(var(--k)*14)">
+        <span class="todo">To confirm · client name pending written permission</span>
+      </div>
+      <p class="pnote en">Presenter note · the strongest version of this sheet names them and says in one sentence what they do.</p>
+    </div>
+
+    <div class="en">
+      <p class="lab" style="margin-bottom:calc(var(--k)*10)">Detail C · the board their staff use all day · scale 1:1</p>
+      <div class="screen">
+        <div class="scr-bar">
+          <i></i><i></i><i></i>
+          <span class="u">ops.<span style="color:var(--red-ink)">[client]</span>.ph &nbsp;·&nbsp; service desk</span>
+        </div>
+        <div class="scr-body">
+          <div class="strip">
+            <span class="stat" style="display:flex;align-items:center;gap:calc(var(--k)*7)"><span class="dot sm"></span>Live</span>
+            <span class="stat">Problems open<b id="tkOpen">14</b></span>
+            <span class="stat">Sorted today<b id="tkDone">38</b></span>
+            <span class="stat">Typical time to first reply<b>6m</b></span>
+            <span class="illus" style="margin-left:auto">Illustrative</span>
+          </div>
+          <div class="cols">
+            <div class="tkt trav"><p class="id">#4417</p><p class="ti">GPS offline, van 3</p></div>
+            <div>
+              <div class="colh"><span>New</span><span>3</span></div>
+              <div class="cards">
+                <div class="tkt"><p class="id">#4416</p><p class="ti">Warehouse scanner not pairing</p></div>
+                <div class="tkt"><p class="id">#4415</p><p class="ti">Reprint DR for SO-2288</p></div>
+                <div class="tkt"><p class="id">#4413</p><p class="ti">Cannot void a posted receipt</p></div>
+              </div>
+            </div>
+            <div>
+              <div class="colh"><span>In progress</span><span>5</span></div>
+              <div class="cards">
+                <div class="tkt"><p class="id">#4409</p><p class="ti">Branch 2 stock count mismatch</p></div>
+                <div class="tkt"><p class="id">#4404</p><p class="ti">Add driver to dispatch roster</p></div>
+                <div class="tkt"><p class="id">#4402</p><p class="ti">Supplier terms not applying</p></div>
+              </div>
+            </div>
+            <div>
+              <div class="colh"><span>Resolved</span><span>6</span></div>
+              <div class="cards">
+                <div class="tkt done"><p class="id">#4398</p><p class="ti">AR ageing report export</p></div>
+                <div class="tkt done"><p class="id">#4391</p><p class="ti">New user access, finance</p></div>
+                <div class="tkt done"><p class="id">#4386</p><p class="ti">Price list sync, Branch 3</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 13 · the worked example. The proof set ends and the paper comes back,
+     because this one was drawn rather than built. It is what a one-week
+     diagnostic hands over before anybody has paid to construct anything. ═══ -->
+<section class="sh" id="s13" data-dwg="Worked example" data-t="Worked example: a brokerage" aria-label="Sheet 13: A worked example, a customs brokerage">
+  <div class="in split n">
+    <div class="stack">
+      <div class="row en">
+        <span class="lab">Worked example</span>
+        <span class="tagline">Drawn, not built</span>
+      </div>
+      <h2 class="head sm en">A customs brokerage, on one board.</h2>
+      <p class="body en">A brokerage in Cebu clears shipments for a dozen importers. Every case lives in an inbox, a Viber thread, and a folder on somebody's desk. Ask where a container is and three people check three different places.</p>
+      <p class="body en"><strong>This is what the diagnostic hands you.</strong> Eight stages from arrival to closed. Every document scored against the checklist that case actually needs. Every field errand with a name against it. One screen answers the question the owner asks forty times a day.</p>
+      <hr class="rule en">
+      <p class="body en">It is a working prototype, not a picture of one. You can click it. The shipments, the clients and the staff are invented, and it touches no customs, carrier or bank system — the shape is what is being shown, not the data.</p>
+      <div class="row en" style="gap:calc(var(--k)*14)">
+        <a class="btn-red" href="/demos/dca-shipment-command-center/" target="_blank" rel="noopener">Open the prototype</a>
+        <span class="lab">New tab · runs offline</span>
+      </div>
+      <p class="pnote en">Presenter note · hand them the laptop here. Overview first, then Field Dispatch. The unassigned task is the whole pitch — let them find it rather than narrating it. Name DCA only in the room it was drawn for.</p>
+    </div>
+
+    <div class="en">
+      <p class="lab" style="margin-bottom:calc(var(--k)*10);text-align:right">Detail E · the board · scale 1:1</p>
+      <div class="screen">
+        <div class="scr-bar">
+          <i></i><i></i><i></i>
+          <span class="u">dca &nbsp;·&nbsp; shipment command center</span>
+        </div>
+        <div class="scr-body">
+          <div class="strip">
+            <span class="stat" style="display:flex;align-items:center;gap:calc(var(--k)*7)"><span class="dot sm"></span>Live</span>
+            <span class="stat">Cases open<b class="tn" data-count="14">0</b></span>
+            <span class="stat">Field tasks today<b class="tn" data-count="6">0</b></span>
+            <span class="stat">Importers<b class="tn" data-count="10">0</b></span>
+            <span class="illus" style="margin-left:auto">Illustrative</span>
+          </div>
+
+          <div class="cc-rail" aria-hidden="true">
+            <span><em>New</em><b>2</b></span>
+            <span><em>Awaiting docs</em><b>2</b></span>
+            <span><em>Entry prep</em><b>2</b></span>
+            <span><em>Filed</em><b>3</b></span>
+            <span><em>Payment / exam</em><b>2</b></span>
+            <span class="on"><em>For release</em><b>2</b></span>
+            <span><em>Delivery</em><b>1</b></span>
+            <span><em>Closed</em><b>2</b></span>
+          </div>
+
+          <div class="cc-grid">
+            <div>
+              <p class="cc-h">Needs attention today · ranked by consequence</p>
+              <div class="cc-it"><p class="ref">HBS-2026-018</p><p class="ti">Packing list quantity differs from the bill of lading</p></div>
+              <div class="cc-it"><p class="ref">RHD-2026-014</p><p class="ti">Assessed value disputed, awaiting client instruction</p></div>
+              <div class="cc-it"><p class="ref">HBS-2026-021</p><p class="ti">Certificate of Origin missing</p></div>
+              <div class="cc-it"><p class="ref">BCS-2026-016</p><p class="ti">Assessment complete, client payment still pending</p></div>
+            </div>
+            <div class="cc-gate">
+              <p class="cc-h r">Waiting for you</p>
+              <p class="cc-task">A-3316 · Collect release order and gate pass</p>
+              <p class="cc-meta">Cebu International Port · Pier 4 · VPF-2026-020</p>
+              <p class="cc-rec"><strong>Suggested</strong> — Marco Villareal. He is already at CIP on another case.</p>
+              <div class="cc-btns"><span class="cc-b r">Assign</span><span class="cc-b">Somebody else</span></div>
+              <p class="cc-note">Left unassigned on purpose. The board knows who should go. It does not send him.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sh" id="s14" data-t="The approval gate" aria-label="Sheet 14: The approval gate">
+  <div class="in stack" style="gap:calc(var(--k)*18)">
+    <div class="split en" style="align-items:end;gap:calc(var(--k)*50)">
+      <div>
+        <p class="lab r">Detail B · the approval gate</p>
+        <h2 class="head sm" style="margin-top:calc(var(--k)*10);max-width:24ch">Nothing automatic touches your money.</h2>
+      </div>
+      <p class="body">You never open the software. It messages you, you answer it like you'd answer your foreman, and nothing moves until you do. Press it yourself.</p>
+    </div>
+
+    <!-- the chat is the interface; the system is the consequence. One press
+         in the left panel is what lights the wire and moves the right one. -->
+    <div class="convo en">
+      <div class="cv-chat">
+        <div class="cv-hd"><span class="dot sm"></span><b>Andar</b><span class="lab">Your phone · 14:22</span></div>
+        <div class="cv-thread" id="cvThread"></div>
+        <div class="cv-reply" id="cvReply"></div>
+      </div>
+
+      <div class="cv-wire" id="cvWire" aria-hidden="true">
+        <span class="ln"></span>
+        <span class="pulse"></span>
+        <span class="lab">Sent to the system</span>
+      </div>
+
+      <div class="cv-sys" id="cvSys">
+        <div class="sy-hd">
+          <span class="lab">Release control · SO-2291</span>
+          <span class="illus">Illustrative</span>
+        </div>
+        <div class="applied" id="cvStamp"><span class="stamp" id="cvStampText" style="opacity:.92;transform:none">Approved</span></div>
+        <div class="sy-in">
+          <p class="sy-what">Release stock · Bay 05</p>
+          <p class="sy-amt" id="cvAmt">₱482,400.00</p>
+          <div class="sy-state">
+            <span class="dot" id="cvDot"></span>
+            <span class="lab r" id="cvText">Held · waiting on you</span>
+          </div>
+          <ol class="sy-log" id="cvLog"></ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-foot en">
+      <p id="cvNote">Nothing moves until somebody decides. It will wait there all afternoon if it has to — and that is the whole design.</p>
+      <button class="btn-ghost" id="cvReset" hidden>Run it again</button>
+    </div>
+  </div>
+</section>
+
+<section class="sh" data-t="How we work with you" aria-label="Sheet 15: How we work with you">
+  <div class="in stack">
+    <div class="split en" style="align-items:end;gap:calc(var(--k)*50)">
+      <div><p class="lab">Engagements</p><h2 class="head" style="margin-top:calc(var(--k)*12)">How we work with you</h2></div>
+      <p class="body">Three ways in. You can stop after any one of them and still be holding something you can use. That is deliberate.</p>
+    </div>
+    <div class="tiers en">
+      <div class="tier"><span class="dur">1 week</span><h3>Operations<br>Diagnostic</h3><p class="w">We walk your operation and hand you a written map: where the money, the hours and the trust actually go, ranked by what's actually worth fixing.</p></div>
+      <div class="tier"><span class="dur">2–4 weeks</span><h3>Build<br>Sprint</h3><p class="w">One working system, in production, used by your team. Narrow on purpose. Verified against a written pass/fail standard we hand over with it.</p></div>
+      <div class="tier"><span class="dur">Monthly</span><h3>Andar<br>Retainer</h3><p class="w">Support, monitoring, iteration, and the next thing on the list. Priced against what one admin hire costs you, fully loaded.</p></div>
+    </div>
+    <p class="src en">No prices on this sheet. Ask either of us afterwards and you'll get a straight number.</p>
+  </div>
+</section>
+
+<section class="sh" id="s17" data-t="You have done this before" aria-label="Sheet 17: You have done this before">
+  <div class="in stack" style="gap:calc(var(--k)*20)">
+    <div class="split en" style="align-items:end;gap:calc(var(--k)*56)">
+      <div>
+        <p class="lab r">Where you actually stand · sheet <span class="shnum"></span></p>
+        <h2 class="head" style="margin-top:calc(var(--k)*10);max-width:13ch">You have done this before.</h2>
+      </div>
+      <p class="body">You never decided to accept GCash. Your customers started paying that way, and you adapted. That same decision is in front of you again.</p>
+    </div>
+
+    <div class="movement en">
+      <p class="mv-fig"><span class="was">1%</span><span class="mv-ar">→</span><span class="tn" data-count="57.4" data-decimals="1" data-suffix="%">1.0%</span></p>
+      <p class="mv-cap">Share of Philippine retail payments made digitally, 2013 to 2024 — past the government's own target a year early.</p>
+    </div>
+
+    <div class="split en" style="gap:calc(var(--k)*56);align-items:start">
+      <div class="ptA">
+        <p class="p-fig r"><span class="tn" data-count="13">0</span> <em>in 100</em></p>
+        <p class="p-cap">Filipino small businesses asked anyone at all for IT advice last year. Across the region the figure is 28. <strong>Almost nobody around you has asked.</strong></p>
+      </div>
+      <div class="ptA">
+        <p class="p-fig"><span class="tn" data-count="69" data-suffix="%">0%</span></p>
+        <p class="p-cap">Of the ones who did invest, this many reported better profitability — second-highest of the eleven markets surveyed. <strong>And most of them were better off for it.</strong></p>
+      </div>
+    </div>
+
+    <p class="stmt en" style="max-width:52ch;font-size:calc(var(--k)*27);margin:0">Last time your customers decided for you. <em>This time you can move first.</em></p>
+    <p class="src en" style="max-width:none">Bangko Sentral ng Pilipinas · 2024 Status of Digital Payments. CPA Australia Asia-Pacific Small Business Survey · 4,236 businesses across 11 markets, 310 in the Philippines.</p>
+  </div>
+</section>
+
+<section class="sh" data-t="Let's map your operation" aria-label="Sheet 18: Let's map your operation">
+  <div class="in stack">
+    <p class="lab r en">The ask · final sheet</p>
+    <div class="markwash" aria-hidden="true"></div>
+    <h1 class="close en">Let's map<br>your operation.</h1>
+    <div class="split en" style="align-items:start;gap:calc(var(--k)*56)">
+      <div class="stack" style="gap:calc(var(--k)*16)">
+        <p class="ask">We're taking on a limited number of operations diagnostics this quarter. One week. We come to you. You get a written map of where your money and your hours actually go, <em>yours to keep, whether or not you ever work with us.</em></p>
+        <div class="datum">
+          <svg width="44" height="18" viewBox="0 0 44 18" aria-hidden="true"><path d="M8 3 L14 15 L2 15 Z" fill="#D8401F"/><path d="M14 9 H42" stroke="#D8401F" stroke-width="1"/></svg>
+          <span class="lab r">Start here</span>
+        </div>
+      </div>
+      <div class="stack" style="gap:calc(var(--k)*12)">
+        <div class="contact">
+          <div><span class="lab">Email</span><p class="v"><span class="todo">To confirm</span></p></div>
+          <div><span class="lab">Mobile</span><p class="v"><span class="todo">To confirm</span></p></div>
+          <div><span class="lab">Registered entity</span><p class="v"><span class="todo">Name &amp; reg. no.</span></p></div>
+          <div><span class="lab">Where we are</span><p class="v">Cebu City, Philippines</p></div>
+        </div>
+        <p class="pnote">Presenter note · fill these in before you present.</p>
+      </div>
+    </div>
+    <hr class="rule r en">
+    <p class="stmt en" style="max-width:54ch;font-size:calc(var(--k)*22)">And if we look at your operation and don't find something worth automating, we'll tell you that, and we'll stop there.</p>
+  </div>
+</section>
+
+</main>
+
+<div id="ov" role="dialog" aria-modal="true" aria-label="Sheet index">
+  <div class="ovhead">
+    <span class="lab r">Index · <span id="ovTot">18</span> sheets</span>
+    <button class="btn-ghost" id="ovClose">Close · Esc</button>
+  </div>
+  <div class="ovgrid" id="ovGrid"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var deck=document.getElementById('deck');
+  var sheets=[].slice.call(deck.querySelectorAll('.sh'));
+
+  /* sheet coordinates, drawn not typed */
+  (function(){
+    var host=document.getElementById('coords'),X=['A','B','C','D','E'],Y=['1','2','3','4'],h='';
+    X.forEach(function(c,i){h+='<span class="cx" style="left:'+((i+.5)/X.length*100)+'%">'+c+'</span><i class="tx" style="left:'+((i+1)/X.length*100)+'%"></i>';});
+    Y.forEach(function(c,i){h+='<span class="cy" style="top:'+((i+.5)/Y.length*100)+'%">'+c+'</span><i class="ty" style="top:'+((i+1)/Y.length*100)+'%"></i>';});
+    host.innerHTML=h;
+  })();
+
+  /* Cebu clock */
+  (function(){
+    var el=document.getElementById('clock');
+    function p(n){return (n<10?'0':'')+n}
+    function tick(){
+      var n=new Date(),d=new Date(n.getTime()+(8*60+n.getTimezoneOffset())*60000);
+      el.textContent='GMT+8  '+p(d.getHours())+':'+p(d.getMinutes());
+    }
+    tick();setInterval(tick,20000);
+  })();
+
+
+  /* sheet 11 deterministic pseudo-QR */
+  (function(){
+    var host=document.getElementById('qr'),N=21,s=20260418;
+    function rnd(){s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff}
+    function finder(r,c){var f=[[0,0],[0,14],[14,0]];
+      for(var i=0;i<3;i++){var fr=f[i][0],fc=f[i][1];
+        if(r>=fr&&r<fr+7&&c>=fc&&c<fc+7){var dr=r-fr,dc=c-fc;
+          return (dr===0||dr===6||dc===0||dc===6)||(dr>=2&&dr<=4&&dc>=2&&dc<=4)?1:2;}}
+      return 0;}
+    for(var r=0;r<N;r++)for(var c=0;c<N;c++){
+      var b=document.createElement('i'),f=finder(r,c);
+      if(f===1?true:f===2?false:rnd()>.52)b.className='on';
+      host.appendChild(b);}
+  })();
+
+  /* principal portraits load if supplied; otherwise the plate keeps its marker */
+  (function(){
+    [].forEach.call(document.querySelectorAll('.pphoto,.hcol'),function(box){
+      var probe=new Image();
+      probe.onload=function(){
+        probe.alt=box.dataset.alt||'';
+        if(box.dataset.pos)box.style.setProperty('--pos',box.dataset.pos);
+        box.insertBefore(probe,box.firstChild);
+        box.classList.add('ok');
+      };
+      probe.src=box.dataset.src;   /* nothing is inserted unless it actually loads */
+    });
+  })();
+
+  /* sheet 17: one mark per hundred owners, thirteen of them lit */
+  (function(){
+    var host=document.getElementById('tallyMarks');if(!host)return;
+    var f=document.createDocumentFragment(),marks=[];
+    for(var i=0;i<100;i++){var m=document.createElement('i');marks.push(m);f.appendChild(m);}
+    host.appendChild(f);
+    /* thirteen of a hundred, counted out one at a time so the room can follow */
+    host.__run=function(){
+      marks.slice(0,13).forEach(function(m,n){
+        setTimeout(function(){
+          m.classList.add('lit');
+          if(!reduce)m.style.animationDelay=(-n*0.42).toFixed(2)+'s';
+        },reduce?0:260+n*95);
+      });
+    };
+  })();
+
+  function roll(el){
+    if(el.__rolled)return;el.__rolled=true;
+    var t=parseFloat(el.dataset.count||'0'),pre=el.dataset.prefix||'',suf=el.dataset.suffix||'',
+        dp=parseInt(el.dataset.decimals||'0',10);
+    function fmt(v){return dp?v.toFixed(dp):Math.round(v).toLocaleString('en-US')}
+    if(reduce){el.textContent=pre+fmt(t)+suf;return;}
+    var t0=null,done=false;
+    requestAnimationFrame(function f(ts){
+      if(t0===null)t0=ts;var p=Math.min(1,(ts-t0)/1100),e=1-Math.pow(1-p,4);
+      if(done)return;
+      el.textContent=pre+fmt(t*e)+suf;
+      if(p<1)requestAnimationFrame(f);else done=true;
+    });
+    /* same safety net: a paused tab must not leave the figure on zero */
+    setTimeout(function(){if(!done){done=true;el.textContent=pre+fmt(t)+suf}},2200);
+  }
+  /* rolls to the quoted figure, then keeps adding: the money is still not
+     being spent while we stand here. Rate is data-rate pesos per second. */
+  function rollBig(el){
+    var rate=parseFloat(el.dataset.rate||'10'),total=1000000;
+    function show(v){el.textContent='₱'+Math.round(v).toLocaleString('en-US')}
+    var landed=false;
+    function settle(){
+      if(landed)return;landed=true;
+      show(total);
+      /* it does not stop at the quote: the licence and the renewals keep
+         not being paid for as long as anyone is looking at this sheet */
+      setInterval(function(){total+=rate;show(total)},1000);
+    }
+    if(reduce){show(total);return;}
+    var t0=null;
+    requestAnimationFrame(function f(ts){
+      if(t0===null)t0=ts;var p=Math.min(1,(ts-t0)/1500),e=1-Math.pow(1-p,5);
+      if(p<1){show(1000000*e);requestAnimationFrame(f);}
+      else settle();
+    });
+    /* a backgrounded tab pauses rAF; land the figure anyway rather than
+       leave a presenter staring at zero when they come back */
+    setTimeout(settle,2600);
+  }
+
+  /* ── presenter-stepped builds ────────────────────────────────
+     A sheet with data-steps advances one stage per keypress before
+     the deck moves on, so the room looks at the stage being talked
+     about. Cumulative fills follow the 6:2:20:14 column proportions. */
+  var builds={},navDir=1;
+  /* one dead selector must never take the whole deck down with it */
+  function maxStep(i){return parseInt(sheets[i].dataset.steps||'0',10)}
+  function applyStep(i){
+    var s=sheets[i],step=builds[i]||0;
+    var fills=(s.dataset.fills||'').split(',');
+    if(fills[step]!==undefined&&fills[step]!=='')s.style.setProperty('--fill',fills[step]);
+    /* the sheet says out loud which beat it is on, so CSS can answer */
+    s.setAttribute('data-step',step);
+    [].forEach.call(s.querySelectorAll('[data-at]'),function(el){
+      var on=parseInt(el.dataset.at,10)<=step;
+      el.classList.toggle('on',on);
+      /* a figure counts up the moment its own beat arrives, not before */
+      if(on)[].forEach.call(el.querySelectorAll('[data-count]'),roll);
+    });
+    [].forEach.call(s.querySelectorAll('.steps .pips i'),function(p,n){p.classList.toggle('on',n<step)});
+    var lab=s.querySelector('.steplab');
+    if(lab)lab.textContent=(s.dataset.labels||'').split('|')[step]||'';
+    var adv=s.querySelector('.adv');if(adv)adv.innerHTML=(step>=maxStep(i))?'Complete':'Advance &#9656;';
+  }
+  function bump(i,dir){
+    var m=maxStep(i);if(!m)return false;
+    var next=(builds[i]||0)+dir;
+    if(next<0||next>m)return false;
+    builds[i]=next;applyStep(i);return true;
+  }
+  [].forEach.call(document.querySelectorAll('.steps'),function(ctl){
+    var adv=function(e){e.preventDefault();if(!bump(cur,1)){builds[cur]=0;applyStep(cur)}};
+    ctl.addEventListener('click',adv);
+    ctl.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')adv(e)});
+  });
+
+  var cur=0,seen=new WeakSet();
+  var shNo=document.getElementById('shNo'),prog=document.getElementById('prog'),
+      shTot=document.getElementById('shTot'),
+      dwgVal=document.getElementById('dwgVal');
+  function setCur(i){
+    if(i<0||i===cur)return;cur=i;
+    shNo.textContent=(i+1<10?'0':'')+(i+1);
+    prog.style.transform='scaleX('+(i/(sheets.length-1))+')';
+    [].forEach.call(document.querySelectorAll('.ovi'),function(b,n){b.classList.toggle('cur',n===i)});
+  }
+  /* middle-band reveal, so a sheet taller than the viewport still fires */
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting)return;
+      var s=e.target,i=sheets.indexOf(s),prev=cur;
+      s.classList.add('is-live');setCur(i);
+      /* the stock changes for the as-built set, and the title block says so */
+      var ab=s.dataset.set==='asbuilt';
+      document.body.classList.toggle('asbuilt',ab);
+      /* the cover has no drawing furniture on it at all */
+      document.body.classList.toggle('splash',s.classList.contains('splash'));
+      /* a sheet may name its own drawing — the worked example is neither */
+      dwgVal.textContent=s.dataset.dwg||(ab?'As-built record':'Company profile');
+      /* arriving forward starts a build at zero; arriving backward starts it complete */
+      if(maxStep(i)&&i!==prev){
+        /* forward arrival starts at Day 0; stepping back into it lands complete */
+        builds[i]=(navDir>0)?0:maxStep(i);applyStep(i);
+      }
+      if(seen.has(s))return;seen.add(s);
+      var b=s.querySelector('#bigFig');if(b)rollBig(b);
+      var tm=s.querySelector('#tallyMarks');if(tm&&tm.__run)tm.__run();
+      /* on a stepped sheet the figures wait for their own beat — see applyStep */
+      [].forEach.call(s.querySelectorAll('[data-count]'),function(el){
+        if(s.dataset.steps&&el.closest('[data-at]'))return;
+        roll(el);
+      });
+    });
+  },{root:deck,rootMargin:'-38% 0px -38% 0px',threshold:0});
+  if(shTot)shTot.textContent=sheets.length;
+  var ovTot=document.getElementById('ovTot');if(ovTot)ovTot.textContent=sheets.length;
+  /* sheet numbers are read from position, never typed */
+  sheets.forEach(function(sec,n){
+    [].forEach.call(sec.querySelectorAll('.shnum'),function(e){
+      e.textContent=(n+1<10?'0':'')+(n+1);
+    });
+  });
+  sheets.forEach(function(s){io.observe(s)});
+  sheets[0].classList.add('is-live');
+
+  /* the hero claim cycles: one promise, seven things it actually means */
+  (function(){
+    var el=document.getElementById('claimVar');if(!el)return;
+    var P=['a running system.',
+           'real-time stock.',
+           'same-day invoices.',
+           'cash you actually collect.',
+           'decisions in seconds.',
+           'systems you own.',
+           'an agile team.',
+           'running a business from your phone.',
+           'an operation that runs without you.'];
+    /* Spares, all measured to fit the reserved two lines — uncomment to use.
+       Keep the list under about a dozen: at 2.8s each, twelve is a 34-second
+       cycle and the room stops noticing it changed.
+         'a rule nobody can route around.',        // the approval gate
+         'staff who stop doing data entry.',       // answers "will it replace my people"
+         'something that survives the pilot.',     // the 65% that never ships
+         'code with your name on it.',             // ownership, no lock-in
+         'a Monday that runs itself.',
+         'invoices that chase themselves.',
+         'production in four weeks.',              // the timebox, held to
+         'the end of spreadsheet math.',
+         'one number everybody trusts.',
+         'a business that no longer needs us.'                                  */
+    if(reduce)return;                      /* one phrase, held, when motion is unwelcome */
+    var i=0;
+    setInterval(function(){
+      el.classList.add('out');
+      setTimeout(function(){
+        i=(i+1)%P.length;
+        el.textContent=P[i];
+        el.classList.add('nofx');el.classList.remove('out');el.classList.add('in');
+        void el.offsetWidth;               /* commit the start position before easing up */
+        el.classList.remove('nofx');el.classList.remove('in');
+      },340);
+    },2800);
+  })();
+
+  /* the assembly answers the pointer — the sheet is handled, not printed */
+  (function(){
+    var rot=document.getElementById('asmRot');if(!rot||reduce)return;
+    var s=sheets[0];
+    s.addEventListener('pointermove',function(e){
+      var r=s.getBoundingClientRect();
+      var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      rot.style.transform='rotateX('+(56-y*15)+'deg) rotateZ('+(-40+x*18)+'deg)';
+    });
+    s.addEventListener('pointerleave',function(){rot.style.transform='rotateX(56deg) rotateZ(-40deg)'});
+  })();
+
+  /* the handset is held, so it answers the pointer too */
+  (function(){
+    var t=document.getElementById('phTilt');if(!t||reduce)return;
+    var s=t.closest('.sh');
+    s.addEventListener('pointermove',function(e){
+      var r=s.getBoundingClientRect();
+      var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      t.style.transform='rotateY('+(x*24)+'deg) rotateX('+(-y*16)+'deg)';
+    });
+    s.addEventListener('pointerleave',function(){t.style.transform='none'});
+  })();
+
+  /* the laptop on the billing sheet is an object on a desk, not a picture */
+  (function(){
+    var t=document.getElementById('lapTilt');if(!t||reduce)return;
+    var s=t.closest('.sh');
+    s.addEventListener('pointermove',function(e){
+      var r=s.getBoundingClientRect();
+      var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      t.style.transform='rotateY('+(-6+x*20)+'deg) rotateX('+(3-y*12)+'deg)';
+    });
+    s.addEventListener('pointerleave',function(){t.style.transform='rotateX(3deg) rotateY(-6deg)'});
+  })();
+
+  /* ── 05 principals · parallax ────────────────────────────────────
+     Three planes at three rates: the two portraits behind, moving
+     against each other, and the type in front moving the other way.
+     Depth, so the sheet reads as a place rather than a layout. */
+  (function(){
+    var s=document.getElementById('s5');if(!s||reduce)return;
+    var cols=[].slice.call(s.querySelectorAll('.hcol')),fore=s.querySelector('.in');
+    if(!cols.length)return;
+    var raf=0,tx=0,ty=0;
+    function paint(){
+      raf=0;
+      cols.forEach(function(c,n){
+        var d=n===0?1:-1;                       /* they pull apart, not together */
+        c.style.setProperty('--px',(tx*d*30).toFixed(2)+'px');
+        c.style.setProperty('--py',(ty*d*18).toFixed(2)+'px');
+      });
+      if(fore)fore.style.transform='translate3d('+(-tx*11).toFixed(2)+'px,'+(-ty*7).toFixed(2)+'px,0)';
+    }
+    s.addEventListener('pointermove',function(e){
+      var r=s.getBoundingClientRect();
+      tx=(e.clientX-r.left)/r.width-.5;ty=(e.clientY-r.top)/r.height-.5;
+      if(!raf)raf=requestAnimationFrame(paint);
+    });
+    s.addEventListener('pointerleave',function(){tx=0;ty=0;if(!raf)raf=requestAnimationFrame(paint)});
+  })();
+
+  /* ── 00 cover · adaptation ───────────────────────────────────────
+     One population of line segments, never created or destroyed, eased
+     from one formation into the next: scatter, grid, ring, arch, wave,
+     rise, and back. The parts do not change. Only the arrangement does,
+     which is the entire proposition of the firm stated without words. */
+  (function(){
+    var cv=document.getElementById('adaptC');if(!cv)return;
+    var ctx=cv.getContext('2d'),N=168,dpr=1,W=0,H=0;
+
+    function size(){
+      var r=cv.getBoundingClientRect();
+      dpr=Math.min(window.devicePixelRatio||1,2);
+      W=r.width;H=r.height;
+      cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+
+    /* every formation answers with a point, an angle and a length in the
+       unit square; the draw step scales it to whatever the sheet is */
+    var TAU=Math.PI*2;
+    var FORMS=[
+      /* scatter — deterministic, so the cover is the same cover every time */
+      function(i){var a=(i*2.399963),r=.06+((i*97)%100)/100*.46;
+        return{x:.5+Math.cos(a)*r*1.5,y:.5+Math.sin(a)*r,a:a,l:.02+((i*53)%100)/100*.05};},
+      /* grid — order, laid out flat */
+      function(i){var c=14,col=i%c,row=Math.floor(i/c);
+        return{x:.14+col/(c-1)*.72,y:.2+row/(Math.ceil(N/c)-1)*.6,a:0,l:.036};},
+      /* ring — concentric, the assembly seen in plan */
+      function(i){var band=i%4,a=Math.floor(i/4)/Math.ceil(N/4)*TAU,r=.1+band*.075;
+        return{x:.5+Math.cos(a)*r*1.62,y:.5+Math.sin(a)*r,a:a+Math.PI/2,l:.03+band*.006};},
+      /* arch — the mark's own radius, nested */
+      function(i){var band=i%5,a=Math.PI+ (Math.floor(i/5)/Math.ceil(N/5))*Math.PI,r=.09+band*.045;
+        return{x:.5+Math.cos(a)*r*1.6,y:.66+Math.sin(a)*r,a:a+Math.PI/2,l:.028+band*.005};},
+      /* wave — flow, angled to its own slope */
+      function(i){var x=i/(N-1),k=x*TAU*1.6;
+        return{x:.08+x*.84,y:.5+Math.sin(k)*.17,a:Math.atan(Math.cos(k)*.17*TAU*1.6/ .84)*.6,l:.038};},
+      /* rise — the same parts, finally going somewhere */
+      function(i){var c=42,col=i%c,tier=Math.floor(i/c),x=col/(c-1);
+        return{x:.1+x*.8,y:.84-Math.pow(x,1.5)*.52-tier*.028,a:Math.PI/2,l:.024+x*.05};}
+    ];
+
+    var P=[];
+    for(var i=0;i<N;i++){
+      var f=FORMS[0](i);
+      P.push({x:f.x,y:f.y,a:f.a,l:f.l,fx:f.x,fy:f.y,fa:f.a,fl:f.l,tx:f.x,ty:f.y,ta:f.a,tl:f.l});
+    }
+    var form=0,t0=null,DUR=2400,HOLD=2000,phase=0; /* 0 easing, 1 holding */
+
+    function retarget(){
+      form=(form+1)%FORMS.length;
+      for(var i=0;i<N;i++){
+        var p=P[i],f=FORMS[form](i);
+        p.fx=p.x;p.fy=p.y;p.fa=p.a;p.fl=p.l;
+        p.tx=f.x;p.ty=f.y;p.ta=f.a;p.tl=f.l;
+      }
+    }
+
+    var mx=0,my=0,px=0,py=0;
+    cv.parentNode.addEventListener('pointermove',function(e){
+      var r=cv.getBoundingClientRect();
+      mx=((e.clientX-r.left)/r.width-.5)*2;my=((e.clientY-r.top)/r.height-.5)*2;
+    });
+
+    function ease(u){return u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2}
+
+    function frame(ts){
+      if(t0===null)t0=ts;
+      var el=ts-t0;
+      if(phase===0){
+        for(var i=0;i<N;i++){
+          var p=P[i];
+          /* staggered, so the field re-forms as a movement, not a switch */
+          var d=(i%23)/23*620;
+          var u=Math.max(0,Math.min(1,(el-d)/DUR));
+          var e=ease(u);
+          p.x=p.fx+(p.tx-p.fx)*e;p.y=p.fy+(p.ty-p.fy)*e;
+          p.a=p.fa+(p.ta-p.fa)*e;p.l=p.fl+(p.tl-p.fl)*e;
+        }
+        if(el>DUR+700){phase=1;t0=ts;}
+      }else if(el>HOLD){phase=0;t0=ts;retarget();}
+
+      px+=(mx-px)*.05;py+=(my-py)*.05;
+      /* the field is square so a ring stays a ring, and it is drawn larger
+         than the shorter side so it runs off the sheet on a wide screen */
+      var S=Math.min(W,H)*1.34,ox=W/2-S/2,oy=H/2-S/2;
+
+      ctx.clearRect(0,0,W,H);
+      ctx.lineCap='round';
+      for(var j=0;j<N;j++){
+        var q=P[j];
+        var depth=.34+((j%7)/7)*.66;              /* three planes of parallax */
+        var cx=ox+q.x*S+px*26*depth,cy=oy+q.y*S+py*16*depth;
+        var half=q.l*S/2,dx=Math.cos(q.a)*half,dy=Math.sin(q.a)*half;
+        var hot=(j%13)===0;
+        ctx.strokeStyle=hot?'rgba(242,103,60,'+(.42+depth*.5).toFixed(3)+')'
+                          :'rgba(226,236,241,'+(.14+depth*.48).toFixed(3)+')';
+        ctx.lineWidth=hot?1.4*depth+.6:1.15*depth+.35;
+        ctx.beginPath();ctx.moveTo(cx-dx,cy-dy);ctx.lineTo(cx+dx,cy+dy);ctx.stroke();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    size();
+    addEventListener('resize',size);
+    if(reduce){                       /* one formation, held, and nothing moves */
+      for(var k=0;k<N;k++){var g=FORMS[3](k);P[k].x=g.x;P[k].y=g.y;P[k].a=g.a;P[k].l=g.l;}
+      var Sr=Math.min(W,H)*1.34,oxr=W/2-Sr/2,oyr=H/2-Sr/2;
+      ctx.lineCap='round';
+      P.forEach(function(q,j){
+        var h=q.l*Sr/2,dx=Math.cos(q.a)*h,dy=Math.sin(q.a)*h,cx=oxr+q.x*Sr,cy=oyr+q.y*Sr;
+        ctx.strokeStyle=(j%17)===0?'rgba(242,103,60,.7)':'rgba(226,236,241,.28)';
+        ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(cx-dx,cy-dy);ctx.lineTo(cx+dx,cy+dy);ctx.stroke();
+      });
+      return;
+    }
+    retarget();
+    requestAnimationFrame(frame);
+  })();
+
+  function go(i){
+    i=Math.max(0,Math.min(sheets.length-1,i));
+    navDir=(i>=cur)?1:-1;
+    sheets[i].scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+  }
+  var ov=document.getElementById('ov'),ovGrid=document.getElementById('ovGrid');
+  sheets.forEach(function(s,i){
+    var b=document.createElement('button');b.className='ovi';
+    b.innerHTML='<span class="n">'+((i+1<10?'0':'')+(i+1))+'</span><span class="t">'+s.dataset.t+'</span>';
+    b.addEventListener('click',function(){closeOv();go(i)});
+    ovGrid.appendChild(b);
+  });
+  function openOv(){ov.classList.add('open');ovGrid.querySelectorAll('.ovi')[cur].focus()}
+  function closeOv(){ov.classList.remove('open');deck.focus({preventScroll:true})}
+  function toggleOv(){ov.classList.contains('open')?closeOv():openOv()}
+  document.getElementById('ovBtn').addEventListener('click',toggleOv);
+  document.getElementById('ovClose').addEventListener('click',closeOv);
+  document.getElementById('askBtn').addEventListener('click',function(){go(sheets.length-1)});
+
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;
+    switch(e.key){
+      /* a sheet with builds finishes its stages before the deck advances */
+      case 'ArrowRight':case 'ArrowDown':case 'PageDown':case ' ':
+        e.preventDefault();if(!bump(cur,1))go(cur+1);break;
+      case 'ArrowLeft':case 'ArrowUp':case 'PageUp':
+        e.preventDefault();if(!bump(cur,-1))go(cur-1);break;
+      case 'Home':e.preventDefault();go(0);break;
+      case 'End':e.preventDefault();go(sheets.length-1);break;
+      case 'o':case 'O':e.preventDefault();toggleOv();break;
+      /* D strips every presenter note — do this before you walk in */
+      case 'd':case 'D':e.preventDefault();document.documentElement.classList.toggle('draft');break;
+      case 'Escape':ov.classList.contains('open')?closeOv():openOv();break;
+    }
+  });
+
+  /* ── 14 the approval, played as it actually happens ───────────────
+     The system asks in a chat. The owner answers in a chat. The answer
+     travels the wire, the system acts, and the record writes itself.
+     Every branch is pressable, and it can be run again from the top. */
+  (function(){
+    var thread=document.getElementById('cvThread'),reply=document.getElementById('cvReply'),
+        wire=document.getElementById('cvWire'),log=document.getElementById('cvLog'),
+        dot=document.getElementById('cvDot'),text=document.getElementById('cvText'),
+        amt=document.getElementById('cvAmt'),note=document.getElementById('cvNote'),
+        stamp=document.getElementById('cvStamp'),stampT=document.getElementById('cvStampText'),
+        reset=document.getElementById('cvReset');
+    if(!thread)return;
+    var idle=note.textContent,sheet=thread.closest('.sh'),timers=[],started=false;
+
+    function clock(off){
+      var t=new Date(Date.now()+(off||0)*1000);
+      function p(n){return(n<10?'0':'')+n}
+      return p(t.getHours())+':'+p(t.getMinutes())+':'+p(t.getSeconds());
+    }
+    function at(ms,fn){timers.push(setTimeout(fn,reduce?Math.min(ms,60):ms))}
+    function clear(){timers.forEach(clearTimeout);timers=[]}
+
+    function say(html,mine,stamped){
+      var b=document.createElement('div');
+      b.className='bub'+(mine?' me':'');
+      b.innerHTML=html+(stamped?'<span class="t">'+stamped+'</span>':'');
+      thread.appendChild(b);
+      /* the thread is short by design; the oldest line falls off the top */
+      while(thread.children.length>4)thread.removeChild(thread.firstChild);
+      return b;
+    }
+    function typing(ms,then){
+      var t=document.createElement('div');t.className='typing';
+      t.innerHTML='<i></i><i></i><i></i>';thread.appendChild(t);
+      at(ms,function(){t.remove();then()});
+    }
+    function chips(list){
+      reply.innerHTML='';
+      list.forEach(function(c,n){
+        var b=document.createElement('button');
+        b.className='chip'+(c.go?' go':'');
+        b.textContent=c.t;
+        b.style.animationDelay=(n*.07)+'s';
+        b.addEventListener('click',c.fn);
+        reply.appendChild(b);
+      });
+    }
+    function logline(t,txt,hi){
+      var li=document.createElement('li');
+      if(hi)li.className='hi';
+      li.innerHTML='<em>'+t+'</em><span>'+txt+'</span>';
+      log.appendChild(li);
+    }
+
+    /* ── the opening: the system asks, unprompted ── */
+    function open(){
+      clear();thread.innerHTML='';reply.innerHTML='';log.innerHTML='';
+      wire.classList.remove('live');stamp.classList.remove('on');
+      amt.classList.remove('done');amt.textContent='₱482,400.00';
+      dot.style.animation='';dot.style.background='var(--red)';
+      text.textContent='Held · waiting on you';text.className='lab r';
+      note.textContent=idle;reset.hidden=true;
+      logline(clock(-19),'Warehouse asked to release SO-2291');
+      at(420,function(){
+        typing(900,function(){
+          say('Bay&nbsp;05 wants to release <b>SO-2291</b> — ₱482,400.00 to Northgate Trading.<br>They are ₱312,880.00 overdue on 30-day terms, so I have <b>held it</b>.','',clock(-8));
+          logline(clock(-8),'Assistant held it and asked you');
+          at(260,ask);
+        });
+      });
+    }
+    function ask(){
+      chips([
+        {t:'Approve',go:true,fn:function(){decide(true)}},
+        {t:'Hold it',fn:function(){decide(false)}},
+        {t:'Why is it flagged?',fn:why}
+      ]);
+    }
+    function why(){
+      say('Why is it flagged?',true);
+      reply.innerHTML='';
+      typing(820,function(){
+        say('Two invoices past due: <b>INV-2026-0391</b>, 46 days, and <b>INV-2026-0402</b>, 12 days. Nothing has been paid since 14 June.<br>Your rule says stock does not move while a customer is overdue. Only you can override it.','',clock(-3));
+        at(220,ask);
+      });
+    }
+
+    /* ── the decision travels the wire and the system acts on it ── */
+    function decide(ok){
+      say(ok?'Approve it. My call.':'Hold it. Nothing leaves.',true,clock());
+      reply.innerHTML='';
+      var t=clock();
+      at(260,function(){
+        wire.classList.add('live');
+        logline(t,'You answered in chat',true);
+      });
+      at(950,function(){
+        dot.style.animation='none';
+        if(ok){
+          dot.style.background='var(--ink)';
+          text.textContent='Released · approved '+t;text.className='lab';
+          stampT.textContent='Approved';
+        }else{
+          amt.classList.add('done');
+          text.textContent='Held · declined '+t;text.className='lab r';
+          stampT.textContent='Held';
+        }
+        stamp.classList.add('on');
+        logline(t,ok?'System released SO-2291':'System refused the release');
+      });
+      at(1350,function(){logline(t,'Written to the record · your name on it',true)});
+      at(1450,function(){
+        typing(700,function(){
+          say(ok
+            ? 'Done. Bay&nbsp;05 has the release, and it is on the record as yours — <b>'+t+'</b>.'
+            : 'Done. Nothing moved. Northgate has been told the release is held pending payment.','',clock());
+          note.innerHTML=ok
+            ? '<b>The system did not decide. You did.</b> It asked, waited, and then did exactly what you said — with your name and the minute against it, which is the part your auditor, your partner and your future self actually need.'
+            : '<b>Nothing moved. That’s the point.</b> A rule your staff cannot route around is worth more than a policy they have to argue for in front of a customer they like.';
+          reset.hidden=false;
+        });
+      });
+    }
+
+    reset.addEventListener('click',open);
+    /* it starts itself the first time the sheet is actually on screen */
+    var io2=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting&&!started){started=true;open()}});
+    },{threshold:.4});
+    io2.observe(sheet);
+  })();
+})();
+</script>
+</body>
+</html>
