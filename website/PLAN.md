@@ -265,13 +265,14 @@ Stop after any one and you're still holding something useful.
 - H2: **Let's come and look.**
 - One week. We come to you. You get a one-page picture of where your hours and your money
   actually go — yours to keep, whether or not you ever work with us.
-- **Book a walk-through**, with email and mobile beside it as plain text. No form; two people
-  who answer the phone.
+- **Book a walk-through** opens an email to work@andar.ph with the subject already filled in
+  ("Come and look at [business name]"). The address sits beside the button as plain text.
+  No form, no phone number; two people who answer their email.
 
 ### 10 · Footer
 
-A title block: *Company website · Rev C · Cebu City, Philippines*, registered name and
-number, year. Links: the deck, the working sample, email.
+A title block: *andar.ph · Rev C · Cebu City, Philippines*, registered name and number,
+year. Links: the deck, the working sample, work@andar.ph.
 
 ---
 
@@ -290,10 +291,12 @@ number, year. Links: the deck, the working sample, email.
 
 | Item | Status | Owner |
 |---|---|---|
-| Email, mobile, registered name and number | Still "to confirm". Blocks launch. | Both |
+| Contact | Settled: work@andar.ph. No phone number on the page. | Done |
+| Domain | Settled: andar.ph. | Done |
+| Registered name and number | Still to confirm for the footer. | Both |
 | Permission to name the delivery company (card 04) | Pending. Card ships unnamed until then. | Ac |
 | Founder photographs | In `assets/`. Need matched crops on the paper ground. | Nath |
-| Domain and hosting | UX research to confirm GitHub Pages holds. | Nath |
+| Hosting | GitHub Pages holds (UX research). Point andar.ph at it. | Nath |
 | Hero drawing | New. Four-part assembly as SVG built to animate. | Build |
 | Card screens | Lift the deck's mockups into components. | Build |
 
