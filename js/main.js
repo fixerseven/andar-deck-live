@@ -79,7 +79,7 @@
     var nextBtn = rail.querySelector('[data-rail="next"]');
     var n = cards.length;
 
-    totalEl.textContent = String(n).padStart(2, "0");
+    if (totalEl) totalEl.textContent = String(n).padStart(2, "0");
     var cardNames = cards.map(function(c){
       var eb = c.querySelector(".card-eyebrow");
       return eb ? eb.textContent.trim() : "";
@@ -114,7 +114,7 @@
     function setCounter(i){
       if (i === currentIdx) return;
       currentIdx = i;
-      idxEl.textContent = String(i + 1).padStart(2, "0");
+      if (idxEl) idxEl.textContent = String(i + 1).padStart(2, "0");
       liveEl.textContent = "Card " + (i + 1) + " of " + n + ", " + cardNames[i];
       var tint = (cards[i] && cards[i].dataset.tint) || "transparent";
       stage.style.setProperty("--stage-tint", tint);
@@ -219,7 +219,7 @@
                 start: "top top",
                 end: function(){ return "+=" + track.scrollWidth; },
                 pin: stage,
-                scrub: true,
+                scrub: 1.1,
                 invalidateOnRefresh: true,
                 anticipatePin: 1,
                 onRefresh: measure,
@@ -295,7 +295,7 @@
       var h = screen.getBoundingClientRect().height; // includes transforms
       if (h <= 0) return;
       // shrink to fit, but never below 72% width: past that the screen crops at the frame's bottom edge instead
-      var s = Math.max(0.72, Math.min(1, (fig.clientHeight - 2) / h));
+      var s = Math.max(0.8, Math.min(1, (fig.clientHeight - 2) / h));
       fig.style.setProperty("--fit", s);
     }
     function fitAll(){ figs.forEach(fitOne); }

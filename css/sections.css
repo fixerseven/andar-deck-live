@@ -4,7 +4,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 :root{
-  --card-h:    min(calc(100svh - 200px), 640px);
+  --card-h:    min(calc(100svh - 150px), 760px);
   --card-wide: min(78vw, 720px);
   --card-ask:  min(78vw, 560px);
 }
@@ -149,7 +149,7 @@ section{position:relative;padding-block:var(--section-pad)}
     linear-gradient(to bottom, var(--grid) 1px, transparent 1px),
     var(--paper);
   background-size:auto, auto, 40px 40px, 40px 40px, auto;
-  transition:--stage-tint .6s var(--ease);
+  transition:--stage-tint 1.1s var(--ease);
 }
 @media (prefers-reduced-motion: reduce){ .rail-stage{ transition:none } }
 
@@ -223,7 +223,7 @@ section{position:relative;padding-block:var(--section-pad)}
 /* fitScreens() (main.js) sets --fit so the mockup shrinks to the
    remaining card height at full crispness rather than clipping. */
 .card-fig .screen{width:calc(100% * var(--fit, 1));margin-inline:auto}
-.card-truth{margin-top:14px;font-family:var(--din);font-weight:600;font-size:.8125rem;color:var(--ink)}
+.card-truth{margin-top:12px;font-family:var(--read);font-size:.8125rem;color:var(--mid)}
 .card-link{
   margin-top:8px;display:inline-flex;align-items:center;gap:6px;width:fit-content;
   font-family:var(--din);font-weight:600;font-size:.8125rem;color:var(--red-ink);
@@ -373,3 +373,7 @@ section{position:relative;padding-block:var(--section-pad)}
 .ask-email{
   font-family:var(--din);font-weight:500;font-size:.9375rem;letter-spacing:.02em;color:var(--mid);
 }
+
+/* inside a card the handset sits flat and centred; the tilt is for the hero only */
+.card-fig .scr-ph-frame{perspective:none}
+.card-fig .scr-ph-device{transform:none !important}
