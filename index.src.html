@@ -58,8 +58,8 @@
       <a class="btn btn-pill" href="mailto:work@andar.ph?subject=Come%20and%20look">Book a walk-through</a>
     </div>
   </div>
-  <div class="hero-device hl" style="--i:4" aria-hidden="true">
-    <!-- @include: partials/screen-phone.html -->
+  <div class="hero-device hero-device--draw hl" style="--i:4" aria-hidden="true">
+    <!-- @include: partials/hero-drawing.html -->
   </div>
   <div class="hero-fg" aria-hidden="true">
     <picture>
@@ -69,23 +69,26 @@
   </div>
 </section>
 
-<section id="now" class="now on-navy" aria-labelledby="now-h2">
-  <div class="wrap">
-    <h2 id="now-h2" class="h2 now-h2">Right now, it runs because you're there.</h2>
-    <ul class="now-list">
-      <li>Every question comes to you.</li>
-      <li>Every release waits for you.</li>
-      <li>Every mistake finds you.</li>
-    </ul>
+<div class="now-stack on-navy" id="now-stack">
+  <div class="now-stage">
+    <section id="now" class="now now-layer now-layer--a" aria-labelledby="now-h2">
+      <div class="wrap">
+        <h2 id="now-h2" class="h2 now-h2">Right now, it runs because you're there.</h2>
+        <ul class="now-list">
+          <li>Every question comes to you.</li>
+          <li>Every release waits for you.</li>
+          <li>Every mistake finds you.</li>
+        </ul>
+      </div>
+    </section>
+    <section id="turn" class="now now--turn now-layer now-layer--b" aria-labelledby="turn-h2">
+      <div class="wrap">
+        <h2 id="turn-h2" class="now-turn">Take a day off and the whole thing slows down. That isn't a business running. That's you running.</h2>
+        <p class="now-hand"><span class="now-hand-line" aria-hidden="true"></span><span class="now-hand-text">So what does a business look like when the owner isn't in the room?</span></p>
+      </div>
+    </section>
   </div>
-</section>
-
-<section id="turn" class="now now--turn on-navy" aria-labelledby="turn-h2">
-  <div class="wrap">
-    <h2 id="turn-h2" class="now-turn">Take a day off and the whole thing slows down. That isn't a business running. That's you running.</h2>
-    <p class="now-hand"><span class="now-hand-line" aria-hidden="true"></span><span class="now-hand-text">So what does a business look like when the owner isn't in the room?</span></p>
-  </div>
-</section>
+</div>
 
 <section class="rail" id="work" aria-labelledby="rail-h">
   <div class="rail-stage" data-rail-stage>
@@ -349,7 +352,7 @@
     </div>
     <div class="tblock foot-block">
       <div><p class="lab k">Drawing</p><p class="v">andar.ph</p></div>
-      <div><p class="lab k">Rev</p><p class="v">C · build 8</p></div>
+      <div><p class="lab k">Rev</p><p class="v">C</p></div>
       <div><p class="lab k">Sheet</p><p class="v">Cebu City, Philippines</p></div>
       <div><p class="lab k">Date</p><p class="v">2026</p></div>
     </div>

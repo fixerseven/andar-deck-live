@@ -83,6 +83,13 @@ section{position:relative;padding-block:var(--section-pad)}
 .hero-fg img{display:block;width:100%;height:auto}
 .hero-fg::after{content:'';position:absolute;inset:auto 0 0 0;height:38%;background:linear-gradient(to bottom, rgba(16,41,58,0), #10293A 92%)}
 .hero-device .illus{display:none}
+/* the general assembly, drawn in light strokes over the city */
+.hero-device--draw{
+  width:min(960px,88vw);filter:none;
+  color:rgba(220,232,238,.88);
+  margin-top:clamp(28px,5vh,64px);margin-bottom:clamp(-120px,-11vh,-60px);
+}
+.hero-device--draw svg{width:100%;height:auto;display:block;overflow:visible}
 
 /* load choreography */
 @keyframes hero-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -96,8 +103,18 @@ section{position:relative;padding-block:var(--section-pad)}
 }
 
 /* ═══════════════════════ NOW (recognition), on navy ═══════════════════════ */
-.now.on-navy{min-height:100svh;display:flex;align-items:center;padding-top:clamp(40px,7vh,88px);padding-bottom:clamp(72px,10vh,120px)}
-.now.on-navy .wrap{width:100%}
+/* sections 2 and 3 share one pinned stage: A dissolves as B rises through it */
+.now-stack{position:relative}
+.js .now-stack{height:280svh}
+.now-stage{position:relative}
+.js .now-stage{position:sticky;top:0;height:100svh;overflow:clip}
+.now-layer{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:clamp(40px,7vh,88px);padding-bottom:clamp(72px,10vh,120px)}
+.js .now-layer{position:absolute;inset:0;min-height:0}
+.js .now-layer--b{opacity:0}
+.now-stack.is-static .now-layer{position:relative;opacity:1;min-height:100svh}
+.now-stack.is-static{height:auto}
+.now-stack.is-static .now-stage{position:static;height:auto;overflow:visible}
+.now .wrap{width:100%}
 /* the turn: one statement, centred, large */
 .now--turn{text-align:center}
 .now--turn .now-turn{margin:0 auto;max-width:20ch;font-size:clamp(2rem,4.6vw,4.6rem);font-weight:500;line-height:1.05;letter-spacing:-.02em}
