@@ -1,0 +1,307 @@
+/* ═══════════════════════════════════════════════════════════════
+   andar.ph · base.css — tokens, reset, type scale, layout primitives,
+   nav, footer. Agent A. See /site/BUILD-SPEC.md — it wins on conflict.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════ FONTS (self-hosted) ═══════════════════════ */
+/* Standard Google Fonts "latin" subset range. */
+@font-face{
+  font-family:'Barlow Semi Condensed';font-style:normal;font-weight:400;font-display:swap;
+  src:url('../fonts/barlow-semi-condensed-latin-400-normal.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Barlow Semi Condensed';font-style:normal;font-weight:500;font-display:swap;
+  src:url('../fonts/barlow-semi-condensed-latin-500-normal.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Barlow Semi Condensed';font-style:normal;font-weight:600;font-display:swap;
+  src:url('../fonts/barlow-semi-condensed-latin-600-normal.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Barlow Semi Condensed';font-style:normal;font-weight:700;font-display:swap;
+  src:url('../fonts/barlow-semi-condensed-latin-700-normal.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;
+  src:url('../fonts/barlow-latin-400-normal.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;
+  src:url('../fonts/barlow-latin-500-normal.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Barlow';font-style:normal;font-weight:600;font-display:swap;
+  src:url('../fonts/barlow-latin-600-normal.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* ═══════════════════════ TOKENS ═══════════════════════ */
+:root{
+  --paper:#FAF9F5;
+  --bone:#F1EFE8;
+  --ink:#16181A;
+  --mid:#5F6469;
+  --red:#D8401F;
+  --red-ink:#A82F13;
+  --hair:rgba(22,24,26,.08);
+  --faint:rgba(22,24,26,.14);
+  --grid:rgba(22,24,26,.045);
+
+  --card-bg:#FFFFFF;
+
+  --din:'Barlow Semi Condensed','Helvetica Neue',Arial,sans-serif;
+  --read:'Barlow','Helvetica Neue',Arial,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --stampEase:cubic-bezier(.22,.86,.26,1);
+
+  --page-inset:clamp(20px,5vw,72px);
+  --rail-gap:clamp(16px,2vw,28px);
+  --maxw:87.5rem;
+  --gutter:clamp(1rem,1.6vw,1.5rem);
+  --section-pad:clamp(96px,14vh,180px);
+
+  /* type */
+  --t-label:.688rem;
+  --t-micro:.8125rem;
+  --t-small:.9375rem;
+  --t-body:1.06rem;
+  --t-lead:clamp(1.125rem,1.4vw,1.375rem);
+  --t-h3:clamp(1.5rem,2.4vw,2.125rem);
+  --t-h2:clamp(2.25rem,4.6vw,4rem);
+  --t-h1:clamp(3.4rem,9vw,8.5rem);
+  --t-rail-h:clamp(2.4rem,5vw,4.6rem);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#10293A;
+    --bone:#0B1E2B;
+    --ink:#DCE8EE;
+    --mid:#93AAB8;
+    --red:#F2673C;
+    --red-ink:#F2673C;
+    --hair:rgba(220,232,238,.12);
+    --faint:rgba(220,232,238,.22);
+    --grid:rgba(220,232,238,.055);
+    --card-bg:#0E2333;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#10293A;
+  --bone:#0B1E2B;
+  --ink:#DCE8EE;
+  --mid:#93AAB8;
+  --red:#F2673C;
+  --red-ink:#F2673C;
+  --hair:rgba(220,232,238,.12);
+  --faint:rgba(220,232,238,.22);
+  --grid:rgba(220,232,238,.055);
+  --card-bg:#0E2333;
+}
+
+/* screens keep the light set regardless of theme — paper objects on the sheet */
+.screen{
+  --paper:#FAF9F5;--bone:#F1EFE8;--ink:#16181A;--mid:#5F6469;
+  --hair:rgba(22,24,26,.08);--faint:rgba(22,24,26,.14);--red:#D8401F;--red-ink:#A82F13;
+  color:var(--ink);
+  container-type: inline-size;
+  --k: calc(1cqi / 440);
+}
+
+/* ═══════════════════════ RESET ═══════════════════════ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:auto}
+body{
+  background:var(--bone);color:var(--ink);
+  font-family:var(--read);font-size:var(--t-body);line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+::selection{background:var(--red);color:#fff}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+button{font:inherit;color:inherit}
+
+.visually-hidden{
+  position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+/* entrance settle — parked only when JS is present; otherwise fully visible */
+.js .en{opacity:0;transform:translateY(16px)}
+.js .en.is-in{
+  opacity:1;transform:none;
+  transition:opacity .48s var(--ease),transform .48s var(--ease);
+}
+.js .en:nth-child(1){transition-delay:0s}
+.js .en:nth-child(2){transition-delay:.07s}
+.js .en:nth-child(3){transition-delay:.14s}
+.js .en:nth-child(4){transition-delay:.21s}
+.js .en:nth-child(5){transition-delay:.28s}
+.js .en:nth-child(6){transition-delay:.35s}
+@media (prefers-reduced-motion: reduce){
+  .js .en{opacity:1;transform:none;transition:none}
+}
+
+/* ═══════════════════════ SHEET FRAME ═══════════════════════ */
+.sheet-frame{
+  position:fixed;inset:var(--page-inset);z-index:0;pointer-events:none;
+  border:1px solid var(--faint);
+  background-image:
+    linear-gradient(to right,var(--grid) 1px,transparent 1px),
+    linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+@media (max-width:700px){ .sheet-frame{ display:none } }
+
+/* ═══════════════════════ LAYOUT PRIMITIVES ═══════════════════════ */
+.wrap{
+  position:relative;z-index:1;
+  max-width:var(--maxw);
+  margin-inline:auto;
+  padding-inline:var(--page-inset);
+}
+.datum-rule{height:1px;background:var(--hair);border:0;margin:0}
+
+/* ═══════════════════════ PRIMITIVES ═══════════════════════ */
+.lab{
+  font-family:var(--din);font-weight:500;font-size:var(--t-label);
+  letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin:0;
+}
+.lab.r{color:var(--red-ink)}
+.tn{font-variant-numeric:tabular-nums}
+
+.illus{
+  display:inline-block;border:1px dashed var(--mid);color:var(--mid);
+  font-family:var(--din);font-weight:500;font-size:.688rem;
+  letter-spacing:.2em;text-transform:uppercase;padding:3px 8px;
+}
+
+.stamp{
+  display:inline-block;font-family:var(--din);font-weight:700;
+  font-size:.875rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--red);border:2.5px solid var(--red);border-radius:3px;
+  padding:5px 12px;transform:rotate(-6deg);opacity:.92;
+}
+
+/* the datum line — a hairline with a red scaleX fill; the site's one
+   progress mechanism, reused by the rail HUD and the #how stage bar */
+.datum{position:relative;height:1px;background:var(--hair)}
+.datum i{
+  display:block;height:100%;width:100%;background:var(--red);
+  transform:scaleX(0);transform-origin:left center;
+}
+@media (prefers-reduced-motion: no-preference){
+  .datum i{transition:transform .1s linear}
+}
+
+/* the title block — footer, and reused for card refs */
+.tblock{
+  display:grid;grid-template-columns:repeat(4,auto);
+  background:var(--paper);border-top:1px solid var(--faint);border-left:1px solid var(--faint);
+}
+.tblock div{padding:9px 17px;border-right:1px solid var(--faint)}
+.tblock div:last-child{border-right:0}
+.tblock .k{margin:0}
+.tblock .v{
+  font-family:var(--din);font-weight:700;font-size:.9375rem;letter-spacing:.02em;
+  margin:2px 0 0;text-transform:uppercase;
+}
+@media (max-width:700px){
+  .tblock{grid-template-columns:repeat(2,1fr)}
+  .tblock div:nth-child(2n){border-right:0}
+  .tblock div:nth-child(-n+2){border-bottom:1px solid var(--faint)}
+}
+
+.btn{
+  display:inline-flex;align-items:center;gap:.5em;
+  font-family:var(--din);font-weight:600;font-size:.75rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#fff;background:var(--red);border:1px solid var(--red);
+  padding:14px 22px;cursor:pointer;border-radius:2px;text-decoration:none;
+  transition:filter .2s,transform .15s;
+}
+.btn:hover{filter:brightness(1.07)}
+.btn:active{transform:translateY(1px)}
+
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:.5em;
+  font-family:var(--din);font-weight:500;font-size:.75rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--mid);background:var(--paper);border:1px solid var(--faint);
+  padding:13px 21px;cursor:pointer;border-radius:2px;text-decoration:none;
+  transition:color .2s,border-color .2s,background .2s;
+}
+.btn-ghost:hover{color:var(--red-ink);border-color:var(--red);background:rgba(216,64,31,.05)}
+.btn-ghost:disabled{opacity:.35;cursor:default}
+
+/* ═══════════════════════ NAV ═══════════════════════ */
+.nav{
+  position:fixed;inset-block-start:0;inset-inline:0;z-index:20;
+  height:64px;display:flex;align-items:center;
+  background:transparent;border-bottom:1px solid transparent;
+  transition:background-color .3s var(--ease),border-color .3s var(--ease);
+}
+.nav .wrap{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.nav.is-solid{
+  background:color-mix(in srgb, var(--paper) 92%, transparent);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  border-bottom-color:var(--faint);
+}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.nav-brand .mark{height:20px;width:auto;display:block;color:var(--ink)}
+.nav-brand b{
+  font-family:var(--din);font-weight:700;font-size:1.15rem;letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{
+  font-family:var(--din);font-weight:500;font-size:.8125rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.78;
+  transition:opacity .2s;
+}
+.nav-links a:hover{opacity:1}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-clock{color:var(--mid)}
+@media (max-width:719.98px){
+  .nav-links{display:none}
+  .nav-clock{display:none}
+  .nav .btn{white-space:nowrap;font-size:.7rem;padding:.55em 1em}
+}
+
+/* ═══════════════════════ FOOTER ═══════════════════════ */
+.foot{padding-block:64px 40px;position:relative;z-index:1}
+.foot-top{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding-bottom:24px;flex-wrap:wrap;
+}
+.foot-brand{display:flex;align-items:center;gap:12px}
+.foot-brand .mark{height:20px;width:auto;color:var(--ink)}
+.foot-brand b{
+  font-family:var(--din);font-weight:700;font-size:1.05rem;letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.foot-links{display:flex;gap:24px;flex-wrap:wrap}
+.foot-links a{
+  font-family:var(--din);font-weight:500;font-size:.8125rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--mid);text-decoration:none;
+}
+.foot-links a:hover{color:var(--red-ink)}
+.foot .tblock{margin-block:8px 20px;width:100%}
+.foot-legal{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-size:.8125rem;color:var(--mid);
+}
+@media (max-width:700px){
+  .foot-top{flex-direction:column;align-items:flex-start}
+  .foot-legal{flex-direction:column;align-items:flex-start}
+}
