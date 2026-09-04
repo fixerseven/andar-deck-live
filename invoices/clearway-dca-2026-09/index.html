@@ -51,12 +51,11 @@ strong{font-weight:600}
 
 /* drafting title strip at the top of every inner sheet */
 .strip{
-  display:grid;grid-template-columns:2.2fr 1fr .8fr 1fr 1.2fr;
-  border-top:1px solid var(--faint);border-left:1px solid var(--faint);border-bottom:1px solid var(--faint);
-  background:var(--paper);margin-bottom:9mm;
+  display:flex;justify-content:space-between;align-items:baseline;gap:6mm;
+  padding-bottom:2mm;border-bottom:1px solid var(--faint);margin-bottom:8mm;
 }
-.strip div{padding:2.2mm 3.5mm;border-right:1px solid var(--faint)}
-.strip .v{font-family:var(--din);font-weight:700;font-size:9.5pt;letter-spacing:.03em;text-transform:uppercase;margin-top:.5mm}
+.strip .v{font-family:var(--din);font-weight:600;font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin:0}
+.strip .v b{color:var(--ink);font-weight:600}
 .lab{font-family:var(--din);font-weight:500;font-size:7.25pt;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin:0}
 .lab.r{color:var(--red-ink)}
 
@@ -184,11 +183,7 @@ td .d{color:var(--mid);font-size:9.25pt;line-height:1.4;margin-top:.6mm;max-widt
   <div class="cover-mid">
     <p class="eyebrow">Proposal · Invoice · Terms</p>
     <h1>Clearway</h1>
-    <p class="sub">A shipment tracking, customs monitoring and exception management system for DC Abay-abay Customs Brokerage. A single fixed price for the complete build described in build plan rev 4.</p>
-    <div class="cover-amount">
-      <span class="n tn">₱100,000.00</span>
-      <span class="lab">Fixed price · complete build · early-customer terms</span>
-    </div>
+    <p class="sub">A shipment tracking, customs monitoring and exception management system for DC Abay-abay Customs Brokerage. Prepared on the basis of build plan revision 4.</p>
   </div>
 
   <div class="cover-block">
@@ -206,11 +201,8 @@ td .d{color:var(--mid);font-size:9.25pt;line-height:1.4;margin-top:.6mm;max-widt
 <!-- ═══════════════════ PAGE 2 · INTRODUCTION ═══════════════════ -->
 <section class="sheet" aria-label="Introduction">
   <div class="strip">
-    <div><p class="lab">Document</p><p class="v">Clearway · proposal and invoice</p></div>
-    <div><p class="lab">Page</p><p class="v">2 / 6</p></div>
-    <div><p class="lab">Rev</p><p class="v">1</p></div>
-    <div><p class="lab">Date</p><p class="v">4 Sep 2026</p></div>
-    <div><p class="lab">Ref</p><p class="v">AND-2026-001</p></div>
+    <p class="v"><b>Clearway</b> · proposal and invoice · rev 1</p>
+    <p class="v">AND-2026-001 · 4 Sep 2026 · page <b>2</b> / 6</p>
   </div>
 
   <p class="eyebrow">Introduction</p>
@@ -242,11 +234,8 @@ td .d{color:var(--mid);font-size:9.25pt;line-height:1.4;margin-top:.6mm;max-widt
 <!-- ═══════════════════ PAGE 3 · SCOPE ═══════════════════ -->
 <section class="sheet" aria-label="Scope of work">
   <div class="strip">
-    <div><p class="lab">Document</p><p class="v">Clearway · proposal and invoice</p></div>
-    <div><p class="lab">Page</p><p class="v">3 / 6</p></div>
-    <div><p class="lab">Rev</p><p class="v">1</p></div>
-    <div><p class="lab">Date</p><p class="v">4 Sep 2026</p></div>
-    <div><p class="lab">Ref</p><p class="v">AND-2026-001</p></div>
+    <p class="v"><b>Clearway</b> · proposal and invoice · rev 1</p>
+    <p class="v">AND-2026-001 · 4 Sep 2026 · page <b>3</b> / 6</p>
   </div>
 
   <p class="eyebrow">Scope of work · as defined in build plan rev 4</p>
@@ -296,11 +285,8 @@ td .d{color:var(--mid);font-size:9.25pt;line-height:1.4;margin-top:.6mm;max-widt
 <!-- ═══════════════════ PAGE 4 · INVOICE ═══════════════════ -->
 <section class="sheet" aria-label="Invoice">
   <div class="strip">
-    <div><p class="lab">Document</p><p class="v">Clearway · proposal and invoice</p></div>
-    <div><p class="lab">Page</p><p class="v">4 / 6</p></div>
-    <div><p class="lab">Rev</p><p class="v">1</p></div>
-    <div><p class="lab">Date</p><p class="v">4 Sep 2026</p></div>
-    <div><p class="lab">Ref</p><p class="v">AND-2026-001</p></div>
+    <p class="v"><b>Clearway</b> · proposal and invoice · rev 1</p>
+    <p class="v">AND-2026-001 · 4 Sep 2026 · page <b>4</b> / 6</p>
   </div>
 
   <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8mm">
@@ -389,11 +375,8 @@ td .d{color:var(--mid);font-size:9.25pt;line-height:1.4;margin-top:.6mm;max-widt
 <!-- ═══════════════════ PAGE 5 · TERMS ═══════════════════ -->
 <section class="sheet" aria-label="Terms">
   <div class="strip">
-    <div><p class="lab">Document</p><p class="v">Clearway · proposal and invoice</p></div>
-    <div><p class="lab">Page</p><p class="v">5 / 6</p></div>
-    <div><p class="lab">Rev</p><p class="v">1</p></div>
-    <div><p class="lab">Date</p><p class="v">4 Sep 2026</p></div>
-    <div><p class="lab">Ref</p><p class="v">AND-2026-001</p></div>
+    <p class="v"><b>Clearway</b> · proposal and invoice · rev 1</p>
+    <p class="v">AND-2026-001 · 4 Sep 2026 · page <b>5</b> / 6</p>
   </div>
 
   <p class="eyebrow">Terms</p>
@@ -431,11 +414,8 @@ td .d{color:var(--mid);font-size:9.25pt;line-height:1.4;margin-top:.6mm;max-widt
 <!-- ═══════════════════ PAGE 6 · ACCEPTANCE ═══════════════════ -->
 <section class="sheet" aria-label="Acceptance">
   <div class="strip">
-    <div><p class="lab">Document</p><p class="v">Clearway · proposal and invoice</p></div>
-    <div><p class="lab">Page</p><p class="v">6 / 6</p></div>
-    <div><p class="lab">Rev</p><p class="v">1</p></div>
-    <div><p class="lab">Date</p><p class="v">4 Sep 2026</p></div>
-    <div><p class="lab">Ref</p><p class="v">AND-2026-001</p></div>
+    <p class="v"><b>Clearway</b> · proposal and invoice · rev 1</p>
+    <p class="v">AND-2026-001 · 4 Sep 2026 · page <b>6</b> / 6</p>
   </div>
 
   <p class="eyebrow">Acceptance</p>
