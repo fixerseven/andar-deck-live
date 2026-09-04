@@ -67,43 +67,27 @@
   align-items:center;
   justify-content:center;
   background:var(--bone);
+  padding:calc(var(--k)*18);
 }
+/* Flat, front-on device. No perspective, no rotation, no negative margins.
+   The device is sized entirely in percentages of the frame (itself 100% of
+   the screen's own padded, aspect-ratio-fixed box), so it is structurally
+   incapable of exceeding the root — nothing here can push past the edge. */
 .scr-pk-frame{
-  width:100%;height:100%;
+  height:100%;max-width:100%;
   display:flex;align-items:center;justify-content:center;
-  perspective:calc(var(--k)*1500);
-  perspective-origin:50% 45%;
 }
 .scr-pk-device{
-  --W:calc(var(--k)*250);--H:calc(var(--k)*340);--D:calc(var(--k)*30);
-  width:var(--W);height:var(--H);
-  position:relative;
-  transform-style:preserve-3d;
-  transform:rotateX(6deg) rotateY(21deg);
-}
-.scr-pk-face{position:absolute;left:50%;top:50%;transform-style:preserve-3d;backface-visibility:hidden}
-.scr-pk-front{
-  width:var(--W);height:var(--H);border-radius:calc(var(--k)*16);
-  transform:translate(-50%,-50%) translateZ(calc(var(--D)/2));
-  background:#1B1F21;padding:calc(var(--k)*12);overflow:hidden;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);
-}
-.scr-pk-back{
-  width:var(--W);height:var(--H);border-radius:calc(var(--k)*16);
-  transform:translate(-50%,-50%) rotateY(180deg) translateZ(calc(var(--D)/2));
-  background:linear-gradient(148deg,#4C5153,#2A2E30 60%,#3A3F41);
-}
-.scr-pk-left,.scr-pk-right{width:var(--D);height:calc(var(--H) - calc(var(--k)*16))}
-.scr-pk-left {transform:translate(-50%,-50%) rotateY(-90deg) translateZ(calc(var(--W)/2))}
-.scr-pk-right{transform:translate(-50%,-50%) rotateY(90deg)  translateZ(calc(var(--W)/2))}
-.scr-pk-top,.scr-pk-bottom{width:calc(var(--W) - calc(var(--k)*16));height:var(--D)}
-.scr-pk-top   {transform:translate(-50%,-50%) rotateX(90deg)  translateZ(calc(var(--H)/2))}
-.scr-pk-bottom{transform:translate(-50%,-50%) rotateX(-90deg) translateZ(calc(var(--H)/2))}
-.scr-pk-left,.scr-pk-right,.scr-pk-top,.scr-pk-bottom{
-  background:linear-gradient(90deg,#232729,#585D5F 26%,#33383A 58%,#232729);
+  height:100%;max-height:100%;
+  aspect-ratio:250/340;max-width:100%;
+  display:flex;flex-direction:column;
+  background:#1B1F21;border-radius:calc(var(--k)*16);
+  padding:calc(var(--k)*12);
+  box-shadow:0 calc(var(--k)*10) calc(var(--k)*22) rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.14);
+  box-sizing:border-box;
 }
 .scr-pk-glass{
-  position:relative;height:64%;background:#F3F5F2;border-radius:calc(var(--k)*3);
+  position:relative;flex:1;min-height:0;background:#F3F5F2;border-radius:calc(var(--k)*3);
   overflow:hidden;border:1px solid #0C0E0F;
 }
 .scr-pk-state{
@@ -435,7 +419,7 @@
 }
 .scr-dk-bar{
   display:flex;align-items:center;gap:calc(var(--k)*7);
-  padding:calc(var(--k)*10) calc(var(--k)*15);
+  padding:calc(var(--k)*8) calc(var(--k)*15);
   border-bottom:1px solid var(--faint);background:var(--bone);
 }
 .scr-dk-bar i{width:calc(var(--k)*7);height:calc(var(--k)*7);border-radius:50%;border:1px solid var(--mid);flex:0 0 auto}
@@ -447,10 +431,10 @@
 .scr-dk-ph{color:var(--red-ink)}
 .scr-dk-live{display:flex;align-items:center;gap:calc(var(--k)*5)}
 .scr-dk-dot{width:calc(var(--k)*7);height:calc(var(--k)*7);border-radius:50%;background:var(--red);display:inline-block;flex:0 0 auto}
-.scr-dk-body{padding:calc(var(--k)*16);flex:1;display:flex;flex-direction:column;min-height:0}
+.scr-dk-body{padding:calc(var(--k)*12);flex:1;display:flex;flex-direction:column;min-height:0}
 .scr-dk-strip{
   display:flex;gap:calc(var(--k)*22);
-  padding-bottom:calc(var(--k)*12);border-bottom:1px solid var(--faint);margin-bottom:calc(var(--k)*13);
+  padding-bottom:calc(var(--k)*8);border-bottom:1px solid var(--faint);margin-bottom:calc(var(--k)*8);
 }
 .scr-dk-stat{
   font-family:var(--din,'Barlow Semi Condensed',sans-serif);
@@ -458,20 +442,24 @@
 }
 .scr-dk-stat b{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-size:calc(var(--k)*14);margin-left:calc(var(--k)*6)}
 .scr-dk-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--k)*14);flex:1;min-height:0}
+.scr-dk-col{display:flex;flex-direction:column;min-height:0}
 .scr-dk-colh{
   display:flex;justify-content:space-between;align-items:baseline;
   font-family:var(--din,'Barlow Semi Condensed',sans-serif);font-weight:600;
   font-size:calc(var(--k)*10);letter-spacing:.16em;text-transform:uppercase;color:var(--mid);
-  padding-bottom:calc(var(--k)*7);border-bottom:1px solid var(--faint);
+  padding-bottom:calc(var(--k)*5);border-bottom:1px solid var(--faint);flex:0 0 auto;
 }
-.scr-dk-cards{display:flex;flex-direction:column;gap:calc(var(--k)*8);padding-top:calc(var(--k)*9)}
+.scr-dk-cards{
+  display:flex;flex-direction:column;gap:calc(var(--k)*6);padding-top:calc(var(--k)*6);
+  flex:1;min-height:0;overflow:hidden; /* defensive: clip cleanly, never past the root */
+}
 .scr-dk-tkt{
-  display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--k)*6);
+  display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--k)*4);
   border:1px solid var(--faint);border-radius:calc(var(--k)*3);
-  padding:calc(var(--k)*9) calc(var(--k)*10);background:#fff;
+  padding:calc(var(--k)*7) calc(var(--k)*10);background:#fff;flex:0 0 auto;
 }
 .scr-dk-id{font-family:var(--din,'Barlow Semi Condensed',sans-serif);font-weight:700;font-size:calc(var(--k)*10.5);letter-spacing:.06em;margin:0}
-.scr-dk-ti{font-size:calc(var(--k)*11.5);color:var(--mid);margin:calc(var(--k)*3) 0 0;line-height:1.32}
+.scr-dk-ti{font-size:calc(var(--k)*11.5);color:var(--mid);margin:calc(var(--k)*3) 0 0;line-height:1.2}
 .scr-dk-tkt.scr-dk-done .scr-dk-id{color:var(--mid)}
 .scr-dk-who{
   align-self:flex-end;
@@ -493,7 +481,7 @@
 }
 .scr-cc-bar{
   display:flex;align-items:center;gap:calc(var(--k)*7);
-  padding:calc(var(--k)*10) calc(var(--k)*15);
+  padding:calc(var(--k)*8) calc(var(--k)*15);
   border-bottom:1px solid var(--faint);background:var(--bone);
 }
 .scr-cc-bar i{width:calc(var(--k)*7);height:calc(var(--k)*7);border-radius:50%;border:1px solid var(--mid);flex:0 0 auto}
@@ -501,10 +489,10 @@
   font-family:var(--din,'Barlow Semi Condensed',sans-serif);font-weight:500;
   font-size:calc(var(--k)*10.5);letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-left:calc(var(--k)*8);
 }
-.scr-cc-body{padding:calc(var(--k)*15);flex:1;display:flex;flex-direction:column;min-height:0}
+.scr-cc-body{padding:calc(var(--k)*13);flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .scr-cc-strip{
   display:flex;align-items:center;gap:calc(var(--k)*18);
-  padding-bottom:calc(var(--k)*10);border-bottom:1px solid var(--faint);margin-bottom:calc(var(--k)*11);
+  padding-bottom:calc(var(--k)*8);border-bottom:1px solid var(--faint);margin-bottom:calc(var(--k)*8);
 }
 .scr-cc-stat{
   display:flex;align-items:center;gap:calc(var(--k)*6);
@@ -515,11 +503,11 @@
 .scr-cc-dot{width:calc(var(--k)*7);height:calc(var(--k)*7);border-radius:50%;background:var(--red);display:inline-block;flex:0 0 auto}
 .scr-cc-rail{
   display:grid;grid-template-columns:repeat(8,1fr);gap:calc(var(--k)*5);
-  margin-bottom:calc(var(--k)*13);
+  margin-bottom:calc(var(--k)*10);
 }
 .scr-cc-rail span{
   display:flex;flex-direction:column;gap:calc(var(--k)*2);
-  border-top:1px solid var(--faint);padding-top:calc(var(--k)*6);
+  border-top:1px solid var(--faint);padding-top:calc(var(--k)*5);
 }
 .scr-cc-rail em{
   font-style:normal;font-family:var(--din,'Barlow Semi Condensed',sans-serif);font-weight:600;
@@ -533,7 +521,8 @@
 .scr-cc-rail .scr-cc-on em,.scr-cc-rail .scr-cc-on b{color:var(--red-ink)}
 .scr-cc-gate{
   border:1px solid var(--red);background:rgba(216,64,31,.04);
-  padding:calc(var(--k)*11) calc(var(--k)*13);
+  padding:calc(var(--k)*9) calc(var(--k)*13);
+  flex:0 1 auto;min-height:0;overflow:hidden;
 }
 .scr-cc-h{
   margin:0 0 calc(var(--k)*7);
@@ -549,8 +538,8 @@
 .scr-cc-assign{padding:calc(var(--k)*6) calc(var(--k)*12);font-size:calc(var(--k)*9.5);background:var(--red);border-color:var(--red);color:#fff}
 .scr-cc-ghost{padding:calc(var(--k)*6) calc(var(--k)*12);font-size:calc(var(--k)*9.5)}
 .scr-cc-link{
-  margin-top:auto;padding-top:calc(var(--k)*12);
-  display:inline-block;align-self:flex-start;
+  margin-top:auto;padding-top:calc(var(--k)*8);
+  display:inline-block;align-self:flex-start;flex:0 0 auto;
   font-family:var(--din,'Barlow Semi Condensed',sans-serif);font-weight:600;
   font-size:calc(var(--k)*11);letter-spacing:.04em;color:var(--red-ink);
   text-decoration:none;border-bottom:1px solid var(--red);

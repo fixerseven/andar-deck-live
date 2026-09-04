@@ -61,7 +61,7 @@
   --stampEase:cubic-bezier(.22,.86,.26,1);
 
   --page-inset:clamp(20px,5vw,72px);
-  --rail-gap:clamp(16px,2vw,28px);
+  --rail-gap:clamp(48px,7vw,120px);
   --maxw:87.5rem;
   --gutter:clamp(1rem,1.6vw,1.5rem);
   --section-pad:clamp(96px,14vh,180px);
@@ -75,7 +75,7 @@
   --t-h3:clamp(1.5rem,2.4vw,2.125rem);
   --t-h2:clamp(2.25rem,4.6vw,4rem);
   --t-h1:clamp(3.4rem,9vw,8.5rem);
-  --t-rail-h:clamp(2.4rem,5vw,4.6rem);
+  --t-rail-h:clamp(2.8rem,5.6vw,5.2rem);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){

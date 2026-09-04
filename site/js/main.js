@@ -104,6 +104,11 @@
     });
     var railProgEl = rail.querySelector(".rail-prog");
     if (railProgEl) railProgEl.appendChild(ticksWrap);
+    function resetTicksEven(){
+      tickEls.forEach(function(t, i){
+        t.style.left = (n > 1 ? (i / (n - 1)) * 100 : 0) + "%";
+      });
+    }
 
     var currentIdx = -1;
     function setCounter(i){
@@ -183,40 +188,57 @@
         function(){
           rail.classList.add("is-pinned");
 
-          var cardOffsets = [];
-          var stageWidth = 0;
+          // The track starts translated fully off-screen right (x = stage
+          // width) so the held headline is seen alone before the first
+          // card enters; it ends at the normal fully-scrolled rest
+          // position. Total x travel is therefore exactly track.scrollWidth,
+          // which is also what keeps the scroll-to-travel ratio at 1:1.
+          var cardOffsets = [], cardWidths = [];
+          var stageWidth = 0, trackScrollWidth = 0;
           function measure(){
             stageWidth = stage.clientWidth;
+            trackScrollWidth = track.scrollWidth;
             cardOffsets = cards.map(function(c){ return c.offsetLeft; });
+            cardWidths = cards.map(function(c){ return c.offsetWidth; });
+            // tick position = the scroll progress at which that card is
+            // centred in the stage, given the lead-in offset above.
+            cards.forEach(function(c, k){
+              var p = (cardOffsets[k] + cardWidths[k] / 2 + stageWidth / 2) / trackScrollWidth;
+              tickEls[k].style.left = (Math.max(0, Math.min(1, p)) * 100) + "%";
+            });
           }
           measure();
 
-          var distance = function(){ return track.scrollWidth - stage.clientWidth; };
-
-          var tween = gsap.to(track, {
-            x: function(){ return -distance(); },
-            ease: "none",
-            scrollTrigger: {
-              trigger: rail,
-              start: "top top",
-              end: function(){ return "+=" + distance(); },
-              pin: stage,
-              scrub: true,
-              invalidateOnRefresh: true,
-              anticipatePin: 1,
-              onRefresh: measure,
-              onUpdate: function(self){
-                setFill(self.progress);
-                var i = Math.min(n - 1, Math.round(self.progress * (n - 1)));
-                setCounter(i);
-                var trackX = -distance() * self.progress;
-                for (var k = 0; k < n; k++){
-                  var left = cardOffsets[k] + trackX;
-                  setWipe(k, stageWidth ? 1 - left / stageWidth : 1);
+          var tween = gsap.fromTo(track,
+            { x: function(){ return stage.clientWidth; } },
+            {
+              x: function(){ return -(track.scrollWidth - stage.clientWidth); },
+              ease: "none",
+              scrollTrigger: {
+                trigger: rail,
+                start: "top top",
+                end: function(){ return "+=" + track.scrollWidth; },
+                pin: stage,
+                scrub: true,
+                invalidateOnRefresh: true,
+                anticipatePin: 1,
+                onRefresh: measure,
+                onUpdate: function(self){
+                  setFill(self.progress);
+                  var trackX = stageWidth - self.progress * trackScrollWidth;
+                  var bestI = 0, bestDist = Infinity;
+                  for (var k = 0; k < n; k++){
+                    var left = cardOffsets[k] + trackX;
+                    setWipe(k, stageWidth ? 1 - left / stageWidth : 1);
+                    var center = left + cardWidths[k] / 2;
+                    var dist = Math.abs(center - stageWidth / 2);
+                    if (dist < bestDist){ bestDist = dist; bestI = k; }
+                  }
+                  setCounter(bestI);
                 }
               }
             }
-          });
+          );
 
           track.addEventListener("focusin", onFocusIn);
           function onFocusIn(e){
@@ -229,7 +251,8 @@
           function goTo(i){
             i = gsap.utils.clamp(0, n - 1, i);
             var st = tween.scrollTrigger;
-            var p = i / (n - 1);
+            var p = gsap.utils.clamp(0, 1,
+              (cardOffsets[i] + cardWidths[i] / 2 + stageWidth / 2) / trackScrollWidth);
             window.scrollTo({
               top: st.start + p * (st.end - st.start),
               behavior: motionOK() ? "smooth" : "auto"
@@ -241,6 +264,7 @@
             rail.classList.remove("is-pinned");
             track.removeEventListener("focusin", onFocusIn);
             pinnedGoTo = null;
+            resetTicksEven();
           };
         }
       );
@@ -258,19 +282,20 @@
   (function(){
     var figs = Array.prototype.slice.call(document.querySelectorAll(".card-fig"));
     if (!figs.length) return;
+    var desktopMQ = window.matchMedia("(min-width: 1024px)");
 
     function fitOne(fig){
       var screen = fig.querySelector(".screen");
       if (!screen) return;
-      if (window.innerWidth < 1024){
+      if (!desktopMQ.matches){
         fig.style.setProperty("--fit", 1);
         return;
       }
       fig.style.setProperty("--fit", 1); // reset to natural size before measuring
-      var figH = fig.getBoundingClientRect().height;
-      var screenH = screen.getBoundingClientRect().height;
-      if (figH <= 0 || screenH <= 0) return;
-      var s = Math.min(1, figH / screenH);
+      var h = screen.getBoundingClientRect().height; // includes transforms
+      if (h <= 0) return;
+      // shrink to fit, but never below 72% width: past that the screen crops at the frame's bottom edge instead
+      var s = Math.max(0.72, Math.min(1, (fig.clientHeight - 2) / h));
       fig.style.setProperty("--fit", s);
     }
     function fitAll(){ figs.forEach(fitOne); }
