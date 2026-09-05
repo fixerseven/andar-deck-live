@@ -90,6 +90,42 @@ section{position:relative;padding-block:var(--section-pad)}
   margin-top:clamp(28px,5vh,64px);margin-bottom:clamp(-120px,-11vh,-60px);
 }
 .hero-device--draw svg{width:100%;height:auto;display:block;overflow:visible}
+/* the board: the whole business on one sheet of paper, rising from the city */
+.hero-device--board{width:min(1000px,88vw);margin-top:clamp(28px,5vh,60px);margin-bottom:clamp(-120px,-12vh,-70px);filter:drop-shadow(0 40px 70px rgba(0,0,0,.5)) drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+.board{background:#FAF9F5;color:#16181A;border-radius:10px;overflow:hidden;font-family:var(--read)}
+.bd-top{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid rgba(22,24,26,.1);font-family:var(--din);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:#5F6469}
+.bd-top b{color:#16181A;font-weight:700}
+.bd-clock{font-variant-numeric:tabular-nums}
+.bd-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(22,24,26,.1)}
+.bd-tile{background:#FAF9F5;padding:14px 16px 16px;min-height:104px;display:flex;flex-direction:column;justify-content:space-between;position:relative;transition:background .4s}
+.bd-tile.wide{grid-column:span 2}
+.bd-tile .k{font-family:var(--din);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#5F6469}
+.bd-tile .v{font-family:var(--din);font-weight:700;font-size:clamp(1.15rem,1.6vw,1.7rem);letter-spacing:-.01em;line-height:1;font-variant-numeric:tabular-nums;margin-top:10px}
+.bd-tile .s{font-size:.8rem;color:#5F6469;margin-top:6px}
+.bd-tile .btns{display:none;gap:8px;margin-top:10px}
+.bd-tile .btns span{font-family:var(--din);font-weight:600;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;padding:7px 11px;border-radius:2px;border:1px solid #D8401F;color:#D8401F}
+.bd-tile .btns span:first-child{background:#D8401F;color:#fff}
+.bd-tile.is-ask{background:#FBEDE8}.bd-tile.is-ask .v{color:#D8401F}.bd-tile.is-ask .k{color:#A82F13}.bd-tile.is-ask .btns{display:flex}
+.bd-tile.is-ask::before{content:'';position:absolute;right:16px;top:14px;width:8px;height:8px;border-radius:50%;background:#D8401F;animation:bd-pulse 1.6s ease-in-out infinite}
+.bd-stamp{position:absolute;right:16px;top:12px;font-family:var(--din);font-weight:700;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:#D8401F;border:2.5px solid #D8401F;border-radius:3px;padding:4px 10px;transform:rotate(-7deg) scale(.9);opacity:0}
+.bd-tile.is-done{background:#FAF9F5}.bd-tile.is-done .v{color:#16181A}.bd-tile.is-done .btns{opacity:.3}.bd-tile.is-done::before{animation:none;background:#5F6469}
+.bd-tile.is-done .bd-stamp{animation:bd-land .26s var(--stampEase,cubic-bezier(.22,.86,.26,1)) forwards}
+.bd-foot{padding:14px 18px 20px}
+.bd-rail{position:relative;height:1px;background:rgba(22,24,26,.14)}
+.bd-rail i{position:absolute;top:-4px;width:9px;height:9px;border-radius:50%;background:#D8401F;transform:translateX(-50%);left:0}
+.bd-rail b{position:absolute;top:8px;transform:translateX(-50%);font-family:var(--din);font-weight:500;font-size:.6rem;letter-spacing:.16em;color:#5F6469}
+@keyframes bd-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes bd-land{to{opacity:.92;transform:rotate(-7deg) scale(1)}}
+/* entrance: each tile arrives from the side of the city it belongs to */
+.js .bd-tile.fly{opacity:0;animation:bd-fly .9s var(--ease) both;animation-delay:calc(.55s + var(--i,0) * .12s)}
+.js .bd-tile.fly[data-from="left"]{--dx:-60px;--dy:20px}.js .bd-tile.fly[data-from="right"]{--dx:60px;--dy:20px}.js .bd-tile.fly[data-from="up"]{--dx:0;--dy:-40px}
+@keyframes bd-fly{from{opacity:0;transform:translate(var(--dx,0),var(--dy,30px))}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){ .js .bd-tile.fly{opacity:1;animation:none} .bd-tile.is-ask::before{animation:none} }
+@media (max-width:1023px){
+  .hero-device--board{width:94vw;margin-bottom:-10vh}
+  .bd-tiles{grid-template-columns:repeat(2,1fr)}
+  .bd-tile.wide{grid-column:span 2}
+}
 
 /* load choreography */
 @keyframes hero-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
